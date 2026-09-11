@@ -1,0 +1,325 @@
+<!-- Left Sidebar Navigation Component -->
+<aside class="sidebar">
+  <!-- Brand Header / Project Switcher -->
+  <div class="sidebar-brand-box" (click)="toggleProject()" title="Proje Değiştir">
+    <div class="brand-title-group">
+      <span class="brand-name" [ngClass]="activeProject().id === 'nova' ? 'nova-title' : 'orion-title'">
+        {{ activeProject().name }}
+      </span>
+      <span class="brand-switch-tag">{{ tsService.translate('Project Selector') }} ⇄</span>
+    </div>
+  </div>
+
+  <!-- Sidebar Search Box -->
+  <div class="sidebar-search-box">
+    <svg class="sidebar-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input 
+      type="text" 
+      class="sidebar-search-input" 
+      [placeholder]="tsService.translate('Menüde ara...')" 
+      [ngModel]="searchQuery()" 
+      (ngModelChange)="searchQuery.set($event)" />
+    <button *ngIf="searchQuery()" class="sidebar-search-clear" (click)="clearSearch()">✕</button>
+  </div>
+
+  <!-- Navigation Scroll Area -->
+  <div class="sidebar-scroll">
+    <!-- Category 1: Sistem & Yapılandırma -->
+    <div class="nav-category" *ngIf="categoryHasMatches('system')">
+      <div 
+        class="nav-category-header accordion-toggle" 
+        (click)="toggleCategory('system')" 
+        [class.active-cat]="isCategoryOpen('system')">
+        <span class="category-header-title">{{ tsService.translate('System Management') }}</span>
+        <svg class="accordion-chevron" [class.rotated]="isCategoryOpen('system')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <nav class="nav-menu" *ngIf="isCategoryOpen('system')">
+        <a 
+          routerLink="/dil-yonetimi" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="!authService.isCountryAdmin() && matchesSearch('Dil Yönetimi')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Dil Yönetimi') }}</span>
+          <span class="count-badge">5</span>
+        </a>
+
+        <!-- Dil Bakımı -->
+        <a 
+          routerLink="/dil-bakimi" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Dil Bakımı')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Dil Bakımı') }}</span>
+          <span class="count-badge new-badge">Şablon</span>
+        </a>
+
+        <a 
+          routerLink="/indirilenler" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('İndirilenler')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('İndirilenler') }}</span>
+          <span class="count-badge">{{ downloadService.downloads().length }}</span>
+        </a>
+
+        <a 
+          routerLink="/bolgeler" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="!authService.isCountryAdmin() && matchesSearch('Bölgeler')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+            <line x1="8" y1="2" x2="8" y2="18"></line>
+            <line x1="16" y1="6" x2="16" y2="22"></line>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Bölgeler') }}</span>
+          <span class="count-badge">{{ regionService.regions().length }}</span>
+        </a>
+
+        <a 
+          routerLink="/ulkeler" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Ülkeler')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20z"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Ülkeler') }}</span>
+          <span class="count-badge">{{ countryService.countries().length }}</span>
+        </a>
+
+        <!-- Satış Kanalları -->
+        <a 
+          routerLink="/satis-kanallari" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Satış Kanalları')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Satış Kanalları') }}</span>
+          <span class="count-badge">{{ salesChannelService.channels().length }}</span>
+        </a>
+
+        <a 
+          routerLink="/hava-kosullari" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Hava Koşulları')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Hava Koşulları') }}</span>
+          <span class="count-badge">16</span>
+        </a>
+
+        <!-- Proje Tipi -->
+        <a 
+          routerLink="/proje-tipleri" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Proje Tipi')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Proje Tipi') }}</span>
+          <span class="count-badge">{{ projectTypeService.projectTypes().length }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Category 2: Destek & Rehber -->
+    <div class="nav-category" *ngIf="categoryHasMatches('support')">
+      <div 
+        class="nav-category-header accordion-toggle" 
+        (click)="toggleCategory('support')"
+        [class.active-cat]="isCategoryOpen('support')">
+        <span class="category-header-title">{{ tsService.translate('Support & Guide') }}</span>
+        <svg class="accordion-chevron" [class.rotated]="isCategoryOpen('support')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <nav class="nav-menu" *ngIf="isCategoryOpen('support')">
+        <!-- Kategoriler -->
+        <a 
+          routerLink="/kategoriler" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Kategoriler')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Kategoriler') }}</span>
+          <span class="count-badge">{{ faqCatService.categories().length }}</span>
+        </a>
+
+        <a 
+          routerLink="/sikca-sorulan-sorular" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('SSS')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('SSS') }}</span>
+          <span class="count-badge">{{ faqService.getItemsByModule('SSS').length }}</span>
+        </a>
+
+        <!-- Eğitim -->
+        <a 
+          routerLink="/egitim" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Eğitim')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Eğitim') }}</span>
+          <span class="count-badge">{{ faqService.getItemsByModule('Eğitim').length }}</span>
+        </a>
+
+        <!-- Bize Ulaşın -->
+        <a 
+          routerLink="/bize-ulasin" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Bize Ulaşın')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Bize Ulaşın') }}</span>
+          <span class="count-badge">{{ faqService.getItemsByModule('Bize Ulaşın').length }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Category 3: Kullanıcı ve Yetkiler -->
+    <div class="nav-category" *ngIf="categoryHasMatches('users')">
+      <div 
+        class="nav-category-header accordion-toggle" 
+        (click)="toggleCategory('users')"
+        [class.active-cat]="isCategoryOpen('users')">
+        <span class="category-header-title">{{ tsService.translate('Kullanıcı ve Yetkiler') }}</span>
+        <svg class="accordion-chevron" [class.rotated]="isCategoryOpen('users')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <nav class="nav-menu" *ngIf="isCategoryOpen('users')">
+        <!-- Organizasyonel Roller -->
+        <a 
+          routerLink="/organizasyonel-roller" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Organizasyonel Roller')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Organizasyonel Roller') }}</span>
+          <span class="count-badge">{{ userRoleService.roles().length }}</span>
+        </a>
+
+        <!-- Kullanıcı Yönetimi -->
+        <a 
+          routerLink="/kullanici-yonetimi" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Kullanıcı Yönetimi')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Kullanıcı Yönetimi') }}</span>
+          <span class="count-badge">{{ userMgmtService.users().length }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Category 4: Ayarlar -->
+    <div class="nav-category" *ngIf="categoryHasMatches('settings')">
+      <div 
+        class="nav-category-header accordion-toggle" 
+        (click)="toggleCategory('settings')"
+        [class.active-cat]="isCategoryOpen('settings')">
+        <span class="category-header-title">{{ tsService.translate('Ayarlar') }}</span>
+        <svg class="accordion-chevron" [class.rotated]="isCategoryOpen('settings')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <nav class="nav-menu" *ngIf="isCategoryOpen('settings')">
+        <!-- Parametreler -->
+        <a 
+          routerLink="/parametreler" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Parametreler')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Parametreler') }}</span>
+          <span class="count-badge">{{ settingsService.parameters().length }}</span>
+        </a>
+
+        <!-- Sistem Yedek & Geri Yükle -->
+        <a 
+          routerLink="/sistem-yedekleme" 
+          routerLinkActive="active" 
+          class="nav-link"
+          *ngIf="matchesSearch('Sistem Yedek & Geri Yükle')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Sistem Yedek & Geri Yükle') }}</span>
+          <span class="count-badge">{{ settingsService.backups().length }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Empty Search State -->
+    <div class="sidebar-empty-state" *ngIf="!hasAnyMatches()">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <line x1="8" y1="11" x2="14" y2="11"></line>
+      </svg>
+      <p class="empty-msg">{{ tsService.translate('Menüde sonuç bulunamadı') }}</p>
+      <button class="clear-filter-link" (click)="clearSearch()">
+        {{ tsService.translate('Filtreyi Sıfırla') }}
+      </button>
+    </div>
+  </div>
+</aside>

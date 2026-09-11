@@ -1,0 +1,118 @@
+<!-- Top Header Bar -->
+<header class="header">
+  <div class="header-titles">
+    <h1 class="page-title">{{ tsService.translate(pageTitleService.meta().title) }}</h1>
+    <p class="page-subtitle" *ngIf="pageTitleService.meta().subtitle">{{ tsService.translate(pageTitleService.meta().subtitle) }}</p>
+  </div>
+
+  <div class="header-actions">
+    <!-- Frontend Portals Quick Switcher (Nova & Orion) - Opens in NEW TAB -->
+    <div class="fe-nav-btn-group">
+      <a 
+        class="header-fe-btn btn-fe-nova" 
+        [href]="'/frontend/home?project=nova'" 
+        target="_blank"
+        (click)="navigateToFrontend('nova', $event)"
+        [title]="tsService.translate('Nova Ön Yüz')">
+        <span class="fe-btn-dot dot-nova"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="fe-btn-svg">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        <span>{{ tsService.translate('Nova Ön Yüz') }}</span>
+      </a>
+
+      <a 
+        class="header-fe-btn btn-fe-orion" 
+        [href]="'/frontend/home?project=orion'" 
+        target="_blank"
+        (click)="navigateToFrontend('orion', $event)"
+        [title]="tsService.translate('Orion Ön Yüz')">
+        <span class="fe-btn-dot dot-orion"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="fe-btn-svg">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        <span>{{ tsService.translate('Orion Ön Yüz') }}</span>
+      </a>
+    </div>
+
+    <!-- Language Selector Dropdown -->
+    <div class="lang-selector-wrapper">
+      <button class="lang-btn" (click)="toggleLangDropdown($event)">
+        <img [src]="currentLangObj.flagUrl" [alt]="currentLangObj.name" class="lang-flag-img" />
+        <span class="lang-code-pill">{{ currentLangObj.codeBadge }}</span>
+        <span class="lang-btn-name">{{ currentLangObj.name }}</span>
+        <svg class="chevron-icon" [class.rotated]="showLangDropdown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+
+      <div class="lang-menu" *ngIf="showLangDropdown">
+        <div 
+          *ngFor="let lang of languages" 
+          class="lang-option" 
+          [class.selected]="lang.code === tsService.currentLang()"
+          (click)="selectLang(lang, $event)">
+          <img [src]="lang.flagUrl" [alt]="lang.name" class="lang-flag-img" />
+          <span class="lang-code-pill">{{ lang.codeBadge }}</span>
+          <span class="lang-name">{{ lang.name }}</span>
+          <svg *ngIf="lang.code === tsService.currentLang()" class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile Chip with SSO Role Switcher -->
+    <div class="user-profile-wrapper">
+      <div class="user-profile" (click)="toggleUserRoleDropdown($event)" title="Rol ve Kullanıcı Değiştir">
+        <div class="avatar-badge" [class.badge-super]="authService.isSuperAdmin()" [class.badge-region]="authService.isRegionAdmin()" [class.badge-country]="authService.isCountryAdmin()">
+          {{ authService.currentUser().avatarInitials }}
+        </div>
+        <div class="user-info">
+          <span class="user-name">{{ authService.currentUser().name }}</span>
+          <div class="role-badge-row">
+            <span class="user-role">{{ authService.currentUser().roleTitle }}</span>
+            <svg class="role-chevron-icon" [class.rotated]="showUserRoleDropdown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Role Switcher Menu -->
+      <div class="role-switch-menu" *ngIf="showUserRoleDropdown">
+        <div class="role-menu-header">
+          <span>KULLANICI ROLLERİ (HIZLI GEÇİŞ)</span>
+        </div>
+        <div 
+          *ngFor="let user of authService.demoUsers" 
+          class="role-menu-option" 
+          [class.active-user]="user.id === authService.currentUser().id"
+          (click)="switchRole(user, $event)">
+          <div class="role-opt-avatar" [class.badge-super]="user.role === 'SUPER_ADMIN'" [class.badge-region]="user.role === 'REGION_ADMIN'" [class.badge-country]="user.role === 'COUNTRY_ADMIN'">
+            {{ user.avatarInitials }}
+          </div>
+          <div class="role-opt-meta">
+            <span class="role-opt-name">{{ user.name }}</span>
+            <span class="role-opt-title">{{ user.roleTitle }}</span>
+          </div>
+          <span *ngIf="user.id === authService.currentUser().id" class="current-tag">Aktif</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout / Exit Button -->
+    <button class="logout-btn" (click)="logout()" title="Oturumu Kapat">
+      <svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+      <span>{{ tsService.translate('Exit') }}</span>
+    </button>
+  </div>
+</header>

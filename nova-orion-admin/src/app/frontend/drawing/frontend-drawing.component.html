@@ -1,0 +1,385 @@
+<div class="fe-drawing-workspace" [class.theme-nova]="projectService.currentProject().id === 'nova'" [class.theme-orion]="projectService.currentProject().id === 'orion'">
+  
+  <!-- Toast Notification -->
+  <div class="toast-popup" *ngIf="notificationMessage()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>{{ notificationMessage() }}</span>
+  </div>
+
+  <!-- 1. Top Workspace Navigation Bar -->
+  <header class="drawing-header">
+    <div class="header-left">
+      <button type="button" class="btn-nav-back" (click)="returnToHome()" [title]="tsService.translate('Ana Sayfa')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>{{ tsService.translate('Ana Sayfa') }}</span>
+      </button>
+
+      <div class="project-identity-chip">
+        <div class="project-dot"></div>
+        <div class="project-meta-col">
+          <span class="p-title">{{ projectName() }}</span>
+          <span class="p-sub">{{ projectId() }} &bull; {{ projectCity() }}, {{ projectCountry() }}</span>
+        </div>
+      </div>
+
+      <div class="weather-meta-tag" [title]="tsService.translate('Dış / İç Ortam Tasarım Sıcaklıkları')">
+        <span>☀️ {{ outdoorTemp() }}</span>
+        <span class="sep">|</span>
+        <span>❄️ {{ indoorTemp() }}</span>
+      </div>
+    </div>
+
+    <!-- Center Tool Modes (Select, Piping, Wiring) -->
+    <div class="header-center">
+      <div class="tool-modes-group">
+        <button 
+          type="button" 
+          class="mode-btn" 
+          [class.active]="activeMode() === 'SELECT'"
+          (click)="setMode('SELECT')"
+          [title]="tsService.translate('Seçim Modu')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
+            <path d="M13 13l6 6"></path>
+          </svg>
+          <span>{{ tsService.translate('Seçim') }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="mode-btn btn-pipe" 
+          [class.active]="activeMode() === 'PIPING'"
+          (click)="setMode('PIPING')"
+          [title]="tsService.translate('Borulama (Piping) Modu')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18"></path>
+          </svg>
+          <span>{{ tsService.translate('Borulama') }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="mode-btn btn-wire" 
+          [class.active]="activeMode() === 'WIRING'"
+          (click)="setMode('WIRING')"
+          [title]="tsService.translate('Kablolama (Wiring) Modu')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline>
+          </svg>
+          <span>{{ tsService.translate('Kablolama') }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Header Actions (History, Fit, Reports, Save) -->
+    <div class="header-right">
+      <div class="icon-actions-group">
+        <button type="button" class="btn-tool-icon" (click)="undo()" [title]="tsService.translate('Geri Al')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+        </button>
+        <button type="button" class="btn-tool-icon" (click)="redo()" [title]="tsService.translate('İleri Al')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </button>
+        <button type="button" class="btn-tool-icon" (click)="zoomFit()" [title]="tsService.translate('Sığdır')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+        </button>
+        <button type="button" class="btn-tool-icon text-danger" (click)="deleteSelected()" [title]="tsService.translate('Sil')" [disabled]="!selectedElement()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+      </div>
+
+      <button type="button" class="btn-reports" (click)="openReports()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>{{ tsService.translate('Raporlar') }}</span>
+      </button>
+
+      <button type="button" class="btn-save-project" (click)="saveDrawing()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        <span>{{ tsService.translate('Kaydet') }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. TOP EQUIPMENT PALETTE RIBBON (Directly Above Canvas) -->
+  <div class="drawing-top-ribbon">
+    <!-- Categories Filter Tabs (Starts directly with İç Üniteler, no 'Tümü') -->
+    <div class="ribbon-categories">
+      <button 
+        type="button" 
+        class="r-cat-btn" 
+        [class.active]="activePaletteTab() === 'INDOOR'" 
+        (click)="activePaletteTab.set('INDOOR')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cat-svg">
+          <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+        </svg>
+        <span>{{ tsService.translate('İç Üniteler') }}</span>
+      </button>
+
+      <button 
+        type="button" 
+        class="r-cat-btn" 
+        [class.active]="activePaletteTab() === 'OUTDOOR'" 
+        (click)="activePaletteTab.set('OUTDOOR')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cat-svg">
+          <rect x="2" y="2" width="20" height="20" rx="3"></rect>
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="2" x2="12" y2="5"></line>
+        </svg>
+        <span>{{ tsService.translate('Dış Üniteler') }}</span>
+      </button>
+
+      <button 
+        type="button" 
+        class="r-cat-btn" 
+        [class.active]="activePaletteTab() === 'JOINT'" 
+        (click)="activePaletteTab.set('JOINT')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cat-svg">
+          <path d="M6 3v6l6 6v6"></path>
+          <path d="M18 3v6l-6 6"></path>
+        </svg>
+        <span>{{ tsService.translate('Branşman / Refnet') }}</span>
+      </button>
+
+      <button 
+        type="button" 
+        class="r-cat-btn" 
+        [class.active]="activePaletteTab() === 'CONTROLLER'" 
+        (click)="activePaletteTab.set('CONTROLLER')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cat-svg">
+          <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span>{{ tsService.translate('Kumandalar') }}</span>
+      </button>
+    </div>
+
+    <!-- Vertical separator line -->
+    <div class="ribbon-v-divider"></div>
+
+    <!-- Horizontal Scrollable Equipment Cards with Realistic Images -->
+    <div class="ribbon-cards-track">
+      <div 
+        *ngFor="let item of filteredPaletteItems" 
+        class="ribbon-product-card"
+        (click)="addItemToCanvas(item)"
+        [title]="tsService.translate('Çizime eklemek için tıklayın')">
+        
+        <div class="rpc-image-wrap">
+          <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.name" class="rpc-img" />
+          <div *ngIf="!item.imageUrl" class="rpc-fallback-badge" [style.background]="item.color">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M6 3v6l6 6v6M18 3v6l-6 6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="rpc-details">
+          <span class="rpc-name">{{ tsService.translate(item.name) }}</span>
+          <div class="rpc-meta">
+            <span class="rpc-code">{{ item.code }}</span>
+            <span *ngIf="item.coolingCapacity > 0" class="rpc-capacity-badge">{{ item.coolingCapacity }} kW</span>
+          </div>
+        </div>
+
+        <button type="button" class="rpc-add-btn" title="Ekle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Workspace Body: Full Width GoJS Canvas + Right Inspector -->
+  <div class="drawing-main-area">
+    <!-- CENTER CANVAS: GoJS Diagram -->
+    <main class="drawing-canvas-wrap">
+      <div #diagramDiv class="diagram-canvas-element"></div>
+
+      <!-- Empty Canvas Guidance State (Shown when 0 elements on canvas) -->
+      <div class="empty-canvas-watermark" *ngIf="canvasNodeCount() === 0">
+        <div class="empty-guide-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+        </div>
+        <h3 class="empty-guide-title">{{ tsService.translate('Çizim Alanı Boş') }}</h3>
+        <p class="empty-guide-desc">{{ tsService.translate('Üst ekipman paletinden iç veya dış ünite seçerek çizime başlayın.') }}</p>
+      </div>
+
+      <!-- Floating Canvas Controls (Zoom In/Out, Fit) -->
+      <div class="canvas-floating-controls">
+        <button type="button" class="ctrl-btn" (click)="zoomIn()" title="Yakınlaştır">+</button>
+        <button type="button" class="ctrl-btn" (click)="zoomOut()" title="Uzaklaştır">-</button>
+        <button type="button" class="ctrl-btn" (click)="zoomFit()" title="Tam Sığdır">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <polyline points="9 21 3 21 3 15"></polyline>
+          </svg>
+        </button>
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR: Selected Element Properties Inspector -->
+    <aside class="drawing-inspector-sidebar">
+      <div class="inspector-header">
+        <h4 class="inspector-title">{{ tsService.translate('Seçili Eleman Özellikleri') }}</h4>
+      </div>
+
+      <div class="inspector-body" *ngIf="selectedElement(); else noSelection">
+        <!-- Element Image Preview -->
+        <div class="inspector-preview-box" *ngIf="selectedElement()?.imageUrl">
+          <img [src]="selectedElement()?.imageUrl" [alt]="selectedElement()?.text" class="inspector-preview-img" />
+        </div>
+
+        <div class="prop-group">
+          <label class="prop-label">{{ tsService.translate('Model / Kod') }}</label>
+          <input type="text" class="prop-input font-mono" [value]="selectedElement()?.code" readonly />
+        </div>
+
+        <div class="prop-group">
+          <label class="prop-label">{{ tsService.translate('Eleman Adı') }}</label>
+          <input type="text" class="prop-input" [value]="selectedElement()?.text" readonly />
+        </div>
+
+        <div class="prop-group" *ngIf="selectedElement()?.roomName">
+          <label class="prop-label">{{ tsService.translate('Oda / Mahal Adı') }}</label>
+          <input type="text" class="prop-input" [value]="selectedElement()?.roomName" />
+        </div>
+
+        <div class="prop-row-2" *ngIf="selectedElement()?.coolingCapacity">
+          <div class="prop-group">
+            <label class="prop-label">{{ tsService.translate('Soğutma') }}</label>
+            <input type="text" class="prop-input" [value]="selectedElement()?.coolingCapacity + ' kW'" readonly />
+          </div>
+          <div class="prop-group">
+            <label class="prop-label">{{ tsService.translate('Isıtma') }}</label>
+            <input type="text" class="prop-input" [value]="selectedElement()?.heatingCapacity + ' kW'" readonly />
+          </div>
+        </div>
+
+        <div class="prop-group mt-auto">
+          <button type="button" class="btn-delete-prop" (click)="deleteSelected()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+            </svg>
+            <span>{{ tsService.translate('Elemanı Sil') }}</span>
+          </button>
+        </div>
+      </div>
+
+      <ng-template #noSelection>
+        <div class="inspector-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-svg">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <p>{{ tsService.translate('Seçili Eleman Yok') }}</p>
+          <span>{{ tsService.translate('Çizim alanındaki bir üniteye tıklayarak parametrelerini inceleyebilirsiniz.') }}</span>
+        </div>
+      </ng-template>
+    </aside>
+
+  </div>
+
+  <!-- 3. REPORTS MODAL (Sistem Özeti & Malzeme Listesi BOM) -->
+  <div class="modal-backdrop" *ngIf="showReportsModal()" (click)="closeReports()">
+    <div class="report-modal-card" (click)="$event.stopPropagation()">
+      <div class="report-modal-header">
+        <div class="header-title-box">
+          <div class="report-icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+          </div>
+          <div>
+            <h2 class="report-modal-title">{{ tsService.translate('Sistem Özeti & Raporu') }}</h2>
+            <span class="report-modal-sub">{{ projectName() }} &bull; {{ projectId() }}</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" (click)="closeReports()">✕</button>
+      </div>
+
+      <!-- Capacity & Ratio Metrics Cards -->
+      <div class="report-metrics-grid">
+        <div class="metric-card">
+          <span class="m-label">{{ tsService.translate('Toplam Soğutma Kapasitesi') }}</span>
+          <span class="m-val text-cool">{{ reportData.totalCooling }} kW</span>
+          <span class="m-sub">{{ reportData.indoorCount }} İç Ünite</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="m-label">{{ tsService.translate('Toplam Isıtma Kapasitesi') }}</span>
+          <span class="m-val text-heat">{{ reportData.totalHeating }} kW</span>
+          <span class="m-sub">Tasarım Yükü</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="m-label">{{ tsService.translate('Dış Ünite Kapasitesi') }}</span>
+          <span class="m-val text-out">{{ reportData.outdoorCapacity }} kW</span>
+          <span class="m-sub">{{ reportData.outdoorCount }} Dış Ünite</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="m-label">{{ tsService.translate('Bağlantı Oranı (Diversity)') }}</span>
+          <span class="m-val" [class.text-safe]="reportData.ratio <= 130" [class.text-warn]="reportData.ratio > 130">
+            %{{ reportData.ratio }}
+          </span>
+          <span class="m-sub">Optimum: %50 - %130</span>
+        </div>
+      </div>
+
+      <!-- Bill of Materials (BOM) Table -->
+      <div class="bom-table-wrap">
+        <h4 class="bom-title">{{ tsService.translate('Ekipman Listesi (BOM)') }}</h4>
+        <table class="bom-table">
+          <thead>
+            <tr>
+              <th>{{ tsService.translate('Model / Kod') }}</th>
+              <th>{{ tsService.translate('Ekipman Tanımı') }}</th>
+              <th>{{ tsService.translate('Kapasite') }}</th>
+              <th class="text-right">{{ tsService.translate('Adet') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of reportData.bomItems">
+              <td class="font-mono font-bold">{{ item.code }}</td>
+              <td>{{ tsService.translate(item.name) }}</td>
+              <td>{{ item.capacity > 0 ? item.capacity + ' kW' : '-' }}</td>
+              <td class="text-right font-bold">{{ item.qty }}</td>
+            </tr>
+            <tr *ngIf="reportData.bomItems.length === 0">
+              <td colspan="4" class="text-center py-4 text-muted">Çizimde henüz ekipman bulunmuyor.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="report-modal-footer">
+        <button type="button" class="btn-cancel" (click)="closeReports()">{{ tsService.translate('Kapat') }}</button>
+      </div>
+    </div>
+  </div>
+
+</div>

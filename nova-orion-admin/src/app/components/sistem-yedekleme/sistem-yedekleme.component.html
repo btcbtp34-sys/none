@@ -1,0 +1,220 @@
+<main class="page-content">
+  <!-- Notification Toast Banner -->
+  <div *ngIf="notificationMessage" class="notification-banner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="banner-icon">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>{{ notificationMessage }}</span>
+  </div>
+
+  <!-- System Health & Storage Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon-wrapper icon-green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">{{ tsService.translate('Veritabanı Durumu') }}</span>
+        <span class="stat-value text-green">Online & {{ tsService.translate('Aktif') }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-wrapper icon-blue">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">{{ tsService.translate('Toplam Kullanılan Alan') }}</span>
+        <span class="stat-value">185.4 MB</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-wrapper icon-purple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <span class="stat-label">{{ tsService.translate('Son Yedekleme Zamanı') }}</span>
+        <span class="stat-value">{{ settingsService.backups()[0]?.createdAt || '-' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Sistem Yedek & Geri Yükle') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Veritabanı anlık görüntüleri, geri yükleme noktaları ve yedek yönetimi') }}</p>
+      </div>
+
+      <div class="backup-action-group">
+        <select class="backup-type-select" [(ngModel)]="selectedBackupType">
+          <option *ngFor="let t of backupTypes" [value]="t">{{ tsService.translate(t) }}</option>
+        </select>
+        <button class="primary-btn" (click)="takeBackupNow()">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          <span>{{ tsService.translate('Hemen Yedek Al') }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th style="width: 40px;">#</th>
+            <th>{{ tsService.translate('YEDEK ADI') }}</th>
+            <th>{{ tsService.translate('TÜR') }}</th>
+            <th>{{ tsService.translate('BOYUT') }}</th>
+            <th>{{ tsService.translate('OLUŞTURMA TARİHİ') }}</th>
+            <th>{{ tsService.translate('STATUS') }}</th>
+            <th class="text-right">{{ tsService.translate('TRANSACTIONS') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of settingsService.backups(); let i = index">
+            <td><span class="index-text">{{ i + 1 }}</span></td>
+            <td>
+              <div class="backup-file-cell">
+                <div class="file-icon-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                  </svg>
+                </div>
+                <div class="file-meta">
+                  <span class="file-name-text">{{ item.name }}</span>
+                  <span class="file-checksum-text">{{ item.checksum }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="type-pill">{{ tsService.translate(item.type) }}</span>
+            </td>
+            <td>
+              <span class="size-pill">{{ item.size }}</span>
+            </td>
+            <td>
+              <span class="date-text">{{ item.createdAt }}</span>
+            </td>
+            <td>
+              <span class="status-pill-success">
+                <span class="status-dot active"></span>
+                <span>{{ tsService.translate(item.status) }}</span>
+              </span>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <!-- Geri Yükle -->
+                <button class="action-btn restore-btn" (click)="openRestoreModal(item)" [title]="tsService.translate('Geri Yükle')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                  </svg>
+                </button>
+                <!-- İndir -->
+                <button class="action-btn download-btn" (click)="downloadMockBackup(item)" [title]="tsService.translate('Yedek İndir')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </button>
+                <!-- Sil -->
+                <button class="action-btn delete-btn" (click)="deleteBackup(item.id)" [title]="tsService.translate('Delete')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="settingsService.backups().length === 0">
+            <td colspan="7" class="empty-table-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">Kayıtlı sistem yedeği bulunamadı.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Modal: Geri Yükle -->
+<div class="modal-backdrop" *ngIf="showRestoreModal" (click)="closeRestoreModal()">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ tsService.translate('Yedek Geri Yükleme') }}</h3>
+      <button class="modal-close-btn" (click)="closeRestoreModal()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedBackup">
+      <!-- Warning Alert -->
+      <div class="warning-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="warn-icon">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span class="warn-text">{{ tsService.translate('Yedekten geri yükleme işlemi tüm mevcut verilerin üzerine yazacaktır. Devam etmek istediğinize emin misiniz?') }}</span>
+      </div>
+
+      <!-- Backup details card -->
+      <div class="restore-details-box">
+        <div class="detail-row">
+          <span class="detail-label">{{ tsService.translate('YEDEK ADI') }}:</span>
+          <span class="detail-val font-mono">{{ selectedBackup.name }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">{{ tsService.translate('TÜR') }}:</span>
+          <span class="detail-val">{{ tsService.translate(selectedBackup.type) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">{{ tsService.translate('OLUŞTURMA TARİHİ') }}:</span>
+          <span class="detail-val">{{ selectedBackup.createdAt }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">{{ tsService.translate('BOYUT') }}:</span>
+          <span class="detail-val">{{ selectedBackup.size }}</span>
+        </div>
+      </div>
+
+      <!-- Drag & Drop mock box -->
+      <div class="dropzone-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="upload-cloud-icon">
+          <polyline points="16 16 12 12 8 16"></polyline>
+          <line x1="12" y1="12" x2="12" y2="21"></line>
+          <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+          <polyline points="16 16 12 12 8 16"></polyline>
+        </svg>
+        <span class="dropzone-text">{{ tsService.translate('Yedek Dosyası Seçin veya Sürükleyin') }} (.tar.gz, .sql, .json)</span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeRestoreModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-restore" (click)="confirmRestore()">{{ tsService.translate('Geri Yükle') }}</button>
+    </div>
+  </div>
+</div>

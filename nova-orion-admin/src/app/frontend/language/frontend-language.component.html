@@ -1,0 +1,35 @@
+<div class="fe-lang-page">
+  <div class="lang-page-header">
+    <h1 class="lang-page-title">{{ tsService.translate('Dil Seçenekleri') }}</h1>
+    <p class="lang-page-sub">{{ tsService.translate('Arayüz dilini değiştirdiğinizde tüm sayfalar otomatik güncellenir.') }}</p>
+  </div>
+
+  <div class="lang-cards-grid">
+    <div 
+      *ngFor="let l of languages" 
+      class="lang-select-card" 
+      [class.active-card]="tsService.currentLang() === l.code"
+      (click)="selectLanguage(l.code)">
+      
+      <div class="lang-card-header">
+        <span class="card-flag">{{ l.flag }}</span>
+        <div class="card-title-group">
+          <h3 class="card-lang-name">{{ l.name }}</h3>
+          <span class="card-native-name">{{ l.nativeName }}</span>
+        </div>
+        <div class="card-check-circle" *ngIf="tsService.currentLang() === l.code">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <p class="card-lang-desc">{{ l.description }}</p>
+
+      <div class="card-footer">
+        <span class="active-pill" *ngIf="tsService.currentLang() === l.code">✓ {{ tsService.translate('Aktif') }}</span>
+        <span class="select-hint" *ngIf="tsService.currentLang() !== l.code">{{ tsService.translate('Bu Dili Seç') }} →</span>
+      </div>
+    </div>
+  </div>
+</div>

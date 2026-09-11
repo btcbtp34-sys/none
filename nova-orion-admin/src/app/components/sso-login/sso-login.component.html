@@ -1,0 +1,363 @@
+<div class="sso-page-wrapper">
+  <!-- Top Bar: Project Brand & Language Selector -->
+  <div class="sso-top-bar">
+    <div class="sso-brand-group">
+      <div class="sso-brand-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="brand-icon">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+          <path d="M2 17l10 5 10-5"></path>
+          <path d="M2 12l10 5 10-5"></path>
+        </svg>
+      </div>
+      <div class="sso-brand-text">
+        <span class="sso-brand-name">Nova & Orion</span>
+        <span class="sso-brand-desc">Enterprise Management Portal</span>
+      </div>
+    </div>
+
+    <!-- Language Selector Pills -->
+    <div class="sso-lang-pill-group">
+      <button 
+        *ngFor="let l of languages" 
+        type="button" 
+        class="lang-pill" 
+        [class.active]="tsService.currentLang() === l.code"
+        (click)="setLang(l.code)"
+        [title]="l.label">
+        <span class="lang-flag">{{ l.flag }}</span>
+        <span class="lang-code">{{ l.label }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Corporate Card Container -->
+  <div class="sso-card">
+
+    <!-- Enterprise Step Indicator -->
+    <div class="corp-stepper">
+      <div class="stepper-item" [class.active]="step === 'PORTAL_CHOICE'" [class.completed]="step !== 'PORTAL_CHOICE'">
+        <div class="stepper-dot">1</div>
+        <span class="stepper-label">{{ tsService.translate('Giriş Türü') }}</span>
+      </div>
+      <div class="stepper-line" [class.filled]="step !== 'PORTAL_CHOICE'"></div>
+      <div class="stepper-item" [class.active]="step === 'EMAIL' || step === 'PASSWORD'" [class.completed]="step === 'PROJECT_CHOICE'">
+        <div class="stepper-dot">2</div>
+        <span class="stepper-label">{{ tsService.translate('Kimlik Doğrulama') }}</span>
+      </div>
+      <div class="stepper-line" [class.filled]="step === 'PROJECT_CHOICE'"></div>
+      <div class="stepper-item" [class.active]="step === 'PROJECT_CHOICE'">
+        <div class="stepper-dot">3</div>
+        <span class="stepper-label">{{ tsService.translate('Proje Erişimi') }}</span>
+      </div>
+    </div>
+    
+    <!-- STEP 0: PORTAL CHOICE (İŞ ORTAKLARI GİRİŞİ vs ÇALIŞAN GİRİŞİ) -->
+    <div *ngIf="step === 'PORTAL_CHOICE'" class="sso-step-block animated-fade">
+      <div class="sso-header-left">
+        <h1 class="sso-title">{{ tsService.translate('Kurumsal Giriş Portalı') }}</h1>
+        <p class="sso-subtitle">{{ tsService.translate('Erişim sağlamak istediğiniz kurumsal hesap tipini seçiniz.') }}</p>
+      </div>
+
+      <div class="portal-choice-grid">
+        <!-- 1. İş Ortakları Girişi -->
+        <div class="choice-card partner-card" (click)="selectLoginType('PARTNER')">
+          <div class="choice-icon-wrap icon-partner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="choice-meta">
+            <div class="choice-title-row">
+              <span class="choice-title">{{ tsService.translate('İş Ortakları Girişi') }}</span>
+              <span class="choice-badge-tag partner-badge">{{ tsService.translate('B2B PORTAL') }}</span>
+            </div>
+            <p class="choice-desc">{{ tsService.translate('Distribütör, Bayi ve Servis Ağı') }}</p>
+          </div>
+          <div class="choice-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-svg">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 2. Çalışan Girişi -->
+        <div class="choice-card employee-card" (click)="selectLoginType('EMPLOYEE')">
+          <div class="choice-icon-wrap icon-employee">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="16" rx="3"></rect>
+              <circle cx="9" cy="10" r="2"></circle>
+              <line x1="15" y1="9" x2="19" y2="9"></line>
+              <line x1="15" y1="13" x2="18" y2="13"></line>
+              <path d="M5 18c0-2 2-3 4-3s4 1 4 3"></path>
+            </svg>
+          </div>
+          <div class="choice-meta">
+            <div class="choice-title-row">
+              <span class="choice-title">{{ tsService.translate('Çalışan Girişi') }}</span>
+              <span class="choice-badge-tag employee-badge">{{ tsService.translate('DAHİLİ ERİŞİM') }}</span>
+            </div>
+            <p class="choice-desc">{{ tsService.translate('Kurumsal Personel ve Sistem Yöneticisi') }}</p>
+          </div>
+          <div class="choice-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-svg">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1: EMAIL ENTRY -->
+    <div *ngIf="step === 'EMAIL'" class="sso-step-block animated-fade">
+      <!-- Corporate Brand Header -->
+      <div class="corp-header">
+        <div class="corp-logo-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div class="corp-branding">
+          <span class="corp-brand-name">Nova & Orion</span>
+          <span class="corp-partner-tag" *ngIf="loginType === 'PARTNER'">{{ tsService.translate('İş Ortakları Girişi') }}</span>
+          <span class="corp-partner-tag" *ngIf="loginType === 'EMPLOYEE'">{{ tsService.translate('Çalışan Girişi') }}</span>
+        </div>
+      </div>
+
+      <div class="sso-header-left">
+        <h1 class="sso-title">{{ tsService.translate('Giriş Yap') }}</h1>
+        <p class="sso-subtitle">{{ tsService.translate('Devam etmek için kurumsal e-posta adresinizi giriniz.') }}</p>
+      </div>
+
+      <form (ngSubmit)="goToPassword()" class="sso-form">
+        <div class="sso-field-wrapper">
+          <div class="sso-outlined-field" [class.is-focused]="isFocused" [class.has-value]="email">
+            <label class="sso-floating-label">{{ tsService.translate('E-posta Adresi') }}</label>
+            <div class="input-inner-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="input-icon">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <input 
+                type="email" 
+                class="sso-input" 
+                [(ngModel)]="email" 
+                name="email" 
+                (focus)="isFocused = true" 
+                (blur)="isFocused = false" 
+                placeholder="ornek@sirketiniz.com"
+                autocomplete="email"
+                required 
+                autofocus />
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="sso-alert-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <button type="submit" class="sso-submit-btn" [disabled]="isProcessing">
+          <span>{{ isProcessing ? tsService.translate('İşleniyor...') : tsService.translate('İleri') }}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="sso-btn-arrow">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+
+        <div class="sso-back-container">
+          <button type="button" class="sso-back-link" (click)="backToPortalChoice()">
+            ← {{ tsService.translate('Giriş seçeneklerine dön') }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- STEP 2: PASSWORD ENTRY -->
+    <div *ngIf="step === 'PASSWORD'" class="sso-step-block animated-fade">
+      <!-- Corporate Brand Header -->
+      <div class="corp-header">
+        <div class="corp-logo-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div class="corp-branding">
+          <span class="corp-brand-name">Nova & Orion</span>
+          <span class="corp-partner-tag" *ngIf="loginType === 'PARTNER'">{{ tsService.translate('İş Ortakları Girişi') }}</span>
+          <span class="corp-partner-tag" *ngIf="loginType === 'EMPLOYEE'">{{ tsService.translate('Çalışan Girişi') }}</span>
+        </div>
+      </div>
+
+      <!-- Current Email Pill -->
+      <div class="active-email-pill" (click)="backToEmail()">
+        <span class="user-avatar-mini">{{ email[0]?.toUpperCase() }}</span>
+        <span class="active-email-text">{{ email }}</span>
+        <span class="email-edit-btn" [title]="tsService.translate('Farklı bir e-posta kullan')">
+          {{ tsService.translate('Değiştir') }}
+        </span>
+      </div>
+
+      <div class="sso-header-left">
+        <h1 class="sso-title">{{ tsService.translate('Şifrenizi Girin') }}</h1>
+      </div>
+
+      <form (ngSubmit)="goToProjectChoice()" class="sso-form">
+        <div class="sso-field-wrapper">
+          <div class="sso-outlined-field" [class.has-value]="password">
+            <label class="sso-floating-label">{{ tsService.translate('Şifre') }}</label>
+            <div class="input-inner-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="input-icon">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                class="sso-input font-mono" 
+                [(ngModel)]="password" 
+                name="password" 
+                placeholder="••••••••••••"
+                required 
+                autofocus />
+              <button type="button" class="password-toggle-btn" (click)="toggleShowPassword()" [title]="showPassword ? 'Gizle' : 'Göster'">
+                <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg *ngIf="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row-between">
+          <span class="sso-forgot-link">{{ tsService.translate('Şifrenizi mi unuttunuz?') }}</span>
+        </div>
+
+        <div *ngIf="errorMessage" class="sso-alert-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <button type="submit" class="sso-submit-btn" [disabled]="isProcessing">
+          <span>{{ isProcessing ? tsService.translate('İşleniyor...') : tsService.translate('İleri') }}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="sso-btn-arrow">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+
+        <div class="sso-back-container">
+          <button type="button" class="sso-back-link" (click)="backToEmail()">
+            ← {{ tsService.translate('Farklı bir e-posta kullan') }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- STEP 3: PROJECT CHOICE (PROJE NOVA mı, PROJE ORION mı?) -->
+    <div *ngIf="step === 'PROJECT_CHOICE'" class="sso-step-block animated-fade">
+      <div class="sso-header-left">
+        <h1 class="sso-title">{{ tsService.translate('Giriş Yapılacak Projeyi Seçin') }}</h1>
+        <p class="sso-subtitle">{{ tsService.translate('Hesabınız her iki platform için de yetkilendirilmiştir. Lütfen devam etmek istediğiniz projeyi seçiniz.') }}</p>
+      </div>
+
+      <!-- Project Selection Cards (Clean, Corporate, NO forbidden phrases) -->
+      <div class="project-cards-container">
+        <!-- 1. Project Nova -->
+        <div 
+          class="project-selection-card card-nova" 
+          [class.selected]="selectedProject === 'nova'"
+          (click)="selectProject('nova')">
+          <div class="card-radio-circle">
+            <div class="radio-inner" *ngIf="selectedProject === 'nova'"></div>
+          </div>
+          <div class="project-card-content">
+            <div class="project-header-row">
+              <span class="project-name text-nova">Project Nova</span>
+              <span class="project-type-tag tag-nova">Platform A</span>
+            </div>
+            <div class="project-features-chips">
+              <span class="chip-item">{{ tsService.translate('Bölge & Ülke Yönetimi') }}</span>
+              <span class="chip-item">{{ tsService.translate('Satış Kanalları') }}</span>
+              <span class="chip-item">{{ tsService.translate('Sistem Konfigürasyonu') }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Project Orion -->
+        <div 
+          class="project-selection-card card-orion" 
+          [class.selected]="selectedProject === 'orion'"
+          (click)="selectProject('orion')">
+          <div class="card-radio-circle">
+            <div class="radio-inner" *ngIf="selectedProject === 'orion'"></div>
+          </div>
+          <div class="project-card-content">
+            <div class="project-header-row">
+              <span class="project-name text-orion">Project Orion</span>
+              <span class="project-type-tag tag-orion">Platform B</span>
+            </div>
+            <div class="project-features-chips">
+              <span class="chip-item">{{ tsService.translate('Distribütör Ağı') }}</span>
+              <span class="chip-item">{{ tsService.translate('Merkezi Veri Konsolu') }}</span>
+              <span class="chip-item">{{ tsService.translate('Kullanıcı & Yetki Yönetimi') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Final Login Button depending on chosen project -->
+      <button 
+        type="button" 
+        class="sso-submit-btn project-login-btn" 
+        [ngClass]="selectedProject === 'nova' ? 'btn-nova-theme' : 'btn-orion-theme'"
+        [disabled]="isProcessing" 
+        (click)="completeLogin()">
+        <span *ngIf="selectedProject === 'nova'">{{ tsService.translate('Project Nova\'ya Giriş Yap') }}</span>
+        <span *ngIf="selectedProject === 'orion'">{{ tsService.translate('Project Orion\'a Giriş Yap') }}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="sso-btn-arrow">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+
+      <div class="sso-back-container">
+        <button type="button" class="sso-back-link" (click)="backToPassword()">
+          ← {{ tsService.translate('Geri') }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Corporate Security Footer -->
+  <div class="sso-footer-security">
+    <div class="sec-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sec-icon">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      <span>{{ tsService.translate('Güvenli Kurumsal Giriş') }} &bull; TLS 256-bit &bull; OAuth 2.0 / OpenID Connect</span>
+    </div>
+    <div class="corp-copyright">
+      <span>&copy; 2026 Nova &amp; Orion Enterprise Systems. {{ tsService.translate('Tüm hakları saklıdır.') }}</span>
+    </div>
+  </div>
+</div>

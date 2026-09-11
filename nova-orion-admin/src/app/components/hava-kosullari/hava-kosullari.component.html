@@ -1,0 +1,230 @@
+<main class="page-content">
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Hava Koşulları') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Şehir ve bölge bazlı hava durumu yapılandırması (Yaz & Kış)') }}</p>
+      </div>
+      <button class="primary-btn" (click)="openModal()">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>{{ tsService.translate('Add City') }}</span>
+      </button>
+    </div>
+
+    <!-- Country Admin Banner -->
+    <div class="country-admin-scope-banner" *ngIf="authService.isCountryAdmin()">
+      <div class="scope-icon-side">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+      </div>
+      <span>Ülke Yöneticisi olarak yalnızca <strong>{{ authService.currentUser().assignedCountry }}</strong> ülkesine ait şehirleri görüntüleyebilir, yeni şehir ekleyebilir ve hava koşullarını düzenleyebilirsiniz.</span>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="filter-search-input" 
+          [placeholder]="tsService.translate('Şehir veya ülke ara...')" 
+          [(ngModel)]="searchQuery" />
+        <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
+      </div>
+
+      <div class="filter-dropdowns-group">
+        <!-- Country Filter -->
+        <div class="filter-select-wrapper" *ngIf="!authService.isCountryAdmin()">
+          <select class="filter-select" [(ngModel)]="filterCountry">
+            <option value="ALL">{{ tsService.translate('Tüm Ülkeler') }}</option>
+            <option *ngFor="let country of userAllowedCountries" [value]="country">{{ country }}</option>
+          </select>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="filterStatus">
+            <option value="ALL">{{ tsService.translate('Tüm Durumlar') }}</option>
+            <option value="Active">{{ tsService.translate('Active') }}</option>
+            <option value="Passive">{{ tsService.translate('Passive') }}</option>
+          </select>
+        </div>
+
+        <button *ngIf="isFilterActive()" class="filter-reset-btn" (click)="clearFilters()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="reset-icon">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span>{{ tsService.translate('Filtreleri Temizle') }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th style="width: 40px;">#</th>
+            <th>{{ tsService.translate('ÜLKE') }}</th>
+            <th>{{ tsService.translate('ŞEHİR (CITY)') }}</th>
+            <th>{{ tsService.translate('RAKIM (m)') }}</th>
+            <th>{{ tsService.translate('YAZ (°C)') }}</th>
+            <th>{{ tsService.translate('KIŞ (°C)') }}</th>
+            <th>{{ tsService.translate('STATUS') }}</th>
+            <th class="text-right">{{ tsService.translate('TRANSACTIONS') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredWeatherList(); let i = index">
+            <td><span class="index-text">{{ i + 1 }}</span></td>
+            <td>
+              <div class="country-cell">
+                <span class="country-pill-tag">{{ item.country }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="city-name-text">{{ item.city }}</span>
+            </td>
+            <td>
+              <span class="altitude-pill">
+                <svg class="alt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
+                </svg>
+                <span>{{ item.altitude }} m</span>
+              </span>
+            </td>
+            <td>
+              <span class="temp-badge summer">
+                {{ item.summerDryBulb > 0 ? '+' : '' }}{{ item.summerDryBulb }}°C
+              </span>
+            </td>
+            <td>
+              <span class="temp-badge winter">
+                {{ item.winterDryBulb > 0 ? '+' : '' }}{{ item.winterDryBulb }}°C
+              </span>
+            </td>
+            <td>
+              <button class="status-indicator-btn" (click)="weatherService.toggleStatus(item.id)">
+                <span class="status-dot" [class.active]="item.status === 'Active'"></span>
+                <span class="status-text" [class.active]="item.status === 'Active'">
+                  {{ tsService.translate(item.status) }}
+                </span>
+              </button>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <button class="action-btn edit-btn" (click)="openModal(item)" title="Düzenle">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button class="action-btn delete-btn" (click)="deleteCity(item.id)" title="Sil">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredWeatherList().length === 0">
+            <td colspan="8" class="empty-table-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">{{ tsService.translate('Arama kriterlerine uygun hava koşulu kaydı bulunamadı.') }}</p>
+                <button class="filter-reset-btn" (click)="clearFilters()">{{ tsService.translate('Filtreleri Temizle') }}</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ editingId ? tsService.translate('Şehir & Hava Koşulu Düzenle') : tsService.translate('Add City Weather Condition') }}</h3>
+      <button class="modal-close-btn" (click)="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Row 1: Country & Status -->
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label class="form-label-bold">{{ tsService.translate('Country *') }}</label>
+          <select class="form-control-subtle" [(ngModel)]="formCountry" [disabled]="authService.isCountryAdmin()">
+            <option *ngFor="let c of userAllowedCountries" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('Status') }}</label>
+          <select class="form-control-subtle" [(ngModel)]="formStatus">
+            <option value="Active">{{ tsService.translate('Active') }}</option>
+            <option value="Passive">{{ tsService.translate('Passive') }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 2: City & Rakım (Altitude) -->
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label class="form-label-bold">{{ tsService.translate('City *') }}</label>
+          <input 
+            type="text" 
+            class="form-control-subtle font-medium" 
+            [placeholder]="tsService.translate('Şehir adı yazınız (Örn: İstanbul, Ankara, İzmir, Münih, Brest...)')" 
+            [(ngModel)]="formCityName" />
+        </div>
+
+        <div class="form-group flex-1">
+          <div class="label-row-between">
+            <label class="form-label-bold mb-0">{{ tsService.translate('RAKIM (m)') }} *</label>
+          </div>
+          <input 
+            type="number" 
+            class="form-control-subtle" 
+            placeholder="Örn: 850" 
+            [(ngModel)]="formAltitude" />
+        </div>
+      </div>
+
+      <!-- Row 3: Summer & Winter Temperatures -->
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('YAZ (°C)') }} *</label>
+          <input 
+            type="number" 
+            class="form-control-subtle" 
+            placeholder="33" 
+            [(ngModel)]="formSummerDryBulb" />
+        </div>
+
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('KIŞ (°C)') }} *</label>
+          <input 
+            type="number" 
+            class="form-control-subtle" 
+            placeholder="-15" 
+            [(ngModel)]="formWinterDryBulb" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-save" (click)="saveCity()">{{ tsService.translate('Save') }}</button>
+    </div>
+  </div>
+</div>

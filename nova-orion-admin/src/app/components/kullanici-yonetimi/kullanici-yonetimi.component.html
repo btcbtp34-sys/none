@@ -1,0 +1,197 @@
+<main class="page-content">
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Kullanıcı Yönetimi') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Sistem kullanıcıları, atanmış roller ve yetki alanları') }}</p>
+      </div>
+      <button class="primary-btn" (click)="openModal()">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>{{ tsService.translate('Yeni Kullanıcı Ekle') }}</span>
+      </button>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="filter-search-input" 
+          [placeholder]="tsService.translate('Kullanıcı ara...')" 
+          [(ngModel)]="searchQuery" />
+        <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
+      </div>
+
+      <div class="filter-dropdowns-group">
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="filterRole">
+            <option value="ALL">{{ tsService.translate('Tüm Roller') }}</option>
+            <option *ngFor="let r of availableRoles" [value]="r.code">{{ tsService.translate(r.title) }}</option>
+          </select>
+        </div>
+
+        <div class="stats-counter-tag">
+          <span>{{ tsService.translate('Toplam') }}: <strong>{{ filteredUsers().length }}</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th style="width: 40px;">#</th>
+            <th>{{ tsService.translate('KULLANICI') }}</th>
+            <th>{{ tsService.translate('ROL') }}</th>
+            <th>{{ tsService.translate('KAPSAM (BÖLGE/ÜLKE)') }}</th>
+            <th>{{ tsService.translate('SON GİRİŞ') }}</th>
+            <th>{{ tsService.translate('STATUS') }}</th>
+            <th class="text-right">{{ tsService.translate('TRANSACTIONS') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers(); let i = index">
+            <td><span class="index-text">{{ i + 1 }}</span></td>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar" [class.avatar-super]="user.roleCode === 'SUPER_ADMIN'" [class.avatar-region]="user.roleCode === 'REGION_ADMIN'" [class.avatar-country]="user.roleCode === 'COUNTRY_ADMIN'">
+                  {{ user.avatarInitials }}
+                </div>
+                <div class="user-info">
+                  <span class="user-name-text">{{ user.name }}</span>
+                  <span class="user-email-text">{{ user.email }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="role-badge" [class.badge-super]="user.roleCode === 'SUPER_ADMIN'" [class.badge-region]="user.roleCode === 'REGION_ADMIN'">
+                {{ tsService.translate(user.roleTitle) }}
+              </span>
+            </td>
+            <td>
+              <span class="scope-pill">{{ tsService.translate(user.scope) }}</span>
+            </td>
+            <td>
+              <span class="last-login-text">{{ user.lastLogin }}</span>
+            </td>
+            <td>
+              <button class="status-indicator-btn" (click)="userService.toggleStatus(user.id)">
+                <span class="status-dot" [class.active]="user.status === 'Aktif'"></span>
+                <span class="status-text" [class.active]="user.status === 'Aktif'">
+                  {{ tsService.translate(user.status) }}
+                </span>
+              </button>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <button class="action-btn edit-btn" (click)="openModal(user)" [title]="tsService.translate('Edit')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button class="action-btn delete-btn" (click)="deleteUser(user.id)" [title]="tsService.translate('Delete')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredUsers().length === 0">
+            <td colspan="7" class="empty-table-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">{{ tsService.translate('Arama kriterine uygun kullanıcı bulunamadı.') }}</p>
+                <button *ngIf="searchQuery" class="filter-reset-btn" (click)="searchQuery = ''; filterRole = 'ALL'">
+                  {{ tsService.translate('Filtreyi Temizle') }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Modal: Kullanıcı Ekle / Düzenle -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        {{ editingId ? tsService.translate('Kullanıcı Düzenle') : tsService.translate('Yeni Kullanıcı Ekle') }}
+      </h3>
+      <button class="modal-close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div *ngIf="formError" class="alert-box-error">
+        {{ formError }}
+      </div>
+
+      <!-- İsim & E-posta -->
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('İsim Soyisim') }} *</label>
+          <input 
+            type="text" 
+            class="form-control-subtle" 
+            placeholder="Örn: Caner Demir" 
+            [(ngModel)]="formName" />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('E-POSTA') }} *</label>
+          <input 
+            type="email" 
+            class="form-control-subtle" 
+            placeholder="ornek@nova.com" 
+            [(ngModel)]="formEmail" />
+        </div>
+      </div>
+
+      <!-- Rol & Kapsam -->
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('ROL') }} *</label>
+          <select class="form-control-subtle" [(ngModel)]="formRoleCode">
+            <option *ngFor="let r of availableRoles" [value]="r.code">
+              {{ tsService.translate(r.title) }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('KAPSAM') }}</label>
+          <input 
+            type="text" 
+            class="form-control-subtle" 
+            placeholder="Örn: Türkiye, Avrupa veya Global" 
+            [(ngModel)]="formScope" />
+        </div>
+      </div>
+
+      <!-- Durum -->
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('STATUS') }}</label>
+        <select class="form-control-subtle" [(ngModel)]="formStatus">
+          <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
+          <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-save" (click)="saveUser()">{{ tsService.translate('Save') }}</button>
+    </div>
+  </div>
+</div>

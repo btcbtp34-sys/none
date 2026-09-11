@@ -1,0 +1,325 @@
+<main class="page-content">
+  <!-- Pending Approvals Banner -->
+  <div class="pending-approval-banner" *ngIf="(authService.isRegionAdmin() || authService.isSuperAdmin()) && pendingApprovalCount > 0">
+    <div class="banner-icon-side">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+    </div>
+    <div class="banner-text-side">
+      <strong>Ülke Yöneticilerinden Gelen {{ pendingApprovalCount }} Adet İletişim / Destek Bilgisi Onayınızı Bekliyor</strong>
+      <span>Bölgenizdeki ülke yöneticilerinin eklediği iletişim kanallarını inceleyip onaylayabilir veya reddedebilirsiniz.</span>
+    </div>
+  </div>
+
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Bize Ulaşın') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Teknik destek, bayi ve müşteri hizmetleri iletişim kanalları yönetimi') }}</p>
+      </div>
+      <button class="primary-btn" (click)="openAddModal()">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>{{ tsService.translate('Yeni İletişim Kanalı Ekle') }}</span>
+      </button>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="filter-search-input" 
+          [placeholder]="tsService.translate('Kanal başlığı veya iletişim bilgisi ara...')" 
+          [(ngModel)]="searchQuery" />
+      </div>
+
+      <div class="filter-dropdowns-group">
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="selectedCategory">
+            <option value="Tüm Kategoriler">{{ tsService.translate('Tüm Kategoriler') }}</option>
+            <option *ngFor="let cat of availableCategories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="selectedScopeFilter">
+            <option value="Tüm Kapsamlar">Tüm Kapsamlar</option>
+            <option value="Global">Global</option>
+            <option value="Bölgesel">Bölgesel</option>
+            <option value="Ülke">Ülke</option>
+          </select>
+        </div>
+
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="selectedStatus">
+            <option value="Tüm Durumlar">{{ tsService.translate('Tüm Durumlar') }}</option>
+            <option value="Published">Yayında</option>
+            <option value="Pending_Approval">Onay Bekliyor</option>
+            <option value="Draft">Taslak</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th style="width: 40px;">#</th>
+            <th>{{ tsService.translate('KANAL BAŞLIĞI & BİLGİLER') }}</th>
+            <th>{{ tsService.translate('KATEGORİ') }}</th>
+            <th>{{ tsService.translate('KAPSAM') }}</th>
+            <th>{{ tsService.translate('DURUM') }}</th>
+            <th class="text-right">{{ tsService.translate('İŞLEMLER') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredContacts; let i = index" [class.row-pending]="item.status === 'Pending_Approval'">
+            <td><span class="index-text">{{ i + 1 }}</span></td>
+            <td>
+              <div class="question-col">
+                <div class="question-title-line">
+                  <span class="question-text">{{ item.question }}</span>
+                  <a *ngIf="item.hasReferenceLink" [href]="item.referenceUrl" target="_blank" class="ref-link-icon" title="Portal Bağlantısı">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                      <polyline points="15 3 21 3 21 9"></polyline>
+                      <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                  </a>
+                </div>
+                <p class="answer-snippet-text">{{ item.answerSnippet }}</p>
+                <span class="author-tag" *ngIf="item.createdBy">Oluşturan: {{ item.createdBy }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="cat-pill-badge contact-cat">{{ item.category }}</span>
+            </td>
+            <td>
+              <div class="scope-cell">
+                <span class="scope-badge" [class.scope-global]="item.scope === 'Global'" [class.scope-region]="item.scope === 'Bölgesel'" [class.scope-country]="item.scope === 'Ülke'">
+                  {{ item.scope }}
+                </span>
+                <span *ngIf="item.scope === 'Bölgesel' && item.targetRegion" class="scope-subtext">{{ item.targetRegion }}</span>
+                <span *ngIf="item.scope === 'Ülke' && item.targetCountry" class="scope-subtext">{{ item.targetCountry }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="status-cell-wrap">
+                <span class="approval-badge" [class.badge-pub]="item.status === 'Published'" [class.badge-pend]="item.status === 'Pending_Approval'" [class.badge-rej]="item.status === 'Rejected'">
+                  {{ item.status === 'Published' ? 'Yayında' : (item.status === 'Pending_Approval' ? 'Onay Bekliyor' : item.status) }}
+                </span>
+                <span *ngIf="authService.isRegionAdmin() && isDeactivatedInUserRegion(item)" class="deact-badge">
+                  Bölgenizde Deaktif
+                </span>
+              </div>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <button *ngIf="(authService.isRegionAdmin() || authService.isSuperAdmin()) && item.status === 'Pending_Approval'" class="action-btn approve-btn" (click)="approveContact(item.id)" title="Onayla">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </button>
+                <button *ngIf="(authService.isRegionAdmin() || authService.isSuperAdmin()) && item.status === 'Pending_Approval'" class="action-btn reject-btn" (click)="rejectContact(item.id)" title="Reddet">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+
+                <button *ngIf="authService.isRegionAdmin() && item.status === 'Published'" class="action-btn deact-toggle-btn" (click)="toggleRegionDeactivation(item)" [title]="isDeactivatedInUserRegion(item) ? 'Bölgemde Aktif Et' : 'Bölgemde Deaktif Et'">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                  </svg>
+                </button>
+
+                <button class="action-btn edit-btn" (click)="openEditModal(item)" title="Düzenle">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button class="action-btn delete-btn" (click)="deleteContact(item.id)" title="Sil" *ngIf="!authService.isCountryAdmin()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card modal-large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ editingId ? 'İletişim Kanalını Düzenle' : 'Yeni İletişim Kanalı Ekle' }}</h3>
+      <button class="modal-close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label-bold">KANAL / BİRİM BAŞLIĞI *</label>
+        <input type="text" class="form-control-subtle font-medium" placeholder="Örn: Merkezi Teknik Destek ve Çağrı Merkezi" [(ngModel)]="formTitle" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label-bold">KATEGORİ *</label>
+        <select class="form-control-subtle" [(ngModel)]="formCategory">
+          <option *ngFor="let cat of availableCategories" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+
+      <!-- Scope & Publishing Countries Treeview (Bölge ve Ülke Kapsam Ağacı) -->
+      <div class="form-group">
+        <div class="label-row-between">
+          <label class="form-label-bold">YAYINLANACAK BÖLGE VE ÜLKELER (KAPSAM ALANI) *</label>
+          <span class="scope-summary-pill">
+            {{ getSelectedScopeSummary() }}
+          </span>
+        </div>
+
+        <div class="scope-tree-container">
+          <!-- Tree Toolbar: Search & Action Buttons -->
+          <div class="scope-tree-toolbar">
+            <div class="tree-search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tree-search-icon">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input 
+                type="text" 
+                class="tree-search-input" 
+                placeholder="Search ülke veya bölge ara..." 
+                [(ngModel)]="treeSearch" />
+              <button *ngIf="treeSearch" class="tree-search-clear" (click)="treeSearch = ''">✕</button>
+            </div>
+
+            <div class="tree-tools-btns">
+              <button type="button" class="tree-tool-btn" (click)="selectAllTree()" title="Tümünü Seç" [disabled]="authService.isCountryAdmin()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="tree-btn-icon">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </button>
+              <button type="button" class="tree-tool-btn" (click)="clearTree()" title="Seçimleri Temizle / Sıfırla" [disabled]="authService.isCountryAdmin()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tree-btn-icon">
+                  <path d="M23 4v6h-6"></path>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Treeview Nodes -->
+          <div class="scope-tree-content">
+            <!-- Root: Global Node -->
+            <div class="tree-node root-node">
+              <div class="tree-node-row">
+                <button type="button" class="tree-toggle-arrow" (click)="globalExpanded = !globalExpanded">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" [class.rotated]="!globalExpanded">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+
+                <!-- Tri-State Custom Checkbox for Global -->
+                <div class="custom-tree-checkbox" [class.checked]="isGlobalChecked()" [class.indeterminate]="isGlobalIndeterminate()" (click)="toggleGlobal()">
+                  <svg *ngIf="isGlobalChecked()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="cb-icon">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <div *ngIf="isGlobalIndeterminate()" class="cb-minus"></div>
+                </div>
+
+                <span class="tree-label root-label" (click)="toggleGlobal()">
+                  <strong>Global (Tüm Dünya)</strong>
+                </span>
+              </div>
+
+              <!-- Children: Region Nodes (Avrupa, Amerika, APAC, MENA) -->
+              <div class="tree-children" *ngIf="globalExpanded">
+                <div class="tree-node region-node" *ngFor="let region of regionTree">
+                  <div class="tree-node-row region-row" *ngIf="isRegionVisible(region)">
+                    <button type="button" class="tree-toggle-arrow" (click)="region.expanded = !region.expanded">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" [class.rotated]="!region.expanded">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </button>
+
+                    <!-- Tri-State Checkbox for Region -->
+                    <div class="custom-tree-checkbox" [class.checked]="isRegionChecked(region)" [class.indeterminate]="isRegionIndeterminate(region)" (click)="toggleRegion(region)">
+                      <svg *ngIf="isRegionChecked(region)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="cb-icon">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <div *ngIf="isRegionIndeterminate(region)" class="cb-minus"></div>
+                    </div>
+
+                    <span class="tree-label region-label" (click)="toggleRegion(region)">
+                      {{ region.name }} ({{ region.code }})
+                    </span>
+                  </div>
+
+                  <!-- Children: Country Leaf Nodes (Almanya, İspanya, Fransa, etc.) -->
+                  <div class="tree-children country-children" *ngIf="region.expanded && isRegionVisible(region)">
+                    <div class="tree-node country-node" *ngFor="let country of region.countries">
+                      <div class="tree-node-row country-row" *ngIf="isCountryVisible(country)" (click)="toggleCountry(country)">
+                        <span class="tree-bullet">•</span>
+
+                        <div class="custom-tree-checkbox country-cb" [class.checked]="country.checked">
+                          <svg *ngIf="country.checked" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="cb-icon">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </div>
+
+                        <span class="tree-label country-label">
+                          {{ country.name }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label-bold">İLETİŞİM BİLGİLERİ & AÇIKLAMA *</label>
+        <textarea class="form-control-subtle" rows="4" placeholder="Telefon numaraları, e-posta adresleri, çalışma saatleri ve adres..." [(ngModel)]="formContactInfo"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label-bold">PORTAL / DESTEK FORMU BAĞLANTISI (OPSİYONEL)</label>
+        <input type="text" class="form-control-subtle" placeholder="https://nova-orion.com/contact-support..." [(ngModel)]="formReferenceUrl" />
+      </div>
+
+      <div *ngIf="authService.isCountryAdmin()" class="info-approval-note">
+        ℹ️ Eklediğiniz iletişim bilgisi, bağlı olduğunuz Bölge Yöneticisinin (Region Admin) onayına düşecektir.
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-save" (click)="saveContact()">
+        {{ authService.isCountryAdmin() ? 'Onaya Gönder' : tsService.translate('Save') }}
+      </button>
+    </div>
+  </div>
+</div>

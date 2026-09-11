@@ -1,0 +1,67 @@
+<div class="fe-faq-page">
+
+  <!-- Header -->
+  <div class="faq-header">
+    <div class="faq-header-content">
+      <h1 class="faq-title">{{ tsService.translate('Sıkça Sorulan Sorular') }}</h1>
+      <p class="faq-sub">{{ tsService.translate('Merak ettiğiniz tüm sorular ve yanıtları') }}</p>
+    </div>
+
+    <!-- Search Input -->
+    <div class="faq-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-svg">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input 
+        type="text" 
+        class="faq-search-input" 
+        [(ngModel)]="searchQuery" 
+        placeholder="Soru veya anahtar kelime arayın..." />
+    </div>
+  </div>
+
+  <!-- Category Filter Pills -->
+  <div class="faq-cat-pills">
+    <button 
+      *ngFor="let cat of categories" 
+      class="cat-pill" 
+      [class.active]="selectedCategory === cat"
+      (click)="selectedCategory = cat">
+      {{ cat }}
+    </button>
+  </div>
+
+  <!-- FAQ Accordion List -->
+  <div class="faq-list">
+    <div 
+      *ngFor="let item of filteredFaqs" 
+      class="faq-item-card" 
+      [class.expanded]="item.isOpen">
+      <div class="faq-question-row" (click)="toggleFaq(item)">
+        <div class="faq-q-text-wrap">
+          <span class="faq-q-badge">S</span>
+          <h3 class="faq-q-text">{{ item.question }}</h3>
+        </div>
+        <div class="faq-toggle-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron-svg" [class.rotated]="item.isOpen">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <div class="faq-answer-row" *ngIf="item.isOpen">
+        <div class="faq-a-badge">C</div>
+        <div class="faq-a-text">
+          <p>{{ item.answer }}</p>
+          <span class="faq-item-cat">{{ item.category }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-empty-state" *ngIf="filteredFaqs.length === 0">
+      <p>Arama kriterinize uygun soru bulunamadı.</p>
+    </div>
+  </div>
+
+</div>

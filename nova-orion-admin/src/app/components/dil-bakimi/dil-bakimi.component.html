@@ -1,0 +1,780 @@
+<main class="page-content">
+  <!-- Success Notification Alert -->
+  <div *ngIf="successMessage" class="success-banner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="success-icon">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  <!-- Top Action Cards Grid: Şablon İndir & Dosya Yükle -->
+  <div class="maintenance-grid">
+    <!-- Card 1: Şablon İndir (Temp İndir) -->
+    <div class="card-container action-panel">
+      <div class="panel-header">
+        <div class="panel-icon-box blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </div>
+        <div>
+          <h3 class="panel-title">Çeviri Şablonu İndir (Temp İndir)</h3>
+          <p class="panel-desc">Kategoriye ve yetkili olduğunuz dile göre Excel/CSV şablonu indirin.</p>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <div class="form-group">
+          <label class="form-label-bold">KATEGORİ SEÇİMİ *</label>
+          <select class="form-control-subtle" [(ngModel)]="downloadCategory">
+            <option *ngFor="let cat of categoriesList" [value]="cat.code">
+              {{ cat.name }} ({{ cat.rowCount }} satır)
+            </option>
+          </select>
+          <span class="form-hint-subtle">Hangi kategorinin çeviri anahtarlarını indirmek istediğinizi seçin.</span>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row-between">
+            <label class="form-label-bold mb-0">HEDEF DİL *</label>
+            <span *ngIf="isLanguageLockedForUser" class="role-locked-pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pill-icon">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Ülke Yetkinize Göre Kilitli ({{ userLanguageName }})</span>
+            </span>
+          </div>
+          <select class="form-control-subtle" [(ngModel)]="downloadLanguage" [disabled]="isLanguageLockedForUser">
+            <option value="ALL">Tüm Diller</option>
+            <option value="tr">Türkçe (TR)</option>
+            <option value="en">English (EN)</option>
+            <option value="de">Deutsch (DE)</option>
+            <option value="fr">Français (FR)</option>
+            <option value="es">Español (ES)</option>
+            <option value="it">Italiano (IT)</option>
+          </select>
+          <span class="form-hint-subtle" *ngIf="isLanguageLockedForUser">
+            Ülke Yöneticisi rolünüz gereği yalnızca sorumlu olduğunuz <strong>{{ userLanguageName }}</strong> dili için şablon indirebilirsiniz.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label-bold">DOSYA FORMATI</label>
+          <div class="format-chips-row">
+            <button type="button" class="format-chip" [class.active]="downloadFormat === 'xlsx'" (click)="downloadFormat = 'xlsx'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chip-svg-icon">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="3" y1="15" x2="21" y2="15"></line>
+                <line x1="9" y1="3" x2="9" y2="21"></line>
+              </svg>
+              <span>Excel (.xlsx)</span>
+            </button>
+            <button type="button" class="format-chip" [class.active]="downloadFormat === 'csv'" (click)="downloadFormat = 'csv'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chip-svg-icon">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>CSV (.csv)</span>
+            </button>
+            <button type="button" class="format-chip" [class.active]="downloadFormat === 'json'" (click)="downloadFormat = 'json'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chip-svg-icon">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              <span>JSON (.json)</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="primary-download-btn" (click)="downloadTemplate()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Şablonu İndir (Temp İndir)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Card 2: Dosya Yükle / Çeviri İçe Aktar -->
+    <div class="card-container action-panel">
+      <div class="panel-header">
+        <div class="panel-icon-box green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+        </div>
+        <div>
+          <h3 class="panel-title">Çeviri Dosyası Yükle (Dosya Yükle)</h3>
+          <p class="panel-desc">Doldurduğunuz AirSelect Excel/CSV dosyasını yükleyin ve canlı düzenleyin.</p>
+        </div>
+      </div>
+
+      <div class="panel-body">
+        <div class="dropzone-area" (click)="fileInput.click()">
+          <input #fileInput type="file" (change)="onFileSelected($event)" accept=".xlsx,.xls,.csv,.json" style="display: none;" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="dropzone-icon">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <line x1="9" y1="15" x2="12" y2="12"></line>
+            <line x1="15" y1="15" x2="12" y2="12"></line>
+          </svg>
+          <div class="dropzone-text" *ngIf="!selectedFile">
+            <span class="main-drop-text">AirSelect_Ceviri_Kategorili.xlsx veya dosya seçin</span>
+            <span class="sub-drop-text">Desteklenen: .xlsx, .csv, .json (Maks. 20MB)</span>
+          </div>
+          <div class="selected-file-badge" *ngIf="selectedFile">
+            <span class="file-name">{{ selectedFile.name }}</span>
+            <span class="file-size">({{ (selectedFile.size / 1024).toFixed(1) }} KB)</span>
+          </div>
+        </div>
+
+        <div class="progress-bar-container" *ngIf="isUploading">
+          <div class="progress-bar-fill" [style.width.%]="uploadProgress"></div>
+        </div>
+
+        <button class="primary-upload-btn" [disabled]="!selectedFile || isUploading" (click)="uploadAndImportFile()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span *ngIf="!isUploading">Dosyayı Yükle ve Canlı Listeye Aktar</span>
+          <span *ngIf="isUploading">Ayrıştırılıyor (%{{ uploadProgress }})...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom: Live Excel Translation Table & Inline Editor -->
+  <div class="card-container live-table-card">
+    <div class="card-header live-header">
+      <div class="card-header-titles">
+        <div class="title-with-pill">
+          <h2 class="card-title">AirSelect Canlı Çeviri Sözlüğü</h2>
+          <span class="count-badge-total">{{ allItems.length }} Toplam Kayıt</span>
+          <span class="count-badge-modified" *ngIf="modifiedCount > 0">{{ modifiedCount }} Düzenlendi</span>
+        </div>
+        <p class="card-subtitle">Excel şablonundaki tüm kategoriler ve çeviriler. Metinleri doğrudan hücre içerisinden düzenleyebilirsiniz.</p>
+      </div>
+
+      <div class="header-action-buttons">
+        <button class="btn-add-record" (click)="openAddModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Yeni Çeviri Kaydı Ekle</span>
+        </button>
+
+        <button class="btn-reset-subtle" (click)="resetToDefault()" title="Orijinal şablon verilerine dön">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span>Orijinale Sıfırla</span>
+        </button>
+
+        <button class="btn-save-master" (click)="saveAllChanges()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          <span>Değişiklikleri Sisteme Kaydet</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Filters Toolbar -->
+    <div class="filter-toolbar live-filters">
+      <!-- Search Input -->
+      <div class="filter-search-box flex-2">
+        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="filter-search-input" 
+          placeholder="Anahtar (Code), kaynak metin veya herhangi bir dilde çeviri ara..." 
+          [(ngModel)]="filterSearch"
+          (ngModelChange)="onFilterChange()" />
+        <button *ngIf="filterSearch" class="filter-clear-icon-btn" (click)="filterSearch = ''; onFilterChange()">✕</button>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="filter-select-wrapper flex-1">
+        <select class="filter-select w-full" [(ngModel)]="filterCategory" (change)="onFilterChange()">
+          <option value="ALL">Tüm Kategoriler (13 Kategori)</option>
+          <option *ngFor="let cat of categoriesList.slice(1)" [value]="cat.code">
+            {{ cat.name }} ({{ cat.rowCount }})
+          </option>
+        </select>
+      </div>
+
+      <!-- Active Language Switcher for Table Column -->
+      <div class="filter-select-wrapper">
+        <select class="filter-select" [(ngModel)]="downloadLanguage" [disabled]="isLanguageLockedForUser" (change)="onFilterChange()">
+          <option value="ALL">Görünüm: Tüm Diller (Çoklu Dil)</option>
+          <option value="tr">Düzenlenen Dil: Türkçe (TR)</option>
+          <option value="en">Düzenlenen Dil: English (EN)</option>
+          <option value="de">Düzenlenen Dil: Deutsch (DE)</option>
+          <option value="fr">Düzenlenen Dil: Français (FR)</option>
+          <option value="es">Düzenlenen Dil: Español (ES)</option>
+          <option value="it">Düzenlenen Dil: Italiano (IT)</option>
+        </select>
+      </div>
+
+      <!-- Only Modified Filter -->
+      <label class="checkbox-filter-label" *ngIf="modifiedCount > 0">
+        <input type="checkbox" [(ngModel)]="filterOnlyModified" (change)="onFilterChange()" />
+        <span>Sadece Değiştirilenler ({{ modifiedCount }})</span>
+      </label>
+    </div>
+
+    <!-- Live Excel Table: Multi-Language View (downloadLanguage === 'ALL') -->
+    <div class="table-responsive live-table-wrap" *ngIf="downloadLanguage === 'ALL'">
+      <table class="custom-table multi-lang-table">
+        <colgroup>
+          <col style="width: 45px;">
+          <col style="width: 18%;">
+          <col style="width: 14%;">
+          <col style="width: 16%;">
+          <col style="width: 16%;">
+          <col style="width: 16%;">
+          <col style="width: 16%;">
+          <col style="width: 90px;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="text-center">#</th>
+            <th>ANAHTAR KOD (KEY)</th>
+            <th>KATEGORİ</th>
+            <th>İNGİLİZCE (EN)</th>
+            <th>TÜRKÇE (TR)</th>
+            <th>ALMANCA (DE)</th>
+            <th>FRANSIZCA (FR)</th>
+            <th class="text-center">TÜM DİLLER</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of paginatedItems; let i = index" [class.row-modified]="item.isModified">
+            <td class="text-center">
+              <span class="index-text">{{ (currentPage - 1) * pageSize + i + 1 }}</span>
+            </td>
+            <td>
+              <div class="code-copy-box" [title]="item.code">
+                <span class="code-badge-sm">{{ item.code }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="cat-pill-badge" [title]="item.categoryLabel">
+                {{ item.categoryLabel || item.categoryCode }}
+              </span>
+            </td>
+            <td>
+              <input 
+                type="text" 
+                class="inline-edit-input" 
+                [(ngModel)]="item.en"
+                (ngModelChange)="setItemTranslation(item, item.en, 'en')"
+                placeholder="EN..." />
+            </td>
+            <td>
+              <input 
+                type="text" 
+                class="inline-edit-input" 
+                [(ngModel)]="item.tr"
+                (ngModelChange)="setItemTranslation(item, item.tr, 'tr')"
+                placeholder="TR..." />
+            </td>
+            <td>
+              <input 
+                type="text" 
+                class="inline-edit-input" 
+                [(ngModel)]="item.de"
+                (ngModelChange)="setItemTranslation(item, item.de, 'de')"
+                placeholder="DE..." />
+            </td>
+            <td>
+              <input 
+                type="text" 
+                class="inline-edit-input" 
+                [(ngModel)]="item.fr"
+                (ngModelChange)="setItemTranslation(item, item.fr, 'fr')"
+                placeholder="FR..." />
+            </td>
+            <td class="text-center">
+              <div class="row-actions-group">
+                <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" title="HTML & Zengin Metin Canlı Editörü">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                </button>
+                <button class="btn-action-icon" (click)="openDetailModal(item)" title="Tüm Dilleri Görüntüle ve Düzenle (11 Dil)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                </button>
+                <button class="btn-action-icon danger" (click)="deleteItem(item)" title="Kaydı Sil">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredItems.length === 0">
+            <td colspan="8" class="empty-state-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">Arama kriterlerine uygun çeviri kaydı bulunamadı.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Live Excel Table: Single Language Active View (downloadLanguage !== 'ALL') -->
+    <div class="table-responsive live-table-wrap" *ngIf="downloadLanguage !== 'ALL'">
+      <table class="custom-table">
+        <colgroup>
+          <col style="width: 50px;">
+          <col style="width: 22%;">
+          <col style="width: 18%;">
+          <col style="width: 24%;">
+          <col style="width: 26%;">
+          <col style="width: 70px;">
+          <col style="width: 80px;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="text-center">#</th>
+            <th>ANAHTAR KOD (KEY)</th>
+            <th>KATEGORİ</th>
+            <th>KAYNAK METİN (EN)</th>
+            <th>ÇEVİRİ ({{ downloadLanguage.toUpperCase() }}) - CANLI DÜZENLE</th>
+            <th class="text-center">DURUM</th>
+            <th class="text-center">İŞLEMLER</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of paginatedItems; let i = index" [class.row-modified]="item.isModified">
+            <td class="text-center">
+              <span class="index-text">{{ (currentPage - 1) * pageSize + i + 1 }}</span>
+            </td>
+            <td>
+              <div class="code-copy-box" [title]="item.code">
+                <span class="code-badge-sm">{{ item.code }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="cat-pill-badge" [title]="item.categoryLabel">
+                {{ item.categoryLabel || item.categoryCode }}
+              </span>
+            </td>
+            <td>
+              <span class="source-cell-text" [title]="item.en">{{ item.en }}</span>
+            </td>
+            <td>
+              <!-- Live Editable Translation Input Cell with HTML Tools -->
+              <div class="cell-input-with-tools">
+                <input 
+                  type="text" 
+                  class="inline-edit-input" 
+                  [class.has-html-tag]="isHtmlContent(getItemTranslation(item))"
+                  [ngModel]="getItemTranslation(item)"
+                  (ngModelChange)="setItemTranslation(item, $event)"
+                  placeholder="Çeviri metni giriniz..." />
+                <button 
+                  type="button" 
+                  class="cell-expand-btn" 
+                  [class.badge-html]="isHtmlContent(getItemTranslation(item))"
+                  (click)="openHtmlEditor(item)"
+                  [title]="isHtmlContent(getItemTranslation(item)) ? 'HTML İçerik Tespit Edildi - Canlı Editörü Aç' : 'Metni Genişlet / Canlı Editör'">
+                  <span *ngIf="isHtmlContent(getItemTranslation(item))">&lt;/&gt;</span>
+                  <span *ngIf="!isHtmlContent(getItemTranslation(item))">⛶</span>
+                </button>
+              </div>
+            </td>
+            <td class="text-center">
+              <span class="status-indicator-badge" [class.modified]="item.isModified">
+                {{ item.isModified ? 'Düzenlendi' : 'Orijinal' }}
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="row-actions-group">
+                <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" title="HTML & Zengin Metin Canlı Editörü">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                </button>
+                <button class="btn-action-icon" (click)="openDetailModal(item)" title="Tüm Dilleri Gör & Düzenle">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                </button>
+                <button class="btn-action-icon danger" (click)="deleteItem(item)" title="Kaydı Sil">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredItems.length === 0">
+            <td colspan="7" class="empty-state-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">Arama kriterlerine uygun çeviri kaydı bulunamadı.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer (20 items per page) -->
+    <div class="pagination-footer" *ngIf="filteredItems.length > 0">
+      <div class="pagination-info">
+        <span>Sayfa <strong>{{ currentPage }}</strong> / <strong>{{ totalPages }}</strong></span>
+        <span class="divider-dot">•</span>
+        <span>Toplam <strong>{{ filteredItems.length }}</strong> kayıt (Sayfa başına 20 kayıt)</span>
+      </div>
+
+      <div class="pagination-controls">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(1)" title="İlk Sayfa">« İlk</button>
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">‹ Önceki</button>
+        
+        <span class="page-current-indicator">Sayfa {{ currentPage }}</span>
+
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">Sonraki ›</button>
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)" title="Son Sayfa">Son »</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Yeni Çeviri Kaydı Ekle -->
+  <div class="modal-backdrop" *ngIf="showAddModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">Yeni Çeviri Anahtarı (Key) Ekle</h3>
+            <p class="modal-subtitle">Sisteme yeni bir çeviri anahtarı ve dil karşılıklarını manuel olarak ekleyin.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" (click)="closeAddModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div *ngIf="errorMessage" class="error-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="error-icon">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <div class="modal-form-grid">
+          <div class="form-group col-span-2">
+            <label class="form-label-bold">ANAHTAR KODU (KEY / CODE) *</label>
+            <input 
+              type="text" 
+              class="form-control-subtle" 
+              placeholder="Örn: btn_generate_report, validation_phone_required..." 
+              [(ngModel)]="newItemForm.code" />
+            <span class="form-hint-subtle">Uygulamada kod tarafında kullanılacak benzersiz anahtar adı.</span>
+          </div>
+
+          <div class="form-group col-span-2">
+            <label class="form-label-bold">KATEGORİ *</label>
+            <select class="form-control-subtle" [(ngModel)]="newItemForm.categoryCode">
+              <option *ngFor="let cat of categoriesList.slice(1)" [value]="cat.code">
+                {{ cat.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">İNGİLİZCE KAYNAK (EN) *</label>
+            <input type="text" class="form-control-subtle" placeholder="English source text..." [(ngModel)]="newItemForm.en" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">TÜRKÇE ÇEVİRİ (TR)</label>
+            <input type="text" class="form-control-subtle" placeholder="Türkçe çeviri..." [(ngModel)]="newItemForm.tr" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">ALMANCA (DE)</label>
+            <input type="text" class="form-control-subtle" placeholder="Deutsch..." [(ngModel)]="newItemForm.de" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">FRANSIZCA (FR)</label>
+            <input type="text" class="form-control-subtle" placeholder="Français..." [(ngModel)]="newItemForm.fr" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">İSPANYOLCA (ES)</label>
+            <input type="text" class="form-control-subtle" placeholder="Español..." [(ngModel)]="newItemForm.es" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">İTALYANCA (IT)</label>
+            <input type="text" class="form-control-subtle" placeholder="Italiano..." [(ngModel)]="newItemForm.it" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeAddModal()">İptal</button>
+        <button class="btn-primary-confirm" (click)="saveNewItem()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>Kaydı Listeye Ekle</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Tüm Diller Detay ve Canlı Düzenleme (11 Dil) -->
+  <div class="modal-backdrop" *ngIf="showDetailModal && selectedDetailItem">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-icon-badge blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="modal-title">Çeviri Detayı: {{ selectedDetailItem.code }}</h3>
+            <p class="modal-subtitle">Kategori: {{ selectedDetailItem.categoryLabel }} (Tüm Dil Karşılıkları)</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" (click)="closeDetailModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-form-grid">
+          <div class="form-group col-span-2">
+            <label class="form-label-bold">İNGİLİZCE (EN - KAYNAK)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.en" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">TÜRKÇE (TR)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.tr" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">ALMANCA (DE)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.de" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">FRANSIZCA (FR)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.fr" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">İSPANYOLCA (ES)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.es" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">İTALYANCA (IT)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.it" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">BULGARCA (BG)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.bg" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">RUSÇA (RU)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.ru" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">LEHÇE (PL)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.pl" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">YUNANCA (EL)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.el" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label-bold">UKRAYNACA (UA)</label>
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.ua" (ngModelChange)="selectedDetailItem.isModified = true" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-primary-confirm" (click)="closeDetailModal()">
+          <span>Tamamla</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Zengin Metin & HTML Canlı Editörü (Split View & Live Preview) -->
+  <div class="modal-backdrop" *ngIf="showHtmlEditorModal && editingHtmlItem">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <div class="modal-icon-badge purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+          </div>
+          <div>
+            <div class="modal-title-row">
+              <h3 class="modal-title">HTML & Zengin Metin Editörü: {{ editingHtmlItem.code }}</h3>
+              <span class="badge-html-detected" *ngIf="isHtmlContent(currentHtmlValue)">HTML Tespit Edildi</span>
+            </div>
+            <p class="modal-subtitle">
+              Kategori: {{ editingHtmlItem.categoryLabel }} &bull; Düzenlenen Dil: <strong>{{ editingHtmlLang.toUpperCase() }}</strong>
+            </p>
+          </div>
+        </div>
+        <button class="modal-close-btn" (click)="closeHtmlEditor()">✕</button>
+      </div>
+
+      <div class="modal-body editor-modal-body">
+        <!-- All 11 Languages Switcher Bar -->
+        <div class="editor-lang-selector-strip">
+          <span class="strip-label">ÇEVİRİ DİLİ SEÇİN (11 DİL):</span>
+          <div class="strip-pills-wrap">
+            <button 
+              *ngFor="let l of editorLanguages" 
+              type="button" 
+              class="editor-lang-pill" 
+              [class.active]="editingHtmlLang === l.code"
+              (click)="switchHtmlLang(l.code)"
+              [title]="l.label + ' dilini düzenle'">
+              <span class="lang-flag">{{ l.flag }}</span>
+              <span class="lang-code">{{ l.code.toUpperCase() }}</span>
+              <span *ngIf="isHtmlContent(getLangValue(editingHtmlItem, l.code))" class="lang-html-dot" title="HTML İçerik Barındırıyor">&lt;/&gt;</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Toolbar & Quick Tag Helper -->
+        <div class="editor-top-toolbar">
+          <!-- Quick Format Buttons -->
+          <div class="toolbar-format-group">
+            <span class="toolbar-label">Hızlı Etiketler:</span>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('b')" title="Kalın (<strong>)"><b>B</b> Kalın</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('i')" title="İtalik (<em>)"><i>I</i> İtalik</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('p')" title="Paragraf (<p>)">&lt;p&gt; Paragraf</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('br')" title="Satır Sonu (<br/>)">&lt;br/&gt; Alt Satır</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('li')" title="Liste (&lt;ul&gt;&lt;li&gt;)">• Madde İmi</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('a')" title="Link (&lt;a&gt;)">🔗 Link</button>
+            <button type="button" class="tool-chip-btn text-danger" (click)="stripHtml()" title="Tüm HTML Etiketlerini Kaldır">🧹 HTML'i Temizle</button>
+          </div>
+
+          <!-- View Mode Tabs (Split / Code / Preview) -->
+          <div class="editor-view-tabs">
+            <button type="button" class="view-tab-btn" [class.active]="activeEditorTab === 'split'" (click)="activeEditorTab = 'split'">
+              <span>◫ Yan Yana (Split)</span>
+            </button>
+            <button type="button" class="view-tab-btn" [class.active]="activeEditorTab === 'code'" (click)="activeEditorTab = 'code'">
+              <span>&lt;/&gt; Sadece Kod</span>
+            </button>
+            <button type="button" class="view-tab-btn" [class.active]="activeEditorTab === 'preview'" (click)="activeEditorTab = 'preview'">
+              <span>👁 Canlı Önizleme</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Source Context Bar (English Original) -->
+        <div class="editor-source-box">
+          <div class="source-box-header">
+            <span class="source-tag">İNGİLİZCE KAYNAK (EN - REFERANS)</span>
+            <span class="source-char-count">{{ sourceHtmlValue.length }} karakter</span>
+          </div>
+          <div class="source-content-display">
+            <div *ngIf="isHtmlContent(sourceHtmlValue)" class="source-rendered" [innerHTML]="sourceHtmlValue"></div>
+            <div *ngIf="!isHtmlContent(sourceHtmlValue)" class="source-text">{{ sourceHtmlValue }}</div>
+          </div>
+        </div>
+
+        <!-- Main Editor Area -->
+        <div class="editor-workspace" [class.mode-split]="activeEditorTab === 'split'" [class.mode-code]="activeEditorTab === 'code'" [class.mode-preview]="activeEditorTab === 'preview'">
+          <!-- Pane 1: Code / Textarea -->
+          <div class="editor-pane code-pane" *ngIf="activeEditorTab !== 'preview'">
+            <div class="pane-header">
+              <span class="pane-title">Düzenlenen Metin / HTML Kaynak Kodu ({{ editingHtmlLang.toUpperCase() }})</span>
+              <span class="char-badge">{{ currentHtmlValue.length }} karakter</span>
+            </div>
+            <textarea 
+              class="html-code-textarea" 
+              rows="9"
+              [(ngModel)]="currentHtmlValue" 
+              placeholder="HTML veya uzun açıklama metnini buraya yazın..."></textarea>
+          </div>
+
+          <!-- Pane 2: Live HTML Rendered Preview -->
+          <div class="editor-pane preview-pane" *ngIf="activeEditorTab !== 'code'">
+            <div class="pane-header">
+              <span class="pane-title">Web Sayfasındaki Canlı Görünüm (HTML Render)</span>
+              <span class="preview-badge">Canlı Önizleme</span>
+            </div>
+            <div class="html-live-canvas">
+              <div *ngIf="currentHtmlValue" class="rendered-html-output" [innerHTML]="currentHtmlValue"></div>
+              <div *ngIf="!currentHtmlValue" class="empty-preview-hint">Önizlenecek metin girilmedi...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeHtmlEditor()">Kapat</button>
+        <button class="btn-primary-confirm" (click)="closeHtmlEditor()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>Kaydet ve Kapat</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

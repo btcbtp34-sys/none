@@ -1,0 +1,2 @@
+<app-sso-login *ngIf="isBackofficeLoginRoute()"></app-sso-login>
+<router-outlet *ngIf="!isBackofficeLoginRoute()"></router-outlet>

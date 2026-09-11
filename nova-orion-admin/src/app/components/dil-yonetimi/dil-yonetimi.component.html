@@ -1,0 +1,94 @@
+<main class="page-content">
+  <div class="card-container">
+    <!-- Card Header -->
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Tanımlı Diller') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Aktif ve pasif sistem dillerinin listesi') }}</p>
+      </div>
+      <button class="primary-btn" (click)="openAddModal()">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>{{ tsService.translate('Yeni Dil Ekle') }}</span>
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>{{ tsService.translate('DİL') }}</th>
+            <th>{{ tsService.translate('KOD') }}</th>
+            <th>{{ tsService.translate('DURUM') }}</th>
+            <th class="text-right">{{ tsService.translate('İŞLEMLER') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of langService.languages()">
+            <td>
+              <div class="lang-cell">
+                <img [src]="'flags/' + (item.badgeCode === 'EN' ? 'gb' : item.badgeCode.toLowerCase()) + '.svg'" [alt]="item.name" class="lang-table-flag" onerror="this.style.display='none'" />
+                <span class="lang-avatar-badge">{{ item.code.toUpperCase() }}</span>
+                <span class="lang-name-text">{{ item.name }}</span>
+                <span *ngIf="item.isDefault" class="default-pill">{{ tsService.translate('Varsayılan') }}</span>
+              </div>
+            </td>
+            <td><span class="code-badge">{{ item.code }}</span></td>
+            <td>
+              <button class="status-indicator-btn" (click)="toggleStatus(item.id)">
+                <span class="status-dot" [class.active]="item.status === 'Aktif'"></span>
+                <span class="status-text" [class.active]="item.status === 'Aktif'">
+                  {{ tsService.translate(item.status) }}
+                </span>
+              </button>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <button class="action-btn edit-btn" (click)="openEditModal(item)" title="Düzenle">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button *ngIf="canDeleteLanguage" class="action-btn delete-btn" (click)="deleteLanguage(item.id)" title="Sil">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ editingId ? tsService.translate('Dil Düzenle') : tsService.translate('Yeni Dil Ekle') }}</h3>
+      <button class="modal-close-btn" (click)="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">{{ tsService.translate('Dil Kodu') }} *</label>
+        <input type="text" class="form-control" placeholder="Örn: tr, en, de" [(ngModel)]="formCode" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">{{ tsService.translate('Dil Adı') }} *</label>
+        <input type="text" class="form-control" placeholder="Örn: Türkçe, English" [(ngModel)]="formName" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-save" (click)="saveLanguage()">{{ tsService.translate('Save') }}</button>
+    </div>
+  </div>
+</div>

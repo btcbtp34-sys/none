@@ -1,0 +1,325 @@
+<div class="fe-home-container">
+  
+  <!-- Success Notification Toast -->
+  <div class="fe-toast" *ngIf="notificationMessage">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="toast-icon">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>{{ notificationMessage }}</span>
+  </div>
+
+  <!-- GUEST VIEW: Beautiful background banner with Proje Nova / Proje Orion -->
+  <div 
+    class="fe-guest-hero-banner" 
+    *ngIf="!authService.isFrontendLoggedIn()"
+    [style.backgroundImage]="projectService.currentProject().id === 'nova' ? 'url(images/nova_hero_bg.jpg)' : 'url(images/orion_hero_bg.jpg)'"
+    [class.banner-nova]="projectService.currentProject().id === 'nova'"
+    [class.banner-orion]="projectService.currentProject().id === 'orion'">
+    <div class="banner-overlay"></div>
+    <div class="banner-content">
+      <div class="banner-brand-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="banner-badge-icon">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+          <path d="M2 17l10 5 10-5"></path>
+          <path d="M2 12l10 5 10-5"></path>
+        </svg>
+        <span>{{ projectService.currentProject().id === 'nova' ? 'Proje Nova' : 'Proje Orion' }}</span>
+      </div>
+
+      <h1 class="banner-title">
+        {{ projectService.currentProject().id === 'nova' ? 'Proje Nova' : 'Proje Orion' }}
+      </h1>
+
+      <p class="banner-tagline">
+        {{ projectService.currentProject().id === 'nova' 
+          ? 'B2B Partner & Client Portal' 
+          : 'Enterprise Global Gateway' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- LOGGED-IN VIEW: Sadece Yeni Proje ve Proje Aç (Tam Ortalanmış) -->
+  <div class="fe-clean-workspace" *ngIf="authService.isFrontendLoggedIn()">
+    <div class="workspace-grid">
+      
+      <!-- 1. YENİ PROJE -->
+      <div class="clean-card card-create" (click)="openCreateModal()">
+        <div class="card-head">
+          <div class="card-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="card-svg">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+          <span class="card-pill">{{ tsService.translate('Yeni Proje') }}</span>
+        </div>
+
+        <div class="card-body">
+          <h2 class="card-title">{{ tsService.translate('Yeni Proje') }}</h2>
+          <p class="card-desc">Yeni bir proje oluşturun, proje tipini ve parametrelerini belirleyin.</p>
+        </div>
+
+        <div class="card-foot">
+          <span class="card-action-text">{{ tsService.translate('Projeyi Başlat') }}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-svg">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 2. PROJE AÇ -->
+      <div class="clean-card card-open" (click)="openOpenModal()">
+        <div class="card-head">
+          <div class="card-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="card-svg">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <span class="card-pill">{{ currentPlatformProjects.length }} {{ tsService.translate('Kayıtlı Projeler') }}</span>
+        </div>
+
+        <div class="card-body">
+          <h2 class="card-title">{{ tsService.translate('Proje Aç') }}</h2>
+          <p class="card-desc">Önceden oluşturulmuş ve sistemde kayıtlı mevcut projelerinizi görüntüleyin ve açın.</p>
+        </div>
+
+        <div class="card-foot">
+          <span class="card-action-text">{{ tsService.translate('Projeyi Seç ve Aç') }}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-svg">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: YENİ PROJE OLUŞTUR (CREATE NEW PROJECT) -->
+  <div class="modal-backdrop" *ngIf="showCreateModal" (click)="closeCreateModal()">
+    <div class="modal-card modal-large" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+          <div>
+            <h2 class="modal-title">{{ tsService.translate('Yeni Proje') }}</h2>
+            <span class="modal-sub">{{ projectService.currentProject().id === 'nova' ? 'Project Nova' : 'Project Orion' }}</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" (click)="closeCreateModal()">✕</button>
+      </div>
+
+      <form (ngSubmit)="saveNewProject()" class="modal-form">
+        <!-- Section 1: General Project Information -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">{{ tsService.translate('Proje Adı') }} *</label>
+            <input type="text" class="form-input" [(ngModel)]="newProjectName" name="name" placeholder="Örn: Kuzey Kampüs Projesi" required autofocus />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ tsService.translate('Proje Kodu') }}</label>
+            <input type="text" class="form-input font-mono" [(ngModel)]="newProjectCode" name="code" placeholder="Örn: PRJ-2026-001" />
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">{{ tsService.translate('Ülke') }}</label>
+            <select class="form-select" [(ngModel)]="newProjectCountry" (change)="onCountryChange()" name="country">
+              <option *ngFor="let c of countryCityDatabase" [value]="c.country">{{ c.country }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ tsService.translate('Şehir') }}</label>
+            <select class="form-select" [(ngModel)]="newProjectCity" (change)="onCityChange()" name="city">
+              <option *ngFor="let ct of currentAvailableCities" [value]="ct">{{ ct }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">{{ tsService.translate('Proje Oluşturan') }}</label>
+            <input type="text" class="form-input bg-readonly" [value]="authService.frontendUser()?.name || 'Hasan Cavit Koçak'" readonly />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ tsService.translate('Proje Tipi') }}</label>
+            <select class="form-select" [(ngModel)]="newProjectType" name="type">
+              <option value="Konut">{{ tsService.translate('Konut') }}</option>
+              <option value="Ticari">{{ tsService.translate('Ticari') }}</option>
+              <option value="Hastane & Sağlık">{{ tsService.translate('Hastane & Sağlık') }}</option>
+              <option value="Endüstriyel Tesis">{{ tsService.translate('Endüstriyel Tesis') }}</option>
+              <option value="Otel & Konaklama">{{ tsService.translate('Otel & Konaklama') }}</option>
+              <option value="Ofis & Plaza">{{ tsService.translate('Ofis & Plaza') }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">{{ tsService.translate('CRM Kodu') }}</label>
+            <input type="text" class="form-input font-mono" [(ngModel)]="newProjectCrmCode" name="crmCode" placeholder="Örn: CRM-8842" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">{{ tsService.translate('Ürün Açıklaması') }}</label>
+            <input type="text" class="form-input" [(ngModel)]="newProjectDescription" name="description" placeholder="Proje ve ürün açıklaması..." />
+          </div>
+        </div>
+
+        <!-- Section 2: Outdoor Design Temperatures -->
+        <div class="hvac-section-box">
+          <div class="hvac-section-header">
+            <span class="hvac-title">{{ tsService.translate('Dış Ortam Tasarım Sıcaklıkları') }}</span>
+            <span class="hvac-hint">{{ tsService.translate('Şehir seçimine göre otomatik doldurulur, düzenlenebilir.') }}</span>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">{{ tsService.translate('Yaz Kuru Termometre') }}</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" [(ngModel)]="summerDryBulb" name="summerDryBulb" step="0.5" />
+                <span class="input-unit">°C</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">{{ tsService.translate('Kış Kuru Termometre') }}</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" [(ngModel)]="winterDryBulb" name="winterDryBulb" step="0.5" />
+                <span class="input-unit">°C</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Indoor Design Temperatures -->
+        <div class="hvac-section-box">
+          <div class="hvac-section-header">
+            <span class="hvac-title">{{ tsService.translate('İç Ortam Tasarım Sıcaklıkları') }}</span>
+          </div>
+
+          <div class="form-row-4">
+            <div class="form-group">
+              <label class="form-label">{{ tsService.translate('Soğutma Kuru Termometre') }}</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" [(ngModel)]="coolingDryBulb" name="coolingDryBulb" step="0.5" />
+                <span class="input-unit">°C</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">{{ tsService.translate('Isıtma Kuru Termometre') }}</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" [(ngModel)]="heatingDryBulb" name="heatingDryBulb" step="0.5" />
+                <span class="input-unit">°C</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">{{ tsService.translate('Soğutma Yaş Termometre') }}</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" [(ngModel)]="coolingWetBulb" name="coolingWetBulb" step="0.5" />
+                <span class="input-unit">°C</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">{{ tsService.translate('Bağıl Nem') }}</label>
+              <div class="input-with-unit">
+                <input type="number" class="form-input" [(ngModel)]="indoorHumidity" name="indoorHumidity" min="0" max="100" />
+                <span class="input-unit">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer: Cancel and Save -->
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeCreateModal()">{{ tsService.translate('İptal') }}</button>
+          <button type="submit" class="btn-submit" [disabled]="!newProjectName.trim()">
+            {{ tsService.translate('Kaydet') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: PROJE AÇ (OPEN PROJECT) -->
+  <div class="modal-backdrop" *ngIf="showOpenModal" (click)="closeOpenModal()">
+    <div class="modal-card modal-large" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="modal-title">{{ tsService.translate('Proje Aç') }}</h2>
+            <span class="modal-sub">Mevcut projelerden birini seçerek çalışma alanına yükleyin</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" (click)="closeOpenModal()">✕</button>
+      </div>
+
+      <div class="modal-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-search-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="modal-search-input" 
+          [(ngModel)]="searchQuery" 
+          [placeholder]="tsService.translate('Proje ara...')" />
+      </div>
+
+      <div class="modal-project-list">
+        <div 
+          *ngFor="let prj of filteredProjects" 
+          class="modal-project-item"
+          (click)="selectProject(prj)">
+          <div class="prj-icon-cube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            </svg>
+          </div>
+          <div class="prj-info-meta">
+            <div class="prj-title-row">
+              <span class="prj-name">{{ prj.name }}</span>
+              <span class="prj-code">{{ prj.code }}</span>
+            </div>
+            <div class="prj-sub-meta">
+              <span class="pill-mini">{{ tsService.translate(prj.type) }}</span>
+              <span>&bull;</span>
+              <span>{{ prj.country }}</span>
+              <span>&bull;</span>
+              <span>{{ prj.updatedAt }}</span>
+            </div>
+          </div>
+          <button class="btn-select-prj">{{ tsService.translate('Proje Aç') }} →</button>
+        </div>
+
+        <div class="empty-state-list" *ngIf="filteredProjects.length === 0">
+          <p>Arama kriterine uygun proje bulunamadı.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="closeOpenModal()">{{ tsService.translate('İptal') }}</button>
+      </div>
+    </div>
+  </div>
+
+</div>

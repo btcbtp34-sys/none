@@ -1,0 +1,69 @@
+<div class="fe-downloads-page">
+  
+  <!-- Success Toast -->
+  <div class="download-toast" *ngIf="downloadSuccessMessage">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="toast-svg">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>{{ downloadSuccessMessage }}</span>
+  </div>
+
+  <!-- Page Header -->
+  <div class="dl-header">
+    <div>
+      <h1 class="dl-title">{{ tsService.translate('İndirilenler') }}</h1>
+      <p class="dl-sub">{{ tsService.translate('Dokümanlar ve teknik dosyalar') }}</p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="dl-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input 
+        type="text" 
+        class="dl-search-input" 
+        [(ngModel)]="searchQuery" 
+        placeholder="Dosya veya doküman ara..." />
+    </div>
+  </div>
+
+  <!-- Downloads Grid -->
+  <div class="dl-grid">
+    <div *ngFor="let item of filteredDownloads" class="dl-card">
+      <div class="dl-card-top">
+        <div class="dl-format-badge" [class.badge-pdf]="item.format === 'PDF'" [class.badge-zip]="item.format === 'ZIP'" [class.badge-dwg]="item.format === 'DWG'">
+          {{ item.format }}
+        </div>
+        <span class="dl-category-tag">{{ item.category }}</span>
+      </div>
+
+      <div class="dl-card-main">
+        <h3 class="dl-item-title">{{ item.title }}</h3>
+        <div class="dl-item-meta">
+          <span>{{ tsService.translate('Dosya Boyutu') }}: <strong>{{ item.size }}</strong></span>
+          <span>&bull;</span>
+          <span>{{ tsService.translate('Yayın Tarihi') }}: {{ item.date }}</span>
+        </div>
+      </div>
+
+      <div class="dl-card-bottom">
+        <span class="dl-count-stat">{{ item.downloadCount }} indirme</span>
+        <button 
+          class="btn-dl" 
+          [disabled]="downloadingId === item.id"
+          (click)="downloadFile(item)">
+          <svg *ngIf="downloadingId !== item.id" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-dl-icon">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>{{ downloadingId === item.id ? tsService.translate('İndiriliyor...') : tsService.translate('İndir') }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

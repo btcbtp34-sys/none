@@ -1,0 +1,298 @@
+<main class="page-content">
+  <div class="card-container">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Downloads') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Kullanıcı dokümanları, PDF rehberler ve indirilebilir dosyalar') }}</p>
+      </div>
+
+      <!-- Sadece Super Admin Yükleme Yapabilir -->
+      <button class="primary-btn" (click)="openUploadModal()" *ngIf="authService.isSuperAdmin()">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span>{{ tsService.translate('Dosya Yükle') }}</span>
+      </button>
+    </div>
+
+    <!-- Role Scope Banner -->
+    <div class="role-scope-banner" *ngIf="authService.isCountryAdmin()">
+      <div class="scope-icon-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      </div>
+      <span>Ülke Yöneticisi olarak yalnızca <strong>{{ authService.currentUser().assignedCountry }}</strong> ülkenize tahsis edilmiş aktif dokümanları görüntüleyebilir ve indirebilirsiniz.</span>
+    </div>
+
+    <div class="role-scope-banner region-theme" *ngIf="authService.isRegionAdmin()">
+      <div class="scope-icon-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+      </div>
+      <span>Bölge Yöneticisi (<strong>{{ authService.currentUser().assignedRegion }}</strong>): Bölgenizdeki dosyaların ülke bazında aktif/pasif durumlarını yönetebilirsiniz. Dosya yükleme yetkisi Süper Admin'dedir.</span>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="filter-search-input" 
+          [placeholder]="tsService.translate('Doküman başlığı veya dosya adı ara...')" 
+          [(ngModel)]="searchQuery" />
+        <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
+      </div>
+
+      <div class="filter-dropdowns-group" *ngIf="!authService.isCountryAdmin()">
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="filterRegion">
+            <option value="ALL">{{ tsService.translate('Tüm Bölgeler') }}</option>
+            <option value="Global">Global</option>
+            <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ r.name }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Downloads Table -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <colgroup>
+          <col style="width: 50px;">
+          <col style="width: 30%;">
+          <col style="width: 120px;">
+          <col style="width: 140px;">
+          <col style="width: 90px;">
+          <col style="width: 22%;">
+          <col style="width: 100px;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="text-center">#</th>
+            <th>{{ tsService.translate('DOSYA BAŞLIĞI') }}</th>
+            <th class="text-center">{{ tsService.translate('HEDEF BÖLGE') }}</th>
+            <th>{{ tsService.translate('ERİŞİM İZNİ') }}</th>
+            <th>{{ tsService.translate('BOYUT') }}</th>
+            <th>{{ tsService.translate('ÜLKE DURUMU') }}</th>
+            <th class="text-right">{{ tsService.translate('TRANSACTIONS') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of visibleDownloads; let i = index">
+            <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
+            <td>
+              <div class="file-name-box">
+                <div class="file-icon-badge" [class.zip]="item.iconType === 'zip'">
+                  <svg class="file-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                  </svg>
+                </div>
+                <div class="file-info-stack">
+                  <span class="file-name-text">{{ item.title }}</span>
+                  <span class="file-sub-meta">{{ item.filename }} • {{ item.uploader }}</span>
+                </div>
+              </div>
+            </td>
+            <td class="text-center">
+              <span class="region-pill-badge" [class.global]="item.region === 'Global'">
+                {{ item.region }}
+              </span>
+            </td>
+            <td>
+              <span class="category-pill">
+                {{ item.permission === 'all' ? tsService.translate('Tüm Kullanıcılar') : tsService.translate('Giriş Yapanlar') }}
+              </span>
+            </td>
+            <td><span class="file-size-text">{{ item.size }}</span></td>
+            <td>
+              <!-- Country Availability Summary & Regional Management Button -->
+              <div class="country-access-wrapper">
+                <button 
+                  *ngIf="authService.isRegionAdmin() || authService.isSuperAdmin()"
+                  class="manage-country-btn" 
+                  (click)="openCountryStatusModal(item)"
+                  title="Ülke bazında aktif/pasif durumunu yönet">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M2 12h20"></path>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                  <span>Ülke Durumları</span>
+                </button>
+
+                <span *ngIf="authService.isCountryAdmin()" class="status-country-active-tag">
+                  <span class="dot-green"></span> Aktif (Erişilebilir)
+                </span>
+              </div>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <button class="action-btn download-btn" (click)="downloadFile(item)" title="İndir">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </button>
+                <button class="action-btn delete-btn" (click)="deleteFile(item.id)" title="Sil" *ngIf="authService.isSuperAdmin()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="visibleDownloads.length === 0">
+            <td colspan="7" class="empty-state-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">Erişilebilir doküman bulunamadı.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Modal 1: Super Admin Yeni Dosya Yükle -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ tsService.translate('Dosya Yükle') }} (Süper Admin)</h3>
+      <button class="modal-close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Drag & Drop Dropzone -->
+      <div 
+        class="file-dropzone" 
+        [class.dragging]="isDragging"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        (click)="fileInput.click()">
+        
+        <input 
+          type="file" 
+          #fileInput 
+          style="display: none" 
+          (change)="onFileSelected($event)" />
+
+        <div class="dropzone-content" *ngIf="!selectedFile">
+          <div class="upload-icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <p class="dropzone-text"><strong>Dosyayı buraya sürükleyin</strong> veya tıklayarak seçin</p>
+          <span class="dropzone-sub">PDF, ZIP, DWG veya Doküman (Maks. 50MB)</span>
+        </div>
+
+        <div class="file-preview-card" *ngIf="selectedFile">
+          <div class="file-preview-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          </div>
+          <div class="file-preview-info">
+            <span class="file-preview-name">{{ selectedFile.name }}</span>
+            <span class="file-preview-size">{{ formSize }}</span>
+          </div>
+          <span class="file-preview-check">Seçildi</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 16px;">
+        <label class="form-label-bold">DOSYA BAŞLIĞI *</label>
+        <input type="text" class="form-control-subtle" placeholder="Örn: Nova 2026 Teknik Montaj Kılavuzu" [(ngModel)]="formTitle" />
+      </div>
+
+      <div class="form-row">
+        <!-- Hedef Bölge Seçimi (Super Admin) -->
+        <div class="form-group flex-1">
+          <label class="form-label-bold">HEDEF BÖLGE *</label>
+          <select class="form-control-subtle" [(ngModel)]="formRegion">
+            <option value="Global">Global (Tüm Bölgeler)</option>
+            <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ r.name }}</option>
+          </select>
+          <span class="form-hint-subtle">Dokümanın geçerli olduğu coğrafi kapsam.</span>
+        </div>
+
+        <!-- Erişim İzni -->
+        <div class="form-group flex-1">
+          <label class="form-label-bold">ERİŞİM İZNİ *</label>
+          <select class="form-control-subtle" [(ngModel)]="formPermission">
+            <option value="all">Tüm Kullanıcılar (Herkes)</option>
+            <option value="logged_in">Sadece Giriş Yapanlar</option>
+          </select>
+          <span class="form-hint-subtle">Kullanıcı oturum yetki seviyesi.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-save" (click)="saveFile()">{{ tsService.translate('Save') }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 2: Regional Admin Country-Based Active/Passive Management -->
+<div class="modal-backdrop" *ngIf="showCountryStatusModal && activeManagingItem" (click)="closeCountryStatusModal()">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h3 class="modal-title">Ülke Bazlı Erişim Durumu</h3>
+        <p class="modal-subtitle-sm">{{ activeManagingItem.title }} ({{ activeManagingItem.region }})</p>
+      </div>
+      <button class="modal-close-btn" (click)="closeCountryStatusModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <p class="modal-info-note">
+        Bu dosyanın bölgenizdeki hangi ülkelerde kullanıcılara ve Country Admin'e açık olduğunu aktif/pasif yaparak belirleyebilirsiniz:
+      </p>
+
+      <div class="countries-toggle-list">
+        <div *ngFor="let c of regionCountries" class="country-toggle-row" (click)="toggleCountryAvailability(c)">
+          <div class="country-row-info">
+            <span class="country-row-name">{{ c }}</span>
+            <span class="status-chip" [class.active]="isCountryActive(c)">
+              {{ isCountryActive(c) ? 'Aktif (Yayında)' : 'Pasif (Gizli)' }}
+            </span>
+          </div>
+
+          <button 
+            type="button" 
+            class="toggle-switch-btn" 
+            [class.active]="isCountryActive(c)"
+            (click)="$event.stopPropagation(); toggleCountryAvailability(c)">
+            <span class="toggle-slider"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-save" (click)="closeCountryStatusModal()">Tamam</button>
+    </div>
+  </div>
+</div>

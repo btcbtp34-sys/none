@@ -1,0 +1,230 @@
+<main class="page-content">
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Ülkeler') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Sistemde desteklenen ülke listesi ve bölge yapılandırması') }}</p>
+      </div>
+      <button class="primary-btn" (click)="openAddModal()" *ngIf="!authService.isCountryAdmin()">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>{{ tsService.translate('Add Country') }}</span>
+      </button>
+    </div>
+
+    <!-- Search / Filter Toolbar -->
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="filter-search-input" 
+          [placeholder]="tsService.translate('Ülke veya bölge ara...')" 
+          [(ngModel)]="searchQuery" />
+        <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
+      </div>
+    </div>
+
+    <!-- Grouped Table by Region (Regions Alphabetical, Countries Alphabetical) -->
+    <div class="table-responsive">
+      <div *ngFor="let group of groupedCountries" class="region-group-card">
+        <div class="region-group-header">
+          <div class="region-group-title">
+            <span class="region-badge-lg">{{ group.regionCode }}</span>
+            <span class="region-group-name">{{ tsService.translate(group.regionName) }}</span>
+            <span class="region-group-count">{{ group.countries.length }} {{ tsService.translate('Ülke') }}</span>
+          </div>
+        </div>
+
+        <table class="custom-table group-inner-table">
+          <colgroup>
+            <col style="width: 50px;">
+            <col style="width: 26%;">
+            <col style="width: 90px;">
+            <col style="width: 22%;">
+            <col style="width: 24%;">
+            <col style="width: 110px;">
+            <col style="width: 90px;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="text-center">#</th>
+              <th>{{ tsService.translate('ÜLKE ADI') }}</th>
+              <th class="text-center">{{ tsService.translate('KOD') }}</th>
+              <th>{{ tsService.translate('ZAMAN DİLİMİ') }}</th>
+              <th>{{ tsService.translate('KULLANILAN DİLLER') }}</th>
+              <th>{{ tsService.translate('STATUS') }}</th>
+              <th class="text-right">{{ tsService.translate('TRANSACTIONS') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of group.countries; let i = index">
+              <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
+              <td>
+                <div class="country-cell">
+                  <img [src]="'flags/' + item.code.toLowerCase() + '.svg'" [alt]="item.name" class="country-table-flag" onerror="this.style.display='none'" />
+                  <span class="country-name-text">{{ item.name }}</span>
+                  <span *ngIf="item.state" class="state-pill" [title]="'Eyalet: ' + item.state">
+                    {{ item.state }}
+                  </span>
+                </div>
+              </td>
+              <td class="text-center"><span class="code-badge">{{ item.code }}</span></td>
+              <td><span class="timezone-text">{{ item.timezone }}</span></td>
+              <td>
+                <div class="lang-tags-wrap">
+                  <span *ngFor="let l of item.usedLanguages" class="lang-pill-sm">{{ l }}</span>
+                </div>
+              </td>
+              <td>
+                <button class="status-indicator-btn" (click)="countryService.toggleStatus(item.id)">
+                  <span class="status-dot" [class.active]="item.status === 'Aktif'"></span>
+                  <span class="status-text" [class.active]="item.status === 'Aktif'">
+                    {{ tsService.translate(item.status) }}
+                  </span>
+                </button>
+              </td>
+              <td class="text-right">
+                <div class="actions-group">
+                  <button class="action-btn edit-btn" (click)="openEditModal(item)" title="Düzenle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                  </button>
+                  <button class="action-btn delete-btn" (click)="deleteCountry(item.id)" title="Sil" *ngIf="!authService.isCountryAdmin()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="groupedCountries.length === 0" class="empty-state-box">
+        <p class="empty-state-title">Arama kriterlerine uygun ülke bulunamadı.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Country Add/Edit Modal (All languages pre-checked, varsayılan dil streamlined) -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ editingId ? tsService.translate('Ülke Düzenle') : tsService.translate('Add Country') }}</h3>
+      <button class="modal-close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Row 1: Bölge Seçimi -->
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('BÖLGE') }} *</label>
+        <select class="form-control-subtle" [(ngModel)]="formRegion" (change)="onRegionChange()">
+          <option *ngFor="let reg of regionService.regions()" [value]="reg.name">
+            {{ tsService.translate(reg.name) }} ({{ reg.code }})
+          </option>
+        </select>
+        <span class="form-hint-subtle">Ülkenin bağlı olduğu coğrafi bölge.</span>
+      </div>
+
+      <!-- Row 2: Seçilen Bölgeye Göre Ülke & Eyalet Seçimi -->
+      <div class="form-row">
+        <div class="form-group" [ngClass]="hasStates() ? 'flex-1' : 'w-full'">
+          <div class="label-row-between">
+            <label class="form-label-bold mb-0">{{ tsService.translate('Ülke Seçiniz') }} *</label>
+            <span class="multi-select-badge">{{ getCountriesForRegion(formRegion).length }} {{ tsService.translate('Ülke') }}</span>
+          </div>
+          <select class="form-control-subtle country-select-highlight" [(ngModel)]="selectedPresetCode" (change)="onPresetChange()">
+            <option *ngFor="let c of getCountriesForRegion(formRegion)" [value]="c.code">
+              {{ c.name }} ({{ c.code }})
+            </option>
+            <option value="CUSTOM">-- {{ tsService.translate('Özel Ülke / Manuel Giriş') }} --</option>
+          </select>
+          <span class="form-hint-subtle">{{ tsService.translate(formRegion) }} bölgesine ait alfabetik sıralı ülkeler.</span>
+        </div>
+
+        <div class="form-group flex-1 state-field-animated" *ngIf="hasStates()">
+          <div class="label-row-between">
+            <label class="form-label-bold mb-0">{{ tsService.translate('EYALET / STATE') }} *</label>
+            <span class="state-active-badge">Eyalet Tanımı</span>
+          </div>
+          <select class="form-control-subtle state-select" [(ngModel)]="formState">
+            <option value="">{{ tsService.translate('Eyalet Seçiniz') }}...</option>
+            <option *ngFor="let state of getCurrentCountryStates()" [value]="state">{{ state }}</option>
+          </select>
+          <span class="form-hint-subtle">Seçilen ülke için eyalet / bölge tanımı.</span>
+        </div>
+      </div>
+
+      <!-- Row 3: Code and Ülke Adı -->
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('KOD') }} *</label>
+          <input type="text" class="form-control-subtle" placeholder="Örn: TR, DE, US" [(ngModel)]="formCode" />
+        </div>
+        <div class="form-group flex-2">
+          <label class="form-label-bold">{{ tsService.translate('ÜLKE ADI') }} *</label>
+          <input type="text" class="form-control-subtle" placeholder="Örn: Türkiye, Almanya" [(ngModel)]="formName" />
+        </div>
+      </div>
+
+      <!-- Row 4: Desteklenen / Kullanılan Diller (Bütün Diller Önceden Seçili Gelir) -->
+      <div class="form-group">
+        <div class="label-row-between">
+          <label class="form-label-bold mb-0">DESTEKLENEN DİLLER (TÜM DİLLER SEÇİLİ) *</label>
+          <span class="multi-select-badge">{{ availableLanguages.length }} Dil Aktif</span>
+        </div>
+
+        <div class="languages-checkbox-card">
+          <div 
+            *ngFor="let lang of availableLanguages" 
+            class="lang-checkbox-row" 
+            [class.selected]="lang.selected"
+            (click)="toggleLangSelection(lang)">
+            <input type="checkbox" [checked]="lang.selected" (click)="$event.stopPropagation(); toggleLangSelection(lang)" />
+            <span class="lang-checkbox-label">{{ lang.name }}</span>
+            <span class="lang-code-pill-sm">{{ lang.code }}</span>
+          </div>
+        </div>
+        <span class="form-hint-subtle">Bu ülkede geçerli diller varsayılan olarak hepsi seçili getirilmiştir.</span>
+      </div>
+
+      <!-- Row 5: Saat Dilimi & Durum -->
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label class="form-label-bold">{{ tsService.translate('ZAMAN DİLİMİ') }} *</label>
+          <select class="form-control-subtle" [(ngModel)]="formTimezone">
+            <option value="Europe/Istanbul (UTC+03:00)">Europe/Istanbul (UTC+03:00)</option>
+            <option value="Europe/Berlin (UTC+01:00)">Europe/Berlin (UTC+01:00)</option>
+            <option value="Europe/London (UTC+00:00)">Europe/London (UTC+00:00)</option>
+            <option value="America/New_York (UTC-05:00)">America/New_York (UTC-05:00)</option>
+            <option value="Asia/Tokyo (UTC+09:00)">Asia/Tokyo (UTC+09:00)</option>
+          </select>
+        </div>
+
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('DURUM') }} *</label>
+          <select class="form-control-subtle" [(ngModel)]="formStatus">
+            <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
+            <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-save" (click)="saveCountry()">{{ tsService.translate('Save') }}</button>
+    </div>
+  </div>
+</div>

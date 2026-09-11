@@ -1,0 +1,103 @@
+/* Minimal Neutral Slate & Monochrome Design Tokens (Vercel & Notion Aesthetic) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Color System */
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f5f9;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  
+  /* Minimal Charcoal Accent (Zero Blue) */
+  --brand-primary: #0f172a;
+  --brand-hover: #1e293b;
+  --brand-light: #f1f5f9;
+  --brand-border: #cbd5e1;
+  
+  /* Project Brand Accents */
+  --nova-red: #e11d48;
+  --orion-dark: #0f172a;
+  
+  /* Status Colors */
+  --emerald-active: #15803d;
+  --emerald-bg: #f0fdf4;
+  --rose-active: #e11d48;
+  --rose-bg: #fff1f2;
+  
+  --border-card: #e2e8f0;
+  --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.05);
+  
+  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font-family);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* App Main Grid */
+.app-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  gap: 20px;
+  background-color: var(--bg-page);
+}
+
+app-sidebar {
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.main-content-wrapper {
+  flex: 1 1 0%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: transparent;
+}
+
+app-header {
+  display: block;
+  width: 100%;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
