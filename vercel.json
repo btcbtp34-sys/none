@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "cd nova-orion-admin && npm install",
   "buildCommand": "cd nova-orion-admin && npm run build",
