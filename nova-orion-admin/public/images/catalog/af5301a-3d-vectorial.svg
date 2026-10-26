@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <linearGradient id="front" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#dbe3ec"/>
+    </linearGradient>
+    <linearGradient id="side" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#cbd5e1"/>
+      <stop offset="1" stop-color="#a9b6c6"/>
+    </linearGradient>
+    <linearGradient id="top" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#eef2f6"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="600" fill="#ffffff"/>
+
+  <!-- Body: top, side, front -->
+  <polygon points="90,170 370,170 480,110 200,110" fill="url(#top)" stroke="#1e3a5f" stroke-width="2"/>
+  <polygon points="370,170 480,110 480,450 370,510" fill="url(#side)" stroke="#1e3a5f" stroke-width="2"/>
+  <g stroke="#64748b" stroke-width="1" opacity="0.6">
+    <line x1="385" y1="178" x2="385" y2="494"/><line x1="400" y1="170" x2="400" y2="486"/>
+    <line x1="415" y1="162" x2="415" y2="478"/><line x1="430" y1="154" x2="430" y2="470"/>
+    <line x1="445" y1="145" x2="445" y2="461"/><line x1="460" y1="137" x2="460" y2="453"/>
+  </g>
+  <rect x="90" y="170" width="280" height="340" fill="url(#front)" stroke="#1e3a5f" stroke-width="2"/>
+
+  <!-- Front panel split: fan section + service door -->
+  <line x1="300" y1="170" x2="300" y2="510" stroke="#1e3a5f" stroke-width="1.6"/>
+  <rect x="308" y="185" width="54" height="310" rx="4" fill="none" stroke="#475569" stroke-width="1.2"/>
+  <rect x="314" y="205" width="42" height="18" rx="2" fill="#1e3a5f"/>
+  <text x="335" y="218" text-anchor="middle" font-size="10" font-weight="800" fill="#ffffff" letter-spacing="1">NONE</text>
+  <rect x="322" y="330" width="26" height="10" rx="2" fill="none" stroke="#475569" stroke-width="1.2"/>
+
+  <!-- Front fans -->
+  <g stroke="#1e3a5f" fill="none">
+    <rect x="102" y="182" width="186" height="156" rx="6" stroke-width="1.4"/>
+    <rect x="102" y="344" width="186" height="156" rx="6" stroke-width="1.4"/>
+    <g stroke-width="1">
+      <circle cx="195" cy="260" r="68"/><circle cx="195" cy="260" r="52"/><circle cx="195" cy="260" r="36"/>
+      <circle cx="195" cy="422" r="68"/><circle cx="195" cy="422" r="52"/><circle cx="195" cy="422" r="36"/>
+    </g>
+    <g stroke-width="1.6">
+      <path d="M195 260 C 215 230, 245 235, 255 250"/><path d="M195 260 C 170 245, 150 215, 165 200"/><path d="M195 260 C 195 290, 175 315, 160 318"/>
+      <path d="M195 422 C 215 392, 245 397, 255 412"/><path d="M195 422 C 170 407, 150 377, 165 362"/><path d="M195 422 C 195 452, 175 477, 160 480"/>
+    </g>
+    <circle cx="195" cy="260" r="12" fill="#1e3a5f"/>
+    <circle cx="195" cy="422" r="12" fill="#1e3a5f"/>
+  </g>
+
+  <!-- Feet -->
+  <g fill="#334155">
+    <polygon points="110,510 160,510 168,522 102,522"/>
+    <polygon points="300,510 350,510 358,522 292,522"/>
+  </g>
+
+  <!-- Dimension lines -->
+  <g stroke="#2563eb" stroke-width="1.2" fill="#2563eb" font-size="14" font-weight="700">
+    <line x1="90" y1="548" x2="370" y2="548"/>
+    <line x1="90" y1="540" x2="90" y2="556"/><line x1="370" y1="540" x2="370" y2="556"/>
+    <text x="230" y="572" text-anchor="middle" stroke="none">W</text>
+
+    <line x1="55" y1="170" x2="55" y2="510"/>
+    <line x1="47" y1="170" x2="63" y2="170"/><line x1="47" y1="510" x2="63" y2="510"/>
+    <text x="36" y="345" text-anchor="middle" stroke="none">H</text>
+
+    <line x1="395" y1="530" x2="505" y2="470"/>
+    <line x1="389" y1="522" x2="401" y2="538"/><line x1="499" y1="462" x2="511" y2="478"/>
+    <text x="468" y="522" text-anchor="middle" stroke="none">D</text>
+  </g>
+
+  <text x="300" y="50" text-anchor="middle" font-size="18" font-weight="800" fill="#0f172a">AF5301A 25-3</text>
+  <text x="300" y="72" text-anchor="middle" font-size="12" fill="#64748b" letter-spacing="2">3D VECTORIAL</text>
+</svg>

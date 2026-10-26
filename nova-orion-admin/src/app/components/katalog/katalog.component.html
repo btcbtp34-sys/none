@@ -1,0 +1,215 @@
+<main class="page-content">
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate(config.title) }}</h2>
+        <p class="card-subtitle">{{ tsService.translate(config.subtitle) }}</p>
+      </div>
+      <button class="primary-btn" (click)="openModal()">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>{{ tsService.translate('Yeni ' + config.singular + ' Ekle') }}</span>
+      </button>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          class="filter-search-input"
+          [placeholder]="tsService.translate('Ad veya açıklama ara...')"
+          [(ngModel)]="searchQuery" />
+        <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
+      </div>
+
+      <div class="filter-dropdowns-group">
+        <div class="filter-select-wrapper" *ngIf="config.parent">
+          <select class="filter-select" [(ngModel)]="filterParent">
+            <option value="ALL">{{ tsService.translate('Tümü') }} ({{ tsService.translate(config.parentLabel) }})</option>
+            <option *ngFor="let p of parentItems" [value]="p.id">{{ p.name }}</option>
+          </select>
+        </div>
+
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="filterStatus">
+            <option value="ALL">{{ tsService.translate('Tüm Durumlar') }}</option>
+            <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
+            <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
+          </select>
+        </div>
+
+        <button *ngIf="hasActiveFilters" class="filter-reset-btn" (click)="clearFilters()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="reset-icon">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span>{{ tsService.translate('Filtreleri Temizle') }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 50px;">#</th>
+            <th>{{ tsService.translate('ADI') }}</th>
+            <th>{{ tsService.translate('AÇIKLAMA') }}</th>
+            <th *ngIf="config.parent">{{ tsService.translate(config.parentLabel) }}</th>
+            <th *ngIf="config.hasProductType">{{ tsService.translate('ÜRÜN TİPİ') }}</th>
+            <th style="width: 110px;">{{ tsService.translate('DURUM') }}</th>
+            <th class="text-right" style="width: 100px;">{{ tsService.translate('İŞLEMLER') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredItems; let i = index">
+            <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
+            <td><span class="brand-name-bold">{{ item.name }}</span></td>
+            <td><span class="brand-desc-sm">{{ item.description || '—' }}</span></td>
+            <td *ngIf="config.parent">
+              <div class="country-tags-wrap">
+                <span *ngFor="let pid of item.parentIds" class="country-chip">
+                  {{ parentName(pid) }}
+                </span>
+              </div>
+            </td>
+            <td *ngIf="config.hasProductType">
+              <span *ngIf="item.productTypeId; else noType" class="country-chip">{{ productTypeName(item.productTypeId) }}</span>
+              <ng-template #noType><span class="brand-desc-sm">—</span></ng-template>
+            </td>
+            <td>
+              <button class="status-indicator-btn" (click)="catalogService.toggleStatus(entity, item.id)">
+                <span class="status-dot" [class.active]="item.status === 'Aktif'"></span>
+                <span class="status-text" [class.active]="item.status === 'Aktif'">
+                  {{ tsService.translate(item.status) }}
+                </span>
+              </button>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <button class="action-btn edit-btn" (click)="openModal(item)" title="Düzenle">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button class="action-btn delete-btn" (click)="deleteItem(item.id)" title="Sil">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredItems.length === 0">
+            <td [attr.colspan]="columnCount" class="empty-table-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">{{ tsService.translate('Kayıt bulunamadı.') }}</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Add / Edit Modal -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        {{ tsService.translate(editingId ? config.singular + ' Düzenle' : 'Yeni ' + config.singular + ' Ekle') }}
+      </h3>
+      <button class="modal-close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div *ngIf="formError" class="alert-box-error">
+        {{ formError }}
+      </div>
+
+      <!-- Row 1: Name & Status -->
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label class="form-label-bold">{{ tsService.translate('ADI') }} *</label>
+          <input type="text" class="form-control-subtle" [(ngModel)]="formName" autofocus />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('DURUM') }}</label>
+          <select class="form-control-subtle" [(ngModel)]="formStatus">
+            <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
+            <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 2: Description -->
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('AÇIKLAMA') }}</label>
+        <textarea class="form-control-subtle" rows="2" [(ngModel)]="formDescription"></textarea>
+      </div>
+
+      <!-- Row 3: Parent Single-Select (1:1) -->
+      <div class="form-group" *ngIf="config.parent && !config.multiParent">
+        <label class="form-label-bold">{{ tsService.translate(config.parentLabel) }} *</label>
+        <select class="form-control-subtle" [(ngModel)]="singleParentId">
+          <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
+          <option *ngFor="let p of parentItems" [ngValue]="p.id">{{ p.name }}</option>
+        </select>
+      </div>
+
+      <!-- Row 4: Product Type (seçili ürün grubuna göre filtrelenir) -->
+      <div class="form-group" *ngIf="config.hasProductType">
+        <label class="form-label-bold">{{ tsService.translate('ÜRÜN TİPİ') }} *</label>
+        <select class="form-control-subtle" [(ngModel)]="formProductTypeId" [disabled]="singleParentId === null">
+          <option [ngValue]="null" disabled>
+            {{ tsService.translate(singleParentId === null ? 'Önce ürün grubu seçiniz' : 'Seçiniz') }}
+          </option>
+          <option *ngFor="let t of productTypeOptions" [ngValue]="t.id">{{ t.name }}</option>
+        </select>
+        <span class="form-hint-subtle" *ngIf="singleParentId !== null && productTypeOptions.length === 0">
+          {{ tsService.translate('Bu ürün grubuna ait ürün tipi tanımlı değil.') }}
+        </span>
+      </div>
+
+      <!-- Row 3: Parent Multi-Select -->
+      <div class="form-group" *ngIf="config.parent && config.multiParent">
+        <div class="label-row-between">
+          <label class="form-label-bold mb-0">{{ tsService.translate(config.parentLabel) }} *</label>
+          <span class="multi-select-badge">{{ formParentIds.length }} / {{ parentItems.length }}</span>
+        </div>
+
+        <div class="selection-checkbox-grid">
+          <div
+            *ngFor="let p of parentItems"
+            class="checkbox-chip-item"
+            [class.checked]="isParentSelected(p.id)"
+            (click)="toggleParentSelection(p.id)">
+            <input type="checkbox" [checked]="isParentSelected(p.id)" (click)="$event.stopPropagation(); toggleParentSelection(p.id)" />
+            <span>{{ p.name }}</span>
+          </div>
+          <div *ngIf="parentItems.length === 0" class="no-filter-results">
+            <span>{{ tsService.translate('Önce bağlanacak kayıtları tanımlayınız.') }}</span>
+          </div>
+        </div>
+        <span class="form-hint-subtle">{{ tsService.translate('Bu kaydın bağlı olduğu kayıtları seçiniz.') }}</span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-save" (click)="saveItem()">{{ tsService.translate('Save') }}</button>
+    </div>
+  </div>
+</div>

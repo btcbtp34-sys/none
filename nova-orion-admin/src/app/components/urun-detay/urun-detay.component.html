@@ -1,0 +1,278 @@
+<main class="page-content">
+  <div class="card-container">
+    <!-- Not Found -->
+    <div *ngIf="notFound" class="empty-state-box">
+      <p class="empty-state-title">{{ tsService.translate('Ürün bulunamadı.') }}</p>
+      <a routerLink="/katalog/urun" class="back-link">← {{ tsService.translate('Ürün listesine dön') }}</a>
+    </div>
+
+    <ng-container *ngIf="!notFound">
+      <div class="card-header">
+        <div class="card-header-titles">
+          <a routerLink="/katalog/urun" class="back-link">← {{ tsService.translate('Ürün listesi') }}</a>
+          <h2 class="card-title">{{ productId !== null ? formName || tsService.translate('Ürün') : tsService.translate('Yeni Ürün') }}</h2>
+        </div>
+        <button class="primary-btn" (click)="saveProduct()">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          <span>{{ tsService.translate('Save') }}</span>
+        </button>
+      </div>
+
+      <div *ngIf="formError" class="alert-box-error">{{ formError }}</div>
+      <div *ngIf="saveMessage && !formError" class="alert-box-success">{{ saveMessage }}</div>
+      <div *ngIf="saveWarning" class="alert-box-warning">{{ saveWarning }}</div>
+
+      <!-- Tabs -->
+      <div class="detail-tabs-row">
+        <button
+          *ngFor="let tab of tabs"
+          class="detail-tab-btn"
+          [class.active]="activeTab === tab.id"
+          (click)="activeTab = tab.id">
+          {{ tsService.translate(tab.label) }}
+          <span *ngIf="tab.id === 'gorseller' && totalImageCount" class="tab-count">{{ totalImageCount }}</span>
+        </button>
+      </div>
+
+      <!-- Tab: Genel Bilgiler -->
+      <div *ngIf="activeTab === 'genel'" class="info-cards-grid">
+        <!-- Kart: Temel Bilgiler -->
+        <section class="info-card">
+          <header class="info-card-header">{{ tsService.translate('TEMEL BİLGİLER') }}</header>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Adı') }} *</label>
+            <input type="text" class="info-input" [(ngModel)]="formName" placeholder="—" />
+          </div>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Açıklama') }}</label>
+            <textarea class="info-input" rows="1" [(ngModel)]="formDescription" placeholder="—"></textarea>
+          </div>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Ürün Grubu') }} *</label>
+            <select class="info-input" [(ngModel)]="formGroupId">
+              <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
+              <option *ngFor="let g of catalogService.items('urun-grubu')" [ngValue]="g.id">{{ g.name }}</option>
+            </select>
+          </div>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Ürün Tipi') }}<span *ngIf="typeOptions.length"> *</span></label>
+            <select class="info-input" [(ngModel)]="formTypeId" [disabled]="!typeOptions.length">
+              <option [ngValue]="null">{{ typeOptions.length ? tsService.translate('Seçiniz') : '—' }}</option>
+              <option *ngFor="let t of typeOptions" [ngValue]="t.id">{{ t.name }}</option>
+            </select>
+          </div>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Ürün Ailesi') }}<span *ngIf="familyOptions.length"> *</span></label>
+            <select class="info-input" [(ngModel)]="formFamilyId" [disabled]="!familyOptions.length">
+              <option [ngValue]="null">{{ familyOptions.length ? tsService.translate('Seçiniz') : '—' }}</option>
+              <option *ngFor="let f of familyOptions" [ngValue]="f.id">{{ f.name }}</option>
+            </select>
+          </div>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Markasız Adı') }}</label>
+            <input type="text" class="info-input" [(ngModel)]="formUnbrandedName" placeholder="—" />
+          </div>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Versiyon') }}</label>
+            <input type="text" class="info-input" [(ngModel)]="formVersion" placeholder="—" />
+          </div>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Durum') }}</label>
+            <select class="info-input" [(ngModel)]="formStatus">
+              <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
+              <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Kart: Boyut Bilgileri -->
+        <section class="info-card">
+          <header class="info-card-header">{{ tsService.translate('BOYUT BİLGİLERİ') }}</header>
+          <div class="info-row" *ngFor="let field of dimensionFields">
+            <label class="info-label">{{ tsService.translate(field.label) }}</label>
+            <div class="info-value-with-unit">
+              <input type="number" min="0" class="info-input" [(ngModel)]="formDimensions[field.key]" placeholder="—" />
+              <span class="info-unit">{{ field.unit }}</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Kart: Kapasite Bilgileri -->
+        <section class="info-card">
+          <header class="info-card-header">{{ tsService.translate('KAPASİTE BİLGİLERİ') }}</header>
+          <div class="info-row" *ngFor="let field of capacityFields">
+            <label class="info-label">{{ tsService.translate(field.label) }}</label>
+            <div class="info-value-with-unit">
+              <input *ngIf="field.type === 'number'" type="number" min="0" class="info-input" [(ngModel)]="formCapacity[field.key]" placeholder="—" />
+              <input *ngIf="field.type === 'text'" type="text" class="info-input" [(ngModel)]="formCapacity[field.key]" placeholder="—" />
+              <span class="info-unit">{{ field.unit }}</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tab: Görseller -->
+      <div *ngIf="activeTab === 'gorseller'" class="image-groups">
+        <section class="image-group" *ngFor="let group of imageGroups">
+          <header class="image-group-header">
+            <span class="image-group-title">{{ group.label }}</span>
+            <span class="tab-count">{{ formImageGroups[group.key].length }}</span>
+          </header>
+
+          <div class="image-group-body">
+            <div class="image-card" *ngFor="let img of formImageGroups[group.key]; let i = index">
+              <a [href]="img" target="_blank" rel="noopener"><img [src]="img" [alt]="group.label" /></a>
+              <div class="image-actions">
+                <button class="image-action-btn danger" (click)="removeImage(group.key, i)">{{ tsService.translate('Sil') }}</button>
+              </div>
+            </div>
+            <div class="image-empty" *ngIf="!formImageGroups[group.key].length">
+              {{ tsService.translate('Henüz görsel yok') }}
+            </div>
+          </div>
+
+          <label class="image-group-upload-btn">
+            <input type="file" accept="image/*" multiple (change)="onImagesSelected($event, group.key)" hidden />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>{{ tsService.translate('Görsel Yükle') }}</span>
+          </label>
+        </section>
+      </div>
+
+      <!-- Tab: İlişkiler -->
+      <div *ngIf="activeTab === 'iliskiler'" class="relations-grid">
+        <!-- Kart: Versiyonlar -->
+        <section class="info-card">
+          <header class="info-card-header relation-card-header">
+            <span>{{ tsService.translate('VERSİYONLAR') }}</span>
+            <span class="tab-count">{{ formVersionIds.length }}</span>
+          </header>
+          <div class="round-check-list">
+            <label class="round-check-item" *ngFor="let v of catalogService.items('versiyon')" [class.inactive]="v.status === 'Pasif'">
+              <input type="checkbox" [checked]="isVersionSelected(v.id)" (change)="toggleVersion(v.id)" />
+              <span class="round-check-box"></span>
+              <span class="round-check-label">{{ v.name }}</span>
+            </label>
+            <p class="info-card-placeholder" *ngIf="!catalogService.items('versiyon').length">
+              {{ tsService.translate('Katalog > Versiyon sayfasından versiyon tanımlayınız.') }}
+            </p>
+          </div>
+        </section>
+
+        <!-- Kart: Ülkeler (Global > Bölge > Ülke) -->
+        <section class="info-card">
+          <header class="info-card-header relation-card-header">
+            <span>{{ tsService.translate('ÜLKELER') }}</span>
+            <span class="tab-count">{{ formCountryIds.length }}</span>
+          </header>
+          <div class="tree">
+            <label class="tree-row tree-level-0">
+              <input type="checkbox" [checked]="globalState === 'all'" [indeterminate]="globalState === 'some'" (change)="toggleGlobal()" />
+              <span class="tree-label">Global</span>
+            </label>
+
+            <div *ngFor="let region of regionService.regions()">
+              <div class="tree-row tree-level-1">
+                <button type="button" class="tree-toggle" (click)="toggleRegionExpanded(region)" [class.expanded]="expandedRegionIds.has(region.id)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"></polyline></svg>
+                </button>
+                <label class="tree-check">
+                  <input type="checkbox" [checked]="regionState(region) === 'all'" [indeterminate]="regionState(region) === 'some'" (change)="toggleRegion(region)" />
+                  <span class="tree-label">{{ region.name }}</span>
+                  <span class="tree-count">{{ regionCountries(region).length }}</span>
+                </label>
+              </div>
+
+              <ng-container *ngIf="expandedRegionIds.has(region.id)">
+                <label class="tree-row tree-level-2" *ngFor="let country of regionCountries(region)">
+                  <input type="checkbox" [checked]="isCountrySelected(country.id)" (change)="toggleCountry(country.id)" />
+                  <span class="tree-label">{{ country.name }}</span>
+                  <span class="tree-code">{{ country.code }}</span>
+                </label>
+                <p class="tree-empty" *ngIf="!regionCountries(region).length">{{ tsService.translate('Bu bölgede ülke tanımlı değil.') }}</p>
+              </ng-container>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tab: Kapasite -->
+      <div *ngIf="activeTab === 'kapasite'">
+        <div class="capacity-toolbar">
+          <label class="capacity-type-check" *ngFor="let t of capacityTypes">
+            <input type="checkbox" [(ngModel)]="capacityTypeFilter[t.value]" />
+            <span>{{ tsService.translate(t.label) }}</span>
+            <span class="tab-count">{{ capacityTypeCount(t.value) }}</span>
+          </label>
+          <button type="button" class="capacity-add-btn" (click)="addCapacityRow()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>{{ tsService.translate('Satır Ekle') }}</span>
+          </button>
+        </div>
+
+        <div class="table-responsive capacity-table-wrap">
+          <table class="capacity-table">
+            <thead>
+              <tr>
+                <th *ngFor="let col of capacityColumnsBeforeType">
+                  {{ tsService.translate(col.label) }}<span class="col-unit">{{ col.unit }}</span>
+                </th>
+                <th>{{ tsService.translate('Tip') }}</th>
+                <th *ngFor="let col of capacityColumnsAfterType">
+                  {{ tsService.translate(col.label) }}<span class="col-unit">{{ col.unit }}</span>
+                </th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let row of formCapacityRows; let i = index">
+              <tr *ngIf="capacityTypeFilter[row.type]">
+                <td *ngFor="let col of capacityColumnsBeforeType">
+                  <input type="number" step="any" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
+                </td>
+                <td>
+                  <select class="cell-input cell-select" [(ngModel)]="row.type" [class.heating]="row.type === 'HEATING'">
+                    <option *ngFor="let t of capacityTypes" [value]="t.value">{{ tsService.translate(t.label) }}</option>
+                  </select>
+                </td>
+                <td *ngFor="let col of capacityColumnsAfterType">
+                  <input type="number" step="any" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
+                </td>
+                <td class="col-actions">
+                  <button class="action-btn delete-btn" (click)="removeCapacityRow(i)" title="Sil">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              </ng-container>
+              <tr *ngIf="!visibleCapacityCount">
+                <td [attr.colspan]="capacityColumnsBeforeType.length + capacityColumnsAfterType.length + 2" class="capacity-empty">
+                  {{ tsService.translate(formCapacityRows.length ? 'Seçili tipte kapasite satırı yok.' : 'Henüz kapasite satırı eklenmedi.') }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Kombinasyon -->
+      <div *ngIf="activeTab === 'kombinasyon'" class="tab-panel">
+        <p class="placeholder-text">{{ tsService.translate('Kombinasyon alanları tanımlandığında burada yer alacak.') }}</p>
+      </div>
+    </ng-container>
+  </div>
+</main>

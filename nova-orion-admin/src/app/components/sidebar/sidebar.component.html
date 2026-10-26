@@ -152,6 +152,110 @@
       </nav>
     </div>
 
+    <!-- Category: Katalog -->
+    <div class="nav-category" *ngIf="categoryHasMatches('catalog')">
+      <div
+        class="nav-category-header accordion-toggle"
+        (click)="toggleCategory('catalog')"
+        [class.active-cat]="isCategoryOpen('catalog')">
+        <span class="category-header-title">{{ tsService.translate('Katalog') }}</span>
+        <svg class="accordion-chevron" [class.rotated]="isCategoryOpen('catalog')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+
+      <nav class="nav-menu" *ngIf="isCategoryOpen('catalog')">
+        <!-- Sistem -->
+        <a
+          routerLink="/katalog/sistem"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Sistem')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Sistem') }}</span>
+          <span class="count-badge">{{ catalogService.items('sistem').length }}</span>
+        </a>
+
+        <!-- Ürün Grubu -->
+        <a
+          routerLink="/katalog/urun-grubu"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Ürün Grubu')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Ürün Grubu') }}</span>
+          <span class="count-badge">{{ catalogService.items('urun-grubu').length }}</span>
+        </a>
+
+        <!-- Ürün Tipi -->
+        <a
+          routerLink="/katalog/urun-tipi"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Ürün Tipi')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Ürün Tipi') }}</span>
+          <span class="count-badge">{{ catalogService.items('urun-tipi').length }}</span>
+        </a>
+
+        <!-- Ürün Ailesi -->
+        <a
+          routerLink="/katalog/urun-ailesi"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Ürün Ailesi')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Ürün Ailesi') }}</span>
+          <span class="count-badge">{{ catalogService.items('urun-ailesi').length }}</span>
+        </a>
+
+        <!-- Ürün -->
+        <a
+          routerLink="/katalog/urun"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Ürün')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Ürün') }}</span>
+          <span class="count-badge">{{ catalogService.items('urun').length }}</span>
+        </a>
+
+        <!-- Versiyon -->
+        <a
+          routerLink="/katalog/versiyon"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Versiyon')">
+          <svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="6" cy="6" r="3"></circle>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="9" r="3"></circle>
+            <path d="M6 9v6"></path>
+            <path d="M18 12c0 3-3 4-9 4.5"></path>
+          </svg>
+          <span class="nav-link-text">{{ tsService.translate('Versiyon') }}</span>
+          <span class="count-badge">{{ catalogService.items('versiyon').length }}</span>
+        </a>
+      </nav>
+    </div>
+
     <!-- Category 2: Destek & Rehber -->
     <div class="nav-category" *ngIf="categoryHasMatches('support')">
       <div 

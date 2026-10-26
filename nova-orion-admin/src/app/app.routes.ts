@@ -18,6 +18,9 @@ import { SikcaSorulanSorularComponent } from './components/sikca-sorulan-sorular
 import { EgitimComponent } from './components/egitim/egitim.component';
 import { BizeUlasinComponent } from './components/bize-ulasin/bize-ulasin.component';
 import { ModullerComponent } from './components/moduller/moduller.component';
+import { KatalogComponent } from './components/katalog/katalog.component';
+import { UrunListesiComponent } from './components/urun-listesi/urun-listesi.component';
+import { UrunDetayComponent } from './components/urun-detay/urun-detay.component';
 
 // Frontend Portal Components
 import { FrontendLayoutComponent } from './frontend/frontend-layout/frontend-layout.component';
@@ -76,6 +79,14 @@ export const routes: Routes = [
       { path: 'hava-kosullari', component: HavaKosullariComponent },
       { path: 'proje-tipleri', component: ProjeTipleriComponent },
       { path: 'proje-tipi', redirectTo: 'proje-tipleri', pathMatch: 'full' },
+      { path: 'katalog', redirectTo: 'katalog/sistem', pathMatch: 'full' },
+      { path: 'katalog/sistem', component: KatalogComponent, data: { entity: 'sistem' } },
+      { path: 'katalog/urun-grubu', component: KatalogComponent, data: { entity: 'urun-grubu' } },
+      { path: 'katalog/urun-tipi', component: KatalogComponent, data: { entity: 'urun-tipi' } },
+      { path: 'katalog/urun-ailesi', component: KatalogComponent, data: { entity: 'urun-ailesi' } },
+      { path: 'katalog/versiyon', component: KatalogComponent, data: { entity: 'versiyon' } },
+      { path: 'katalog/urun', component: UrunListesiComponent },
+      { path: 'katalog/urun/:id', component: UrunDetayComponent },
       { path: 'moduller', component: ModullerComponent },
       { path: 'modules', redirectTo: 'moduller', pathMatch: 'full' },
       { path: 'kategoriler', component: SssKategorileriComponent },

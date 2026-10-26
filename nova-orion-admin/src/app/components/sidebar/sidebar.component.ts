@@ -16,8 +16,9 @@ import { FaqService } from '../../services/faq.service';
 import { FaqCategoryService } from '../../services/faq-category.service';
 import { AuthService } from '../../services/auth.service';
 import { TranslationService } from '../../services/translation.service';
+import { CatalogService } from '../../services/catalog.service';
 
-export type CategoryId = 'system' | 'support' | 'users' | 'settings';
+export type CategoryId = 'system' | 'catalog' | 'support' | 'users' | 'settings';
 
 @Component({
   selector: 'app-sidebar',
@@ -41,6 +42,7 @@ export class SidebarComponent implements OnInit {
   faqCatService = inject(FaqCategoryService);
   authService = inject(AuthService);
   tsService = inject(TranslationService);
+  catalogService = inject(CatalogService);
 
   activeProject = this.projectService.currentProject;
 
@@ -58,6 +60,14 @@ export class SidebarComponent implements OnInit {
       'Satış Kanalları',
       'Hava Koşulları',
       'Proje Tipi'
+    ],
+    catalog: [
+      'Sistem',
+      'Ürün Grubu',
+      'Ürün Tipi',
+      'Ürün Ailesi',
+      'Ürün',
+      'Versiyon'
     ],
     support: [
       'Kategoriler',
@@ -88,7 +98,9 @@ export class SidebarComponent implements OnInit {
   }
 
   private syncCategoryWithRoute(url: string) {
-    if (url.includes('roller') || url.includes('kullanici')) {
+    if (url.includes('/katalog')) {
+      this.openCategory.set('catalog');
+    } else if (url.includes('roller') || url.includes('kullanici')) {
       this.openCategory.set('users');
     } else if (url.includes('parametre') || url.includes('yedek')) {
       this.openCategory.set('settings');
@@ -133,7 +145,7 @@ export class SidebarComponent implements OnInit {
 
   hasAnyMatches(): boolean {
     if (!this.searchQuery().trim()) return true;
-    const cats: CategoryId[] = ['system', 'support', 'users', 'settings'];
+    const cats: CategoryId[] = ['system', 'catalog', 'support', 'users', 'settings'];
     return cats.some(c => this.categoryHasMatches(c));
   }
 
