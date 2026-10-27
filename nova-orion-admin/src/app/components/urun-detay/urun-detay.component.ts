@@ -17,12 +17,10 @@ import {
 } from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
-import { RegionService, RegionItem } from '../../services/region.service';
-import { CountryService, CountryItem } from '../../services/country.service';
+import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
+import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
 
 export type ProductTab = 'genel' | 'gorseller' | 'iliskiler' | 'kapasite' | 'kombinasyon';
-
-type SelectionState = 'all' | 'some' | 'none';
 
 // Yüklenen görseller depolama alanını korumak için bu boyuta küçültülür
 const MAX_IMAGE_SIZE = 1200;
@@ -30,7 +28,7 @@ const MAX_IMAGE_SIZE = 1200;
 @Component({
   selector: 'app-urun-detay',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, CountryTreeComponent, VersionChecklistComponent],
   templateUrl: './urun-detay.component.html',
   styleUrls: ['../katalog/katalog.component.css', './urun-detay.component.css']
 })
@@ -40,8 +38,6 @@ export class UrunDetayComponent implements OnInit {
   catalogService = inject(CatalogService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
-  regionService = inject(RegionService);
-  countryService = inject(CountryService);
 
   tabs: { id: ProductTab; label: string }[] = [
     { id: 'genel', label: 'Genel Bilgiler' },
@@ -113,7 +109,6 @@ export class UrunDetayComponent implements OnInit {
   // İlişkiler
   formVersionIds: number[] = [];
   formCountryIds: number[] = [];
-  expandedRegionIds = new Set<number>();
 
   formError = '';
   saveMessage = '';
@@ -287,75 +282,6 @@ export class UrunDetayComponent implements OnInit {
 
   removeCapacityRow(index: number) {
     this.formCapacityRows = this.formCapacityRows.filter((_, i) => i !== index);
-  }
-
-  // İlişkiler: Versiyonlar
-
-  isVersionSelected(id: number): boolean {
-    return this.formVersionIds.includes(id);
-  }
-
-  toggleVersion(id: number) {
-    this.formVersionIds = this.isVersionSelected(id)
-      ? this.formVersionIds.filter(v => v !== id)
-      : [...this.formVersionIds, id];
-  }
-
-  // İlişkiler: Ülkeler (Global > Bölge > Ülke)
-
-  regionCountries(region: RegionItem): CountryItem[] {
-    return this.countryService.getCountriesByRegion(region.name);
-  }
-
-  private get allCountryIds(): number[] {
-    return this.regionService.regions().flatMap(r => this.regionCountries(r).map(c => c.id));
-  }
-
-  private selectionState(ids: number[]): SelectionState {
-    const selected = ids.filter(id => this.formCountryIds.includes(id)).length;
-    if (selected === 0) return 'none';
-    return selected === ids.length ? 'all' : 'some';
-  }
-
-  get globalState(): SelectionState {
-    return this.selectionState(this.allCountryIds);
-  }
-
-  regionState(region: RegionItem): SelectionState {
-    return this.selectionState(this.regionCountries(region).map(c => c.id));
-  }
-
-  // Hepsi seçiliyse kaldırır, değilse hepsini seçer
-  private toggleCountries(ids: number[], state: SelectionState) {
-    this.formCountryIds = state === 'all'
-      ? this.formCountryIds.filter(id => !ids.includes(id))
-      : [...new Set([...this.formCountryIds, ...ids])];
-  }
-
-  toggleGlobal() {
-    this.toggleCountries(this.allCountryIds, this.globalState);
-  }
-
-  toggleRegion(region: RegionItem) {
-    this.toggleCountries(this.regionCountries(region).map(c => c.id), this.regionState(region));
-  }
-
-  isCountrySelected(id: number): boolean {
-    return this.formCountryIds.includes(id);
-  }
-
-  toggleCountry(id: number) {
-    this.formCountryIds = this.isCountrySelected(id)
-      ? this.formCountryIds.filter(c => c !== id)
-      : [...this.formCountryIds, id];
-  }
-
-  toggleRegionExpanded(region: RegionItem) {
-    if (this.expandedRegionIds.has(region.id)) {
-      this.expandedRegionIds.delete(region.id);
-    } else {
-      this.expandedRegionIds.add(region.id);
-    }
   }
 
   // Kaydet

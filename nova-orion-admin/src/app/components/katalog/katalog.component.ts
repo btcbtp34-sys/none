@@ -11,11 +11,13 @@ import {
 } from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
+import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
+import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
 
 @Component({
   selector: 'app-katalog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CountryTreeComponent, VersionChecklistComponent],
   templateUrl: './katalog.component.html',
   styleUrl: './katalog.component.css'
 })
@@ -42,6 +44,9 @@ export class KatalogComponent implements OnInit {
   formParentIds: number[] = [];
   formProductTypeId: number | null = null;
   formSystemIds: number[] = [];
+  formOwnVersionId: number | null = null;
+  formVersionIds: number[] = [];
+  formCountryIds: number[] = [];
   formStatus: CatalogStatus = 'Aktif';
   formError = '';
 
@@ -94,6 +99,9 @@ export class KatalogComponent implements OnInit {
     this.formParentIds = item ? [...item.parentIds] : [];
     this.formProductTypeId = item?.productTypeId ?? null;
     this.formSystemIds = [...(item?.systemIds ?? [])];
+    this.formOwnVersionId = item?.ownVersionId ?? null;
+    this.formVersionIds = [...(item?.versionIds ?? [])];
+    this.formCountryIds = [...(item?.countryIds ?? [])];
     this.formStatus = item?.status ?? 'Aktif';
     this.formError = '';
     this.showModal = true;
@@ -152,6 +160,10 @@ export class KatalogComponent implements OnInit {
     return this.catalogService.itemName('sistem', id);
   }
 
+  versionName(id: number | null | undefined): string {
+    return this.catalogService.itemName('versiyon', id);
+  }
+
   // Seçili ürün grubuna ait ürün tipleri
   get productTypeOptions(): CatalogItem[] {
     return this.catalogService.productTypeOptions(this.singleParentId);
@@ -162,7 +174,8 @@ export class KatalogComponent implements OnInit {
   }
 
   get columnCount(): number {
-    return 5 + (this.config.parent ? 1 : 0) + (this.config.hasProductType ? 1 : 0) + (this.config.hasSystem ? 1 : 0);
+    return 5 + (this.config.parent ? 1 : 0) + (this.config.hasProductType ? 1 : 0) + (this.config.hasSystem ? 1 : 0)
+      + (this.config.hasVersionsAndCountries ? 1 : 0);
   }
 
   isParentSelected(id: number): boolean {
@@ -204,6 +217,9 @@ export class KatalogComponent implements OnInit {
       parentIds: this.config.parent ? this.formParentIds : [],
       ...(this.config.hasProductType ? { productTypeId: this.formProductTypeId } : {}),
       ...(this.config.hasSystem ? { systemIds: this.formSystemIds } : {}),
+      ...(this.config.hasVersionsAndCountries
+        ? { ownVersionId: this.formOwnVersionId, versionIds: this.formVersionIds, countryIds: this.formCountryIds }
+        : {}),
       status: this.formStatus
     };
 

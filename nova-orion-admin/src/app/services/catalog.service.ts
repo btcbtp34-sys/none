@@ -16,9 +16,11 @@ export interface CatalogItem {
   systemIds?: number[];
   // Sadece Ürün kataloğunda kullanılan alanlar
   productFamilyId?: number | null;
-  // İlişkiler: bağlı versiyonlar ve ürünün geçerli olduğu ülkeler
+  // İlişkiler: uyumlu/bağlı versiyonlar ve geçerli olduğu ülkeler (Ürün ve Ürün Ailesi)
   versionIds?: number[];
   countryIds?: number[];
+  // Sadece Ürün Ailesi: kaydın kendi versiyonu (tek seçim)
+  ownVersionId?: number | null;
   unbrandedName?: string;
   version?: string;
   imageGroups?: ProductImageGroups;
@@ -91,6 +93,8 @@ export interface CatalogEntityConfig {
   hasProductType?: boolean;
   // true: seçilen ürün grubunun bağlı olduğu sistemlerden seçim yapılır
   hasSystem?: boolean;
+  // true: kendi versiyonu, uyumlu versiyonlar ve ülke seçimi yapılır
+  hasVersionsAndCountries?: boolean;
 }
 
 export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
@@ -135,7 +139,8 @@ export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
     parentLabel: 'ÜRÜN GRUBU',
     multiParent: false,
     hasProductType: true,
-    hasSystem: true
+    hasSystem: true,
+    hasVersionsAndCountries: true
   },
   'urun': {
     title: 'Ürün',
@@ -362,11 +367,15 @@ export class CatalogService {
         });
     }
 
-    // Silinen versiyonu ürünlerden de kaldır
+    // Silinen versiyonu ürünlerden ve ürün ailelerinden de kaldır
     if (entity === 'versiyon') {
-      next['urun'] = next['urun'].map(i =>
-        i.versionIds?.includes(id) ? { ...i, versionIds: i.versionIds.filter(v => v !== id) } : i
-      );
+      (['urun', 'urun-ailesi'] as CatalogEntity[]).forEach(key => {
+        next[key] = next[key].map(i => ({
+          ...i,
+          versionIds: i.versionIds?.filter(v => v !== id),
+          ownVersionId: i.ownVersionId === id ? null : i.ownVersionId
+        }));
+      });
     }
 
     // Silinen ürün ailesini ürünlerden de kaldır

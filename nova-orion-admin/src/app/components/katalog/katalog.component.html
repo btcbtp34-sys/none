@@ -63,6 +63,7 @@
             <th class="text-center" style="width: 50px;">#</th>
             <th>{{ tsService.translate('ADI') }}</th>
             <th>{{ tsService.translate('AÇIKLAMA') }}</th>
+            <th *ngIf="config.hasVersionsAndCountries">{{ tsService.translate('VERSİYON') }}</th>
             <th *ngIf="config.parent">{{ tsService.translate(config.parentLabel) }}</th>
             <th *ngIf="config.hasProductType">{{ tsService.translate('ÜRÜN TİPİ') }}</th>
             <th *ngIf="config.hasSystem">{{ tsService.translate('SİSTEM') }}</th>
@@ -75,6 +76,10 @@
             <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
             <td><span class="brand-name-bold">{{ item.name }}</span></td>
             <td><span class="brand-desc-sm">{{ item.description || '—' }}</span></td>
+            <td *ngIf="config.hasVersionsAndCountries">
+              <span *ngIf="item.ownVersionId; else noVersion" class="code-badge">{{ versionName(item.ownVersionId) }}</span>
+              <ng-template #noVersion><span class="brand-desc-sm">—</span></ng-template>
+            </td>
             <td *ngIf="config.parent">
               <div class="country-tags-wrap">
                 <span *ngFor="let pid of item.parentIds" class="country-chip">
@@ -133,7 +138,7 @@
 
 <!-- Add / Edit Modal -->
 <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
-  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+  <div class="modal-card modal-medium" [class.modal-large]="config.hasVersionsAndCountries" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3 class="modal-title">
         {{ tsService.translate(editingId ? config.singular + ' Düzenle' : 'Yeni ' + config.singular + ' Ekle') }}
@@ -161,10 +166,19 @@
         </div>
       </div>
 
-      <!-- Row 2: Description -->
-      <div class="form-group">
-        <label class="form-label-bold">{{ tsService.translate('AÇIKLAMA') }}</label>
-        <textarea class="form-control-subtle" rows="2" [(ngModel)]="formDescription"></textarea>
+      <!-- Row 2: Description (+ yanında kendi versiyonu) -->
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label class="form-label-bold">{{ tsService.translate('AÇIKLAMA') }}</label>
+          <textarea class="form-control-subtle" rows="2" [(ngModel)]="formDescription"></textarea>
+        </div>
+        <div class="form-group flex-1" *ngIf="config.hasVersionsAndCountries">
+          <label class="form-label-bold">{{ tsService.translate('KENDİ VERSİYONU') }}</label>
+          <select class="form-control-subtle" [(ngModel)]="formOwnVersionId">
+            <option [ngValue]="null">{{ tsService.translate('Seçiniz') }}</option>
+            <option *ngFor="let v of catalogService.items('versiyon')" [ngValue]="v.id">{{ v.name }}</option>
+          </select>
+        </div>
       </div>
 
       <!-- Sistem seçimi: ürün tipi olan kataloglarda tipin, olmayanlarda ürün grubunun yanında gösterilir -->
@@ -247,6 +261,29 @@
         </div>
         <span class="form-hint-subtle">{{ tsService.translate('Bu kaydın bağlı olduğu kayıtları seçiniz.') }}</span>
       </div>
+
+      <!-- Uyumlu versiyonlar ve ülkeler (Global > Bölge > Ülke) -->
+      <ng-container *ngIf="config.hasVersionsAndCountries">
+        <div class="form-group">
+          <div class="label-row-between">
+            <label class="form-label-bold mb-0">{{ tsService.translate('UYUMLU VERSİYONLAR') }}</label>
+            <span class="multi-select-badge">{{ formVersionIds.length }}</span>
+          </div>
+          <div class="picker-box">
+            <app-version-checklist [(selectedIds)]="formVersionIds" [inline]="true"></app-version-checklist>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row-between">
+            <label class="form-label-bold mb-0">{{ tsService.translate('ÜLKELER') }}</label>
+            <span class="multi-select-badge">{{ formCountryIds.length }}</span>
+          </div>
+          <div class="picker-box">
+            <app-country-tree [(selectedIds)]="formCountryIds"></app-country-tree>
+          </div>
+        </div>
+      </ng-container>
     </div>
 
     <div class="modal-footer">
