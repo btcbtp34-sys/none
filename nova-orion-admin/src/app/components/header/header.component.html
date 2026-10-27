@@ -68,14 +68,14 @@
 
     <!-- User Profile Chip with SSO Role Switcher -->
     <div class="user-profile-wrapper">
-      <div class="user-profile" (click)="toggleUserRoleDropdown($event)" title="Rol ve Kullanıcı Değiştir">
+      <div class="user-profile" (click)="toggleUserRoleDropdown($event)" [title]="tsService.translate('Rol ve Kullanıcı Değiştir')">
         <div class="avatar-badge" [class.badge-super]="authService.isSuperAdmin()" [class.badge-region]="authService.isRegionAdmin()" [class.badge-country]="authService.isCountryAdmin()">
           {{ authService.currentUser().avatarInitials }}
         </div>
         <div class="user-info">
           <span class="user-name">{{ authService.currentUser().name }}</span>
           <div class="role-badge-row">
-            <span class="user-role">{{ authService.currentUser().roleTitle }}</span>
+            <span class="user-role">{{ roleTitle(authService.currentUser().roleTitle) }}</span>
             <svg class="role-chevron-icon" [class.rotated]="showUserRoleDropdown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
@@ -86,7 +86,7 @@
       <!-- Quick Role Switcher Menu -->
       <div class="role-switch-menu" *ngIf="showUserRoleDropdown">
         <div class="role-menu-header">
-          <span>KULLANICI ROLLERİ (HIZLI GEÇİŞ)</span>
+          <span>{{ tsService.translate('KULLANICI ROLLERİ (HIZLI GEÇİŞ)') }}</span>
         </div>
         <div 
           *ngFor="let user of authService.demoUsers" 
@@ -98,15 +98,15 @@
           </div>
           <div class="role-opt-meta">
             <span class="role-opt-name">{{ user.name }}</span>
-            <span class="role-opt-title">{{ user.roleTitle }}</span>
+            <span class="role-opt-title">{{ roleTitle(user.roleTitle) }}</span>
           </div>
-          <span *ngIf="user.id === authService.currentUser().id" class="current-tag">Aktif</span>
+          <span *ngIf="user.id === authService.currentUser().id" class="current-tag">{{ tsService.translate('Aktif') }}</span>
         </div>
       </div>
     </div>
 
     <!-- Logout / Exit Button -->
-    <button class="logout-btn" (click)="logout()" title="Oturumu Kapat">
+    <button class="logout-btn" (click)="logout()" [title]="tsService.translate('Oturumu Kapat')">
       <svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
         <polyline points="16 17 21 12 16 7"></polyline>

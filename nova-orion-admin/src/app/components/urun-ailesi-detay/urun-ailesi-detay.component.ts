@@ -8,7 +8,9 @@ import { TranslationService } from '../../services/translation.service';
 import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
 
-// Ürün Ailesi detay sayfası: üstte genel bilgiler, altında ilişkiler (uyumlu versiyonlar, ülkeler)
+export type FamilyTab = 'genel' | 'iliskiler';
+
+// Ürün Ailesi detay sayfası: Ürün detayı gibi sekmeli; genel bilgiler ve ilişkiler (uyumlu versiyonlar, ülkeler)
 @Component({
   selector: 'app-urun-ailesi-detay',
   standalone: true,
@@ -26,6 +28,12 @@ export class UrunAilesiDetayComponent implements OnInit {
   catalogService = inject(CatalogService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
+
+  tabs: { id: FamilyTab; label: string }[] = [
+    { id: 'genel', label: 'Genel Bilgiler' },
+    { id: 'iliskiler', label: 'İlişkiler' }
+  ];
+  activeTab: FamilyTab = 'genel';
 
   familyId: number | null = null;
   notFound = false;
@@ -156,5 +164,6 @@ export class UrunAilesiDetayComponent implements OnInit {
 
   private showError(message: string) {
     this.formError = this.tsService.translate(message);
+    this.activeTab = 'genel';
   }
 }

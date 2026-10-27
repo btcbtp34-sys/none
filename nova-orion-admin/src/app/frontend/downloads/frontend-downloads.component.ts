@@ -101,7 +101,7 @@ export class FrontendDownloadsComponent {
     setTimeout(() => {
       item.downloadCount++;
       this.downloadingId = null;
-      this.downloadSuccessMessage = `${item.title} indirildi.`;
+      this.downloadSuccessMessage = this.tsService.translate('{title} indirildi.').replace('{title}', this.tsService.translate(item.title));
       setTimeout(() => {
         this.downloadSuccessMessage = '';
       }, 3000);

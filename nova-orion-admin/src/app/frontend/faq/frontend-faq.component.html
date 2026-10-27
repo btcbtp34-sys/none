@@ -17,7 +17,7 @@
         type="text" 
         class="faq-search-input" 
         [(ngModel)]="searchQuery" 
-        placeholder="Soru veya anahtar kelime arayın..." />
+        [placeholder]="tsService.translate('Soru veya anahtar kelime arayın...')" />
     </div>
   </div>
 
@@ -28,7 +28,7 @@
       class="cat-pill" 
       [class.active]="selectedCategory === cat"
       (click)="selectedCategory = cat">
-      {{ cat }}
+      {{ tsService.translate(cat) }}
     </button>
   </div>
 
@@ -40,8 +40,8 @@
       [class.expanded]="item.isOpen">
       <div class="faq-question-row" (click)="toggleFaq(item)">
         <div class="faq-q-text-wrap">
-          <span class="faq-q-badge">S</span>
-          <h3 class="faq-q-text">{{ item.question }}</h3>
+          <span class="faq-q-badge">{{ tsService.translate('S') }}</span>
+          <h3 class="faq-q-text">{{ tsService.translate(item.question) }}</h3>
         </div>
         <div class="faq-toggle-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron-svg" [class.rotated]="item.isOpen">
@@ -51,16 +51,16 @@
       </div>
 
       <div class="faq-answer-row" *ngIf="item.isOpen">
-        <div class="faq-a-badge">C</div>
+        <div class="faq-a-badge">{{ tsService.translate('C') }}</div>
         <div class="faq-a-text">
-          <p>{{ item.answer }}</p>
-          <span class="faq-item-cat">{{ item.category }}</span>
+          <p>{{ tsService.translate(item.answer) }}</p>
+          <span class="faq-item-cat">{{ tsService.translate(item.category) }}</span>
         </div>
       </div>
     </div>
 
     <div class="faq-empty-state" *ngIf="filteredFaqs.length === 0">
-      <p>Arama kriterinize uygun soru bulunamadı.</p>
+      <p>{{ tsService.translate('Arama kriterinize uygun soru bulunamadı.') }}</p>
     </div>
   </div>
 

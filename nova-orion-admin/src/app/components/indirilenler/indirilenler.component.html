@@ -27,7 +27,7 @@
           <line x1="12" y1="8" x2="12.01" y2="8"></line>
         </svg>
       </div>
-      <span>Ülke Yöneticisi olarak yalnızca <strong>{{ authService.currentUser().assignedCountry }}</strong> ülkenize tahsis edilmiş aktif dokümanları görüntüleyebilir ve indirebilirsiniz.</span>
+      <span>{{ tsService.translate('Ülke Yöneticisi olarak yalnızca') }} <strong>{{ tsService.translate(authService.currentUser().assignedCountry || '') }}</strong> {{ tsService.translate('ülkenize tahsis edilmiş aktif dokümanları görüntüleyebilir ve indirebilirsiniz.') }}</span>
     </div>
 
     <div class="role-scope-banner region-theme" *ngIf="authService.isRegionAdmin()">
@@ -36,7 +36,7 @@
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
         </svg>
       </div>
-      <span>Bölge Yöneticisi (<strong>{{ authService.currentUser().assignedRegion }}</strong>): Bölgenizdeki dosyaların ülke bazında aktif/pasif durumlarını yönetebilirsiniz. Dosya yükleme yetkisi Süper Admin'dedir.</span>
+      <span>{{ tsService.translate('Bölge Yöneticisi') }} (<strong>{{ tsService.translate(authService.currentUser().assignedRegion || '') }}</strong>): {{ tsService.translate('Bölgenizdeki dosyaların ülke bazında aktif/pasif durumlarını yönetebilirsiniz. Dosya yükleme yetkisi Süper Admin\'dedir.') }}</span>
     </div>
 
     <!-- Filter Toolbar -->
@@ -59,7 +59,7 @@
           <select class="filter-select" [(ngModel)]="filterRegion">
             <option value="ALL">{{ tsService.translate('Tüm Bölgeler') }}</option>
             <option value="Global">Global</option>
-            <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ r.name }}</option>
+            <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ tsService.translate(r.name) }}</option>
           </select>
         </div>
       </div>
@@ -100,14 +100,14 @@
                   </svg>
                 </div>
                 <div class="file-info-stack">
-                  <span class="file-name-text">{{ item.title }}</span>
+                  <span class="file-name-text">{{ tsService.translate(item.title) }}</span>
                   <span class="file-sub-meta">{{ item.filename }} • {{ item.uploader }}</span>
                 </div>
               </div>
             </td>
             <td class="text-center">
               <span class="region-pill-badge" [class.global]="item.region === 'Global'">
-                {{ item.region }}
+                {{ tsService.translate(item.region) }}
               </span>
             </td>
             <td>
@@ -123,30 +123,30 @@
                   *ngIf="authService.isRegionAdmin() || authService.isSuperAdmin()"
                   class="manage-country-btn" 
                   (click)="openCountryStatusModal(item)"
-                  title="Ülke bazında aktif/pasif durumunu yönet">
+                  [title]="tsService.translate('Ülke bazında aktif/pasif durumunu yönet')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M2 12h20"></path>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                   </svg>
-                  <span>Ülke Durumları</span>
+                  <span>{{ tsService.translate('Ülke Durumları') }}</span>
                 </button>
 
                 <span *ngIf="authService.isCountryAdmin()" class="status-country-active-tag">
-                  <span class="dot-green"></span> Aktif (Erişilebilir)
+                  <span class="dot-green"></span> {{ tsService.translate('Aktif (Erişilebilir)') }}
                 </span>
               </div>
             </td>
             <td class="text-right">
               <div class="actions-group">
-                <button class="action-btn download-btn" (click)="downloadFile(item)" title="İndir">
+                <button class="action-btn download-btn" (click)="downloadFile(item)" [title]="tsService.translate('İndir')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
                 </button>
-                <button class="action-btn delete-btn" (click)="deleteFile(item.id)" title="Sil" *ngIf="authService.isSuperAdmin()">
+                <button class="action-btn delete-btn" (click)="deleteFile(item.id)" [title]="tsService.translate('Sil')" *ngIf="authService.isSuperAdmin()">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -159,7 +159,7 @@
           <tr *ngIf="visibleDownloads.length === 0">
             <td colspan="7" class="empty-state-cell">
               <div class="empty-state-box">
-                <p class="empty-state-title">Erişilebilir doküman bulunamadı.</p>
+                <p class="empty-state-title">{{ tsService.translate('Erişilebilir doküman bulunamadı.') }}</p>
               </div>
             </td>
           </tr>
@@ -173,7 +173,7 @@
 <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
   <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3 class="modal-title">{{ tsService.translate('Dosya Yükle') }} (Süper Admin)</h3>
+      <h3 class="modal-title">{{ tsService.translate('Dosya Yükle') }} ({{ tsService.translate('Süper Admin') }})</h3>
       <button class="modal-close-btn" (click)="closeModal()">✕</button>
     </div>
 
@@ -201,8 +201,8 @@
               <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
           </div>
-          <p class="dropzone-text"><strong>Dosyayı buraya sürükleyin</strong> veya tıklayarak seçin</p>
-          <span class="dropzone-sub">PDF, ZIP, DWG veya Doküman (Maks. 50MB)</span>
+          <p class="dropzone-text"><strong>{{ tsService.translate('Dosyayı buraya sürükleyin') }}</strong> {{ tsService.translate('veya tıklayarak seçin') }}</p>
+          <span class="dropzone-sub">{{ tsService.translate('PDF, ZIP, DWG veya Doküman (Maks. 50MB)') }}</span>
         </div>
 
         <div class="file-preview-card" *ngIf="selectedFile">
@@ -216,34 +216,34 @@
             <span class="file-preview-name">{{ selectedFile.name }}</span>
             <span class="file-preview-size">{{ formSize }}</span>
           </div>
-          <span class="file-preview-check">Seçildi</span>
+          <span class="file-preview-check">{{ tsService.translate('Seçildi') }}</span>
         </div>
       </div>
 
       <div class="form-group" style="margin-top: 16px;">
-        <label class="form-label-bold">DOSYA BAŞLIĞI *</label>
-        <input type="text" class="form-control-subtle" placeholder="Örn: Nova 2026 Teknik Montaj Kılavuzu" [(ngModel)]="formTitle" />
+        <label class="form-label-bold">{{ tsService.translate('DOSYA BAŞLIĞI *') }}</label>
+        <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: Nova 2026 Teknik Montaj Kılavuzu')" [(ngModel)]="formTitle" />
       </div>
 
       <div class="form-row">
         <!-- Hedef Bölge Seçimi (Super Admin) -->
         <div class="form-group flex-1">
-          <label class="form-label-bold">HEDEF BÖLGE *</label>
+          <label class="form-label-bold">{{ tsService.translate('HEDEF BÖLGE *') }}</label>
           <select class="form-control-subtle" [(ngModel)]="formRegion">
-            <option value="Global">Global (Tüm Bölgeler)</option>
-            <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ r.name }}</option>
+            <option value="Global">{{ tsService.translate('Global (Tüm Bölgeler)') }}</option>
+            <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ tsService.translate(r.name) }}</option>
           </select>
-          <span class="form-hint-subtle">Dokümanın geçerli olduğu coğrafi kapsam.</span>
+          <span class="form-hint-subtle">{{ tsService.translate('Dokümanın geçerli olduğu coğrafi kapsam.') }}</span>
         </div>
 
         <!-- Erişim İzni -->
         <div class="form-group flex-1">
-          <label class="form-label-bold">ERİŞİM İZNİ *</label>
+          <label class="form-label-bold">{{ tsService.translate('ERİŞİM İZNİ *') }}</label>
           <select class="form-control-subtle" [(ngModel)]="formPermission">
-            <option value="all">Tüm Kullanıcılar (Herkes)</option>
-            <option value="logged_in">Sadece Giriş Yapanlar</option>
+            <option value="all">{{ tsService.translate('Tüm Kullanıcılar (Herkes)') }}</option>
+            <option value="logged_in">{{ tsService.translate('Sadece Giriş Yapanlar') }}</option>
           </select>
-          <span class="form-hint-subtle">Kullanıcı oturum yetki seviyesi.</span>
+          <span class="form-hint-subtle">{{ tsService.translate('Kullanıcı oturum yetki seviyesi.') }}</span>
         </div>
       </div>
     </div>
@@ -260,23 +260,23 @@
   <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <div>
-        <h3 class="modal-title">Ülke Bazlı Erişim Durumu</h3>
-        <p class="modal-subtitle-sm">{{ activeManagingItem.title }} ({{ activeManagingItem.region }})</p>
+        <h3 class="modal-title">{{ tsService.translate('Ülke Bazlı Erişim Durumu') }}</h3>
+        <p class="modal-subtitle-sm">{{ tsService.translate(activeManagingItem.title) }} ({{ tsService.translate(activeManagingItem.region) }})</p>
       </div>
       <button class="modal-close-btn" (click)="closeCountryStatusModal()">✕</button>
     </div>
 
     <div class="modal-body">
       <p class="modal-info-note">
-        Bu dosyanın bölgenizdeki hangi ülkelerde kullanıcılara ve Country Admin'e açık olduğunu aktif/pasif yaparak belirleyebilirsiniz:
+        {{ tsService.translate('Bu dosyanın bölgenizdeki hangi ülkelerde kullanıcılara ve Country Admin\'e açık olduğunu aktif/pasif yaparak belirleyebilirsiniz:') }}
       </p>
 
       <div class="countries-toggle-list">
         <div *ngFor="let c of regionCountries" class="country-toggle-row" (click)="toggleCountryAvailability(c)">
           <div class="country-row-info">
-            <span class="country-row-name">{{ c }}</span>
+            <span class="country-row-name">{{ tsService.translate(c) }}</span>
             <span class="status-chip" [class.active]="isCountryActive(c)">
-              {{ isCountryActive(c) ? 'Aktif (Yayında)' : 'Pasif (Gizli)' }}
+              {{ tsService.translate(isCountryActive(c) ? 'Aktif (Yayında)' : 'Pasif (Gizli)') }}
             </span>
           </div>
 
@@ -292,7 +292,7 @@
     </div>
 
     <div class="modal-footer">
-      <button class="btn-save" (click)="closeCountryStatusModal()">Tamam</button>
+      <button class="btn-save" (click)="closeCountryStatusModal()">{{ tsService.translate('Tamam') }}</button>
     </div>
   </div>
 </div>

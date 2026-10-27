@@ -49,9 +49,11 @@ export class ParametrelerComponent implements OnInit {
     return list.filter(p => {
       const matchesSearch = !q ||
         p.name.toLowerCase().includes(q) ||
+        this.tsService.translate(p.name).toLowerCase().includes(q) ||
         p.key.toLowerCase().includes(q) ||
         p.value.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q);
+        p.description.toLowerCase().includes(q) ||
+        this.tsService.translate(p.description).toLowerCase().includes(q);
 
       const matchesCat = this.filterCategory === 'ALL' || p.category === this.filterCategory;
 

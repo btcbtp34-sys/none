@@ -23,7 +23,7 @@
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
         </svg>
       </div>
-      <span>Ülke Yöneticisi olarak yalnızca <strong>{{ authService.currentUser().assignedCountry }}</strong> ülkesine ait şehirleri görüntüleyebilir, yeni şehir ekleyebilir ve hava koşullarını düzenleyebilirsiniz.</span>
+      <span>{{ countryAdminNoteParts()[0] }}<strong>{{ tsService.translate(authService.currentUser().assignedCountry || '') }}</strong>{{ countryAdminNoteParts()[1] }}</span>
     </div>
 
     <!-- Filter Toolbar -->
@@ -46,7 +46,7 @@
         <div class="filter-select-wrapper" *ngIf="!authService.isCountryAdmin()">
           <select class="filter-select" [(ngModel)]="filterCountry">
             <option value="ALL">{{ tsService.translate('Tüm Ülkeler') }}</option>
-            <option *ngFor="let country of userAllowedCountries" [value]="country">{{ country }}</option>
+            <option *ngFor="let country of userAllowedCountries" [value]="country">{{ tsService.translate(country) }}</option>
           </select>
         </div>
 
@@ -88,11 +88,11 @@
             <td><span class="index-text">{{ i + 1 }}</span></td>
             <td>
               <div class="country-cell">
-                <span class="country-pill-tag">{{ item.country }}</span>
+                <span class="country-pill-tag">{{ tsService.translate(item.country) }}</span>
               </div>
             </td>
             <td>
-              <span class="city-name-text">{{ item.city }}</span>
+              <span class="city-name-text">{{ tsService.translate(item.city) }}</span>
             </td>
             <td>
               <span class="altitude-pill">
@@ -122,13 +122,13 @@
             </td>
             <td class="text-right">
               <div class="actions-group">
-                <button class="action-btn edit-btn" (click)="openModal(item)" title="Düzenle">
+                <button class="action-btn edit-btn" (click)="openModal(item)" [title]="tsService.translate('Düzenle')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-                <button class="action-btn delete-btn" (click)="deleteCity(item.id)" title="Sil">
+                <button class="action-btn delete-btn" (click)="deleteCity(item.id)" [title]="tsService.translate('Sil')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -165,7 +165,7 @@
         <div class="form-group flex-2">
           <label class="form-label-bold">{{ tsService.translate('Country *') }}</label>
           <select class="form-control-subtle" [(ngModel)]="formCountry" [disabled]="authService.isCountryAdmin()">
-            <option *ngFor="let c of userAllowedCountries" [value]="c">{{ c }}</option>
+            <option *ngFor="let c of userAllowedCountries" [value]="c">{{ tsService.translate(c) }}</option>
           </select>
         </div>
 
@@ -196,7 +196,7 @@
           <input 
             type="number" 
             class="form-control-subtle" 
-            placeholder="Örn: 850" 
+            [placeholder]="tsService.translate('Örn: 850')" 
             [(ngModel)]="formAltitude" />
         </div>
       </div>

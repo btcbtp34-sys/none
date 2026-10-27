@@ -268,32 +268,34 @@ export class SikcaSorulanSorularComponent implements OnInit {
     const count = this.getSelectedCountries().length;
     const total = this.regionTree.reduce((sum, r) => sum + r.countries.length, 0);
 
-    if (count === 0) return 'Hiçbir Ülke Seçilmedi';
-    if (count === total) return 'Global (Tüm Dünya - 25 Ülke)';
+    const t = (k: string) => this.tsService.translate(k);
+    if (count === 0) return t('Hiçbir Ülke Seçilmedi');
+    if (count === total) return t('Global (Tüm Dünya - {count} Ülke)').replace('{count}', String(total));
 
     const scope = this.getCalculatedScope();
     if (scope === 'Bölgesel') {
       const fullRegion = this.regionTree.find(r => this.isRegionChecked(r));
-      return `Bölgesel (${fullRegion?.name || 'Bölge'} - ${count} Ülke)`;
+      return t('Bölgesel ({region} - {count} Ülke)').replace('{region}', t(fullRegion?.name || 'Bölge')).replace('{count}', String(count));
     }
 
     if (count === 1) {
-      return `Ülke: ${this.getSelectedCountries()[0]}`;
+      return `${t('Ülke')}: ${t(this.getSelectedCountries()[0])}`;
     }
 
-    return `Özel Ülke Kapsamı (${count} Ülke Seçildi)`;
+    return t('Özel Ülke Kapsamı ({count} Ülke Seçildi)').replace('{count}', String(count));
   }
 
   isCountryVisible(c: CountryNode): boolean {
     if (!this.treeSearch.trim()) return true;
-    return c.name.toLowerCase().includes(this.treeSearch.trim().toLowerCase());
+    const q = this.treeSearch.trim().toLowerCase();
+    return c.name.toLowerCase().includes(q) || this.tsService.translate(c.name).toLowerCase().includes(q);
   }
 
   isRegionVisible(r: RegionNode): boolean {
     if (!this.treeSearch.trim()) return true;
     const q = this.treeSearch.trim().toLowerCase();
-    if (r.name.toLowerCase().includes(q)) return true;
-    return r.countries.some(c => c.name.toLowerCase().includes(q));
+    if (r.name.toLowerCase().includes(q) || this.tsService.translate(r.name).toLowerCase().includes(q)) return true;
+    return r.countries.some(c => this.isCountryVisible(c));
   }
 
   get availableCategories(): string[] {
@@ -334,6 +336,8 @@ export class SikcaSorulanSorularComponent implements OnInit {
       const matchesSearch = !q || 
         item.question.toLowerCase().includes(q) || 
         item.answerSnippet.toLowerCase().includes(q) ||
+        this.tsService.translate(item.question).toLowerCase().includes(q) ||
+        this.tsService.translate(item.answerSnippet).toLowerCase().includes(q) ||
         (item.targetCountry && item.targetCountry.toLowerCase().includes(q)) ||
         (item.targetCountries && item.targetCountries.some(tc => tc.toLowerCase().includes(q)));
 
@@ -377,14 +381,15 @@ export class SikcaSorulanSorularComponent implements OnInit {
   }
 
   insertFormat(type: string) {
+    const t = (k: string) => this.tsService.translate(k);
     switch (type) {
-      case 'bold': this.formAnswer += ' **kalın metin**'; break;
-      case 'italic': this.formAnswer += ' *italik metin*'; break;
-      case 'underline': this.formAnswer += ' <u>altı çizili</u>'; break;
-      case 'link': this.formAnswer += ' [Bağlantı Başlığı](https://...)'; break;
-      case 'image': this.formAnswer += ' ![Görsel](https://...)'; break;
-      case 'code': this.formAnswer += ' `kod bloğu`'; break;
-      case 'list': this.formAnswer += '\n• Liste öğesi 1\n• Liste öğesi 2'; break;
+      case 'bold': this.formAnswer += ` **${t('kalın metin')}**`; break;
+      case 'italic': this.formAnswer += ` *${t('italik metin')}*`; break;
+      case 'underline': this.formAnswer += ` <u>${t('altı çizili')}</u>`; break;
+      case 'link': this.formAnswer += ` [${t('Bağlantı Başlığı')}](https://...)`; break;
+      case 'image': this.formAnswer += ` ![${t('Görsel')}](https://...)`; break;
+      case 'code': this.formAnswer += ` \`${t('kod bloğu')}\``; break;
+      case 'list': this.formAnswer += `\n• ${t('Liste öğesi')} 1\n• ${t('Liste öğesi')} 2`; break;
       case 'clear': this.formAnswer = ''; break;
     }
   }
@@ -434,7 +439,7 @@ export class SikcaSorulanSorularComponent implements OnInit {
   }
 
   deleteQuestion(id: number) {
-    if (confirm('Bu soruyu silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu soruyu silmek istediğinizden emin misiniz?'))) {
       this.faqService.deleteQuestion(id);
     }
   }

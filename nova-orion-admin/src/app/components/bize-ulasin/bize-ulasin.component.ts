@@ -251,32 +251,34 @@ export class BizeUlasinComponent implements OnInit {
     const count = this.getSelectedCountries().length;
     const total = this.regionTree.reduce((sum, r) => sum + r.countries.length, 0);
 
-    if (count === 0) return 'Hiçbir Ülke Seçilmedi';
-    if (count === total) return 'Global (Tüm Dünya - 25 Ülke)';
+    const t = (k: string) => this.tsService.translate(k);
+    if (count === 0) return t('Hiçbir Ülke Seçilmedi');
+    if (count === total) return t('Global (Tüm Dünya - {count} Ülke)').replace('{count}', String(total));
 
     const scope = this.getCalculatedScope();
     if (scope === 'Bölgesel') {
       const fullRegion = this.regionTree.find(r => this.isRegionChecked(r));
-      return `Bölgesel (${fullRegion?.name || 'Bölge'} - ${count} Ülke)`;
+      return t('Bölgesel ({region} - {count} Ülke)').replace('{region}', t(fullRegion?.name || 'Bölge')).replace('{count}', String(count));
     }
 
     if (count === 1) {
-      return `Ülke: ${this.getSelectedCountries()[0]}`;
+      return `${t('Ülke')}: ${t(this.getSelectedCountries()[0])}`;
     }
 
-    return `Özel Ülke Kapsamı (${count} Ülke Seçildi)`;
+    return t('Özel Ülke Kapsamı ({count} Ülke Seçildi)').replace('{count}', String(count));
   }
 
   isCountryVisible(c: CountryNode): boolean {
     if (!this.treeSearch.trim()) return true;
-    return c.name.toLowerCase().includes(this.treeSearch.trim().toLowerCase());
+    const q = this.treeSearch.trim().toLowerCase();
+    return c.name.toLowerCase().includes(q) || this.tsService.translate(c.name).toLowerCase().includes(q);
   }
 
   isRegionVisible(r: RegionNode): boolean {
     if (!this.treeSearch.trim()) return true;
     const q = this.treeSearch.trim().toLowerCase();
-    if (r.name.toLowerCase().includes(q)) return true;
-    return r.countries.some(c => c.name.toLowerCase().includes(q));
+    if (r.name.toLowerCase().includes(q) || this.tsService.translate(r.name).toLowerCase().includes(q)) return true;
+    return r.countries.some(c => this.isCountryVisible(c));
   }
 
   get availableCategories(): string[] {
@@ -307,6 +309,8 @@ export class BizeUlasinComponent implements OnInit {
       const matchesSearch = !q || 
         item.question.toLowerCase().includes(q) || 
         item.answerSnippet.toLowerCase().includes(q) ||
+        this.tsService.translate(item.question).toLowerCase().includes(q) ||
+        this.tsService.translate(item.answerSnippet).toLowerCase().includes(q) ||
         (item.targetCountry && item.targetCountry.toLowerCase().includes(q)) ||
         (item.targetCountries && item.targetCountries.some(tc => tc.toLowerCase().includes(q)));
 
@@ -394,7 +398,7 @@ export class BizeUlasinComponent implements OnInit {
   }
 
   deleteContact(id: number) {
-    if (confirm('Bu iletişim kanalını silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu iletişim kanalını silmek istediğinizden emin misiniz?'))) {
       this.faqService.deleteQuestion(id);
     }
   }

@@ -21,35 +21,35 @@
           </svg>
         </div>
         <div>
-          <h3 class="panel-title">Çeviri Şablonu İndir (Temp İndir)</h3>
-          <p class="panel-desc">Kategoriye ve yetkili olduğunuz dile göre Excel/CSV şablonu indirin.</p>
+          <h3 class="panel-title">{{ tsService.translate('Çeviri Şablonu İndir (Temp İndir)') }}</h3>
+          <p class="panel-desc">{{ tsService.translate('Kategoriye ve yetkili olduğunuz dile göre Excel/CSV şablonu indirin.') }}</p>
         </div>
       </div>
 
       <div class="panel-body">
         <div class="form-group">
-          <label class="form-label-bold">KATEGORİ SEÇİMİ *</label>
+          <label class="form-label-bold">{{ tsService.translate('KATEGORİ SEÇİMİ *') }}</label>
           <select class="form-control-subtle" [(ngModel)]="downloadCategory">
             <option *ngFor="let cat of categoriesList" [value]="cat.code">
-              {{ cat.name }} ({{ cat.rowCount }} satır)
+              {{ tsService.translate(cat.name) }} ({{ cat.rowCount }} {{ tsService.translate('satır') }})
             </option>
           </select>
-          <span class="form-hint-subtle">Hangi kategorinin çeviri anahtarlarını indirmek istediğinizi seçin.</span>
+          <span class="form-hint-subtle">{{ tsService.translate('Hangi kategorinin çeviri anahtarlarını indirmek istediğinizi seçin.') }}</span>
         </div>
 
         <div class="form-group">
           <div class="label-row-between">
-            <label class="form-label-bold mb-0">HEDEF DİL *</label>
+            <label class="form-label-bold mb-0">{{ tsService.translate('HEDEF DİL *') }}</label>
             <span *ngIf="isLanguageLockedForUser" class="role-locked-pill">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pill-icon">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
-              <span>Ülke Yetkinize Göre Kilitli ({{ userLanguageName }})</span>
+              <span>{{ tsService.translate('Ülke Yetkinize Göre Kilitli') }} ({{ tsService.translate(userLanguageName) }})</span>
             </span>
           </div>
           <select class="form-control-subtle" [(ngModel)]="downloadLanguage" [disabled]="isLanguageLockedForUser">
-            <option value="ALL">Tüm Diller</option>
+            <option value="ALL">{{ tsService.translate('Tüm Diller') }}</option>
             <option value="tr">Türkçe (TR)</option>
             <option value="en">English (EN)</option>
             <option value="de">Deutsch (DE)</option>
@@ -58,12 +58,12 @@
             <option value="it">Italiano (IT)</option>
           </select>
           <span class="form-hint-subtle" *ngIf="isLanguageLockedForUser">
-            Ülke Yöneticisi rolünüz gereği yalnızca sorumlu olduğunuz <strong>{{ userLanguageName }}</strong> dili için şablon indirebilirsiniz.
+            {{ tsService.translate('Ülke Yöneticisi rolünüz gereği yalnızca sorumlu olduğunuz') }} <strong>{{ tsService.translate(userLanguageName) }}</strong> {{ tsService.translate('dili için şablon indirebilirsiniz.') }}
           </span>
         </div>
 
         <div class="form-group">
-          <label class="form-label-bold">DOSYA FORMATI</label>
+          <label class="form-label-bold">{{ tsService.translate('DOSYA FORMATI') }}</label>
           <div class="format-chips-row">
             <button type="button" class="format-chip" [class.active]="downloadFormat === 'xlsx'" (click)="downloadFormat = 'xlsx'">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chip-svg-icon">
@@ -99,7 +99,7 @@
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
-          <span>Şablonu İndir (Temp İndir)</span>
+          <span>{{ tsService.translate('Şablonu İndir (Temp İndir)') }}</span>
         </button>
       </div>
     </div>
@@ -115,8 +115,8 @@
           </svg>
         </div>
         <div>
-          <h3 class="panel-title">Çeviri Dosyası Yükle (Dosya Yükle)</h3>
-          <p class="panel-desc">Doldurduğunuz AirSelect Excel/CSV dosyasını yükleyin ve canlı düzenleyin.</p>
+          <h3 class="panel-title">{{ tsService.translate('Çeviri Dosyası Yükle (Dosya Yükle)') }}</h3>
+          <p class="panel-desc">{{ tsService.translate('Doldurduğunuz AirSelect Excel/CSV dosyasını yükleyin ve canlı düzenleyin.') }}</p>
         </div>
       </div>
 
@@ -131,8 +131,8 @@
             <line x1="15" y1="15" x2="12" y2="12"></line>
           </svg>
           <div class="dropzone-text" *ngIf="!selectedFile">
-            <span class="main-drop-text">AirSelect_Ceviri_Kategorili.xlsx veya dosya seçin</span>
-            <span class="sub-drop-text">Desteklenen: .xlsx, .csv, .json (Maks. 20MB)</span>
+            <span class="main-drop-text">{{ tsService.translate('AirSelect_Ceviri_Kategorili.xlsx veya dosya seçin') }}</span>
+            <span class="sub-drop-text">{{ tsService.translate('Desteklenen: .xlsx, .csv, .json (Maks. 20MB)') }}</span>
           </div>
           <div class="selected-file-badge" *ngIf="selectedFile">
             <span class="file-name">{{ selectedFile.name }}</span>
@@ -149,8 +149,8 @@
             <polyline points="17 8 12 3 7 8"></polyline>
             <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
-          <span *ngIf="!isUploading">Dosyayı Yükle ve Canlı Listeye Aktar</span>
-          <span *ngIf="isUploading">Ayrıştırılıyor (%{{ uploadProgress }})...</span>
+          <span *ngIf="!isUploading">{{ tsService.translate('Dosyayı Yükle ve Canlı Listeye Aktar') }}</span>
+          <span *ngIf="isUploading">{{ tsService.translate('Ayrıştırılıyor (%{p})...').replace('{p}', '' + uploadProgress) }}</span>
         </button>
       </div>
     </div>
@@ -161,11 +161,11 @@
     <div class="card-header live-header">
       <div class="card-header-titles">
         <div class="title-with-pill">
-          <h2 class="card-title">AirSelect Canlı Çeviri Sözlüğü</h2>
-          <span class="count-badge-total">{{ allItems.length }} Toplam Kayıt</span>
-          <span class="count-badge-modified" *ngIf="modifiedCount > 0">{{ modifiedCount }} Düzenlendi</span>
+          <h2 class="card-title">{{ tsService.translate('AirSelect Canlı Çeviri Sözlüğü') }}</h2>
+          <span class="count-badge-total">{{ allItems.length }} {{ tsService.translate('Toplam Kayıt') }}</span>
+          <span class="count-badge-modified" *ngIf="modifiedCount > 0">{{ modifiedCount }} {{ tsService.translate('Düzenlendi') }}</span>
         </div>
-        <p class="card-subtitle">Excel şablonundaki tüm kategoriler ve çeviriler. Metinleri doğrudan hücre içerisinden düzenleyebilirsiniz.</p>
+        <p class="card-subtitle">{{ tsService.translate('Excel şablonundaki tüm kategoriler ve çeviriler. Metinleri doğrudan hücre içerisinden düzenleyebilirsiniz.') }}</p>
       </div>
 
       <div class="header-action-buttons">
@@ -174,15 +174,15 @@
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          <span>Yeni Çeviri Kaydı Ekle</span>
+          <span>{{ tsService.translate('Yeni Çeviri Kaydı Ekle') }}</span>
         </button>
 
-        <button class="btn-reset-subtle" (click)="resetToDefault()" title="Orijinal şablon verilerine dön">
+        <button class="btn-reset-subtle" (click)="resetToDefault()" [title]="tsService.translate('Orijinal şablon verilerine dön')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
             <path d="M3 3v5h5"></path>
           </svg>
-          <span>Orijinale Sıfırla</span>
+          <span>{{ tsService.translate('Orijinale Sıfırla') }}</span>
         </button>
 
         <button class="btn-save-master" (click)="saveAllChanges()">
@@ -191,7 +191,7 @@
             <polyline points="17 21 17 13 7 13 7 21"></polyline>
             <polyline points="7 3 7 8 15 8"></polyline>
           </svg>
-          <span>Değişiklikleri Sisteme Kaydet</span>
+          <span>{{ tsService.translate('Değişiklikleri Sisteme Kaydet') }}</span>
         </button>
       </div>
     </div>
@@ -207,7 +207,7 @@
         <input 
           type="text" 
           class="filter-search-input" 
-          placeholder="Anahtar (Code), kaynak metin veya herhangi bir dilde çeviri ara..." 
+          [placeholder]="tsService.translate('Anahtar (Code), kaynak metin veya herhangi bir dilde çeviri ara...')" 
           [(ngModel)]="filterSearch"
           (ngModelChange)="onFilterChange()" />
         <button *ngIf="filterSearch" class="filter-clear-icon-btn" (click)="filterSearch = ''; onFilterChange()">✕</button>
@@ -216,9 +216,9 @@
       <!-- Category Filter -->
       <div class="filter-select-wrapper flex-1">
         <select class="filter-select w-full" [(ngModel)]="filterCategory" (change)="onFilterChange()">
-          <option value="ALL">Tüm Kategoriler (13 Kategori)</option>
+          <option value="ALL">{{ tsService.translate('Tüm Kategoriler (13 Kategori)') }}</option>
           <option *ngFor="let cat of categoriesList.slice(1)" [value]="cat.code">
-            {{ cat.name }} ({{ cat.rowCount }})
+            {{ tsService.translate(cat.name) }} ({{ cat.rowCount }})
           </option>
         </select>
       </div>
@@ -226,20 +226,20 @@
       <!-- Active Language Switcher for Table Column -->
       <div class="filter-select-wrapper">
         <select class="filter-select" [(ngModel)]="downloadLanguage" [disabled]="isLanguageLockedForUser" (change)="onFilterChange()">
-          <option value="ALL">Görünüm: Tüm Diller (Çoklu Dil)</option>
-          <option value="tr">Düzenlenen Dil: Türkçe (TR)</option>
-          <option value="en">Düzenlenen Dil: English (EN)</option>
-          <option value="de">Düzenlenen Dil: Deutsch (DE)</option>
-          <option value="fr">Düzenlenen Dil: Français (FR)</option>
-          <option value="es">Düzenlenen Dil: Español (ES)</option>
-          <option value="it">Düzenlenen Dil: Italiano (IT)</option>
+          <option value="ALL">{{ tsService.translate('Görünüm: Tüm Diller (Çoklu Dil)') }}</option>
+          <option value="tr">{{ tsService.translate('Düzenlenen Dil') }}: Türkçe (TR)</option>
+          <option value="en">{{ tsService.translate('Düzenlenen Dil') }}: English (EN)</option>
+          <option value="de">{{ tsService.translate('Düzenlenen Dil') }}: Deutsch (DE)</option>
+          <option value="fr">{{ tsService.translate('Düzenlenen Dil') }}: Français (FR)</option>
+          <option value="es">{{ tsService.translate('Düzenlenen Dil') }}: Español (ES)</option>
+          <option value="it">{{ tsService.translate('Düzenlenen Dil') }}: Italiano (IT)</option>
         </select>
       </div>
 
       <!-- Only Modified Filter -->
       <label class="checkbox-filter-label" *ngIf="modifiedCount > 0">
         <input type="checkbox" [(ngModel)]="filterOnlyModified" (change)="onFilterChange()" />
-        <span>Sadece Değiştirilenler ({{ modifiedCount }})</span>
+        <span>{{ tsService.translate('Sadece Değiştirilenler') }} ({{ modifiedCount }})</span>
       </label>
     </div>
 
@@ -259,13 +259,13 @@
         <thead>
           <tr>
             <th class="text-center">#</th>
-            <th>ANAHTAR KOD (KEY)</th>
-            <th>KATEGORİ</th>
-            <th>İNGİLİZCE (EN)</th>
-            <th>TÜRKÇE (TR)</th>
-            <th>ALMANCA (DE)</th>
-            <th>FRANSIZCA (FR)</th>
-            <th class="text-center">TÜM DİLLER</th>
+            <th>{{ tsService.translate('ANAHTAR KOD (KEY)') }}</th>
+            <th>{{ tsService.translate('KATEGORİ') }}</th>
+            <th>{{ tsService.translate('İNGİLİZCE (EN)') }}</th>
+            <th>{{ tsService.translate('TÜRKÇE (TR)') }}</th>
+            <th>{{ tsService.translate('ALMANCA (DE)') }}</th>
+            <th>{{ tsService.translate('FRANSIZCA (FR)') }}</th>
+            <th class="text-center">{{ tsService.translate('TÜM DİLLER') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -279,8 +279,8 @@
               </div>
             </td>
             <td>
-              <span class="cat-pill-badge" [title]="item.categoryLabel">
-                {{ item.categoryLabel || item.categoryCode }}
+              <span class="cat-pill-badge" [title]="tsService.translate(item.categoryLabel)">
+                {{ tsService.translate(item.categoryLabel || item.categoryCode) }}
               </span>
             </td>
             <td>
@@ -317,20 +317,20 @@
             </td>
             <td class="text-center">
               <div class="row-actions-group">
-                <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" title="HTML & Zengin Metin Canlı Editörü">
+                <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" [title]="tsService.translate('HTML & Zengin Metin Canlı Editörü')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="16 18 22 12 16 6"></polyline>
                     <polyline points="8 6 2 12 8 18"></polyline>
                   </svg>
                 </button>
-                <button class="btn-action-icon" (click)="openDetailModal(item)" title="Tüm Dilleri Görüntüle ve Düzenle (11 Dil)">
+                <button class="btn-action-icon" (click)="openDetailModal(item)" [title]="tsService.translate('Tüm Dilleri Görüntüle ve Düzenle (11 Dil)')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="2" y1="12" x2="22" y2="12"></line>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                   </svg>
                 </button>
-                <button class="btn-action-icon danger" (click)="deleteItem(item)" title="Kaydı Sil">
+                <button class="btn-action-icon danger" (click)="deleteItem(item)" [title]="tsService.translate('Kaydı Sil')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -343,7 +343,7 @@
           <tr *ngIf="filteredItems.length === 0">
             <td colspan="8" class="empty-state-cell">
               <div class="empty-state-box">
-                <p class="empty-state-title">Arama kriterlerine uygun çeviri kaydı bulunamadı.</p>
+                <p class="empty-state-title">{{ tsService.translate('Arama kriterlerine uygun çeviri kaydı bulunamadı.') }}</p>
               </div>
             </td>
           </tr>
@@ -366,12 +366,12 @@
         <thead>
           <tr>
             <th class="text-center">#</th>
-            <th>ANAHTAR KOD (KEY)</th>
-            <th>KATEGORİ</th>
-            <th>KAYNAK METİN (EN)</th>
-            <th>ÇEVİRİ ({{ downloadLanguage.toUpperCase() }}) - CANLI DÜZENLE</th>
-            <th class="text-center">DURUM</th>
-            <th class="text-center">İŞLEMLER</th>
+            <th>{{ tsService.translate('ANAHTAR KOD (KEY)') }}</th>
+            <th>{{ tsService.translate('KATEGORİ') }}</th>
+            <th>{{ tsService.translate('KAYNAK METİN (EN)') }}</th>
+            <th>{{ tsService.translate('ÇEVİRİ ({lang}) - CANLI DÜZENLE').replace('{lang}', downloadLanguage.toUpperCase()) }}</th>
+            <th class="text-center">{{ tsService.translate('DURUM') }}</th>
+            <th class="text-center">{{ tsService.translate('İŞLEMLER') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -385,8 +385,8 @@
               </div>
             </td>
             <td>
-              <span class="cat-pill-badge" [title]="item.categoryLabel">
-                {{ item.categoryLabel || item.categoryCode }}
+              <span class="cat-pill-badge" [title]="tsService.translate(item.categoryLabel)">
+                {{ tsService.translate(item.categoryLabel || item.categoryCode) }}
               </span>
             </td>
             <td>
@@ -401,13 +401,13 @@
                   [class.has-html-tag]="isHtmlContent(getItemTranslation(item))"
                   [ngModel]="getItemTranslation(item)"
                   (ngModelChange)="setItemTranslation(item, $event)"
-                  placeholder="Çeviri metni giriniz..." />
+                  [placeholder]="tsService.translate('Çeviri metni giriniz...')" />
                 <button 
                   type="button" 
                   class="cell-expand-btn" 
                   [class.badge-html]="isHtmlContent(getItemTranslation(item))"
                   (click)="openHtmlEditor(item)"
-                  [title]="isHtmlContent(getItemTranslation(item)) ? 'HTML İçerik Tespit Edildi - Canlı Editörü Aç' : 'Metni Genişlet / Canlı Editör'">
+                  [title]="tsService.translate(isHtmlContent(getItemTranslation(item)) ? 'HTML İçerik Tespit Edildi - Canlı Editörü Aç' : 'Metni Genişlet / Canlı Editör')">
                   <span *ngIf="isHtmlContent(getItemTranslation(item))">&lt;/&gt;</span>
                   <span *ngIf="!isHtmlContent(getItemTranslation(item))">⛶</span>
                 </button>
@@ -415,25 +415,25 @@
             </td>
             <td class="text-center">
               <span class="status-indicator-badge" [class.modified]="item.isModified">
-                {{ item.isModified ? 'Düzenlendi' : 'Orijinal' }}
+                {{ tsService.translate(item.isModified ? 'Düzenlendi' : 'Orijinal') }}
               </span>
             </td>
             <td class="text-center">
               <div class="row-actions-group">
-                <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" title="HTML & Zengin Metin Canlı Editörü">
+                <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" [title]="tsService.translate('HTML & Zengin Metin Canlı Editörü')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="16 18 22 12 16 6"></polyline>
                     <polyline points="8 6 2 12 8 18"></polyline>
                   </svg>
                 </button>
-                <button class="btn-action-icon" (click)="openDetailModal(item)" title="Tüm Dilleri Gör & Düzenle">
+                <button class="btn-action-icon" (click)="openDetailModal(item)" [title]="tsService.translate('Tüm Dilleri Gör & Düzenle')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="2" y1="12" x2="22" y2="12"></line>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                   </svg>
                 </button>
-                <button class="btn-action-icon danger" (click)="deleteItem(item)" title="Kaydı Sil">
+                <button class="btn-action-icon danger" (click)="deleteItem(item)" [title]="tsService.translate('Kaydı Sil')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -446,7 +446,7 @@
           <tr *ngIf="filteredItems.length === 0">
             <td colspan="7" class="empty-state-cell">
               <div class="empty-state-box">
-                <p class="empty-state-title">Arama kriterlerine uygun çeviri kaydı bulunamadı.</p>
+                <p class="empty-state-title">{{ tsService.translate('Arama kriterlerine uygun çeviri kaydı bulunamadı.') }}</p>
               </div>
             </td>
           </tr>
@@ -457,19 +457,19 @@
     <!-- Pagination Footer (20 items per page) -->
     <div class="pagination-footer" *ngIf="filteredItems.length > 0">
       <div class="pagination-info">
-        <span>Sayfa <strong>{{ currentPage }}</strong> / <strong>{{ totalPages }}</strong></span>
+        <span>{{ tsService.translate('Sayfa') }} <strong>{{ currentPage }}</strong> / <strong>{{ totalPages }}</strong></span>
         <span class="divider-dot">•</span>
-        <span>Toplam <strong>{{ filteredItems.length }}</strong> kayıt (Sayfa başına 20 kayıt)</span>
+        <span>{{ tsService.translate('Toplam') }} <strong>{{ filteredItems.length }}</strong> {{ tsService.translate('kayıt (Sayfa başına 20 kayıt)') }}</span>
       </div>
 
       <div class="pagination-controls">
-        <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(1)" title="İlk Sayfa">« İlk</button>
-        <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">‹ Önceki</button>
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(1)" [title]="tsService.translate('İlk Sayfa')">{{ tsService.translate('« İlk') }}</button>
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">{{ tsService.translate('‹ Önceki') }}</button>
         
-        <span class="page-current-indicator">Sayfa {{ currentPage }}</span>
+        <span class="page-current-indicator">{{ tsService.translate('Sayfa') }} {{ currentPage }}</span>
 
-        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">Sonraki ›</button>
-        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)" title="Son Sayfa">Son »</button>
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">{{ tsService.translate('Sonraki ›') }}</button>
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)" [title]="tsService.translate('Son Sayfa')">{{ tsService.translate('Son »') }}</button>
       </div>
     </div>
   </div>
@@ -486,8 +486,8 @@
             </svg>
           </div>
           <div>
-            <h3 class="modal-title">Yeni Çeviri Anahtarı (Key) Ekle</h3>
-            <p class="modal-subtitle">Sisteme yeni bir çeviri anahtarı ve dil karşılıklarını manuel olarak ekleyin.</p>
+            <h3 class="modal-title">{{ tsService.translate('Yeni Çeviri Anahtarı (Key) Ekle') }}</h3>
+            <p class="modal-subtitle">{{ tsService.translate('Sisteme yeni bir çeviri anahtarı ve dil karşılıklarını manuel olarak ekleyin.') }}</p>
           </div>
         </div>
         <button class="modal-close-btn" (click)="closeAddModal()">✕</button>
@@ -505,63 +505,63 @@
 
         <div class="modal-form-grid">
           <div class="form-group col-span-2">
-            <label class="form-label-bold">ANAHTAR KODU (KEY / CODE) *</label>
+            <label class="form-label-bold">{{ tsService.translate('ANAHTAR KODU (KEY / CODE) *') }}</label>
             <input 
               type="text" 
               class="form-control-subtle" 
-              placeholder="Örn: btn_generate_report, validation_phone_required..." 
+              [placeholder]="tsService.translate('Örn: btn_generate_report, validation_phone_required...')" 
               [(ngModel)]="newItemForm.code" />
-            <span class="form-hint-subtle">Uygulamada kod tarafında kullanılacak benzersiz anahtar adı.</span>
+            <span class="form-hint-subtle">{{ tsService.translate('Uygulamada kod tarafında kullanılacak benzersiz anahtar adı.') }}</span>
           </div>
 
           <div class="form-group col-span-2">
-            <label class="form-label-bold">KATEGORİ *</label>
+            <label class="form-label-bold">{{ tsService.translate('KATEGORİ *') }}</label>
             <select class="form-control-subtle" [(ngModel)]="newItemForm.categoryCode">
               <option *ngFor="let cat of categoriesList.slice(1)" [value]="cat.code">
-                {{ cat.name }}
+                {{ tsService.translate(cat.name) }}
               </option>
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">İNGİLİZCE KAYNAK (EN) *</label>
+            <label class="form-label-bold">{{ tsService.translate('İNGİLİZCE KAYNAK (EN) *') }}</label>
             <input type="text" class="form-control-subtle" placeholder="English source text..." [(ngModel)]="newItemForm.en" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">TÜRKÇE ÇEVİRİ (TR)</label>
-            <input type="text" class="form-control-subtle" placeholder="Türkçe çeviri..." [(ngModel)]="newItemForm.tr" />
+            <label class="form-label-bold">{{ tsService.translate('TÜRKÇE ÇEVİRİ (TR)') }}</label>
+            <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Türkçe çeviri...')" [(ngModel)]="newItemForm.tr" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">ALMANCA (DE)</label>
+            <label class="form-label-bold">{{ tsService.translate('ALMANCA (DE)') }}</label>
             <input type="text" class="form-control-subtle" placeholder="Deutsch..." [(ngModel)]="newItemForm.de" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">FRANSIZCA (FR)</label>
+            <label class="form-label-bold">{{ tsService.translate('FRANSIZCA (FR)') }}</label>
             <input type="text" class="form-control-subtle" placeholder="Français..." [(ngModel)]="newItemForm.fr" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">İSPANYOLCA (ES)</label>
+            <label class="form-label-bold">{{ tsService.translate('İSPANYOLCA (ES)') }}</label>
             <input type="text" class="form-control-subtle" placeholder="Español..." [(ngModel)]="newItemForm.es" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">İTALYANCA (IT)</label>
+            <label class="form-label-bold">{{ tsService.translate('İTALYANCA (IT)') }}</label>
             <input type="text" class="form-control-subtle" placeholder="Italiano..." [(ngModel)]="newItemForm.it" />
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn-cancel" (click)="closeAddModal()">İptal</button>
+        <button class="btn-cancel" (click)="closeAddModal()">{{ tsService.translate('İptal') }}</button>
         <button class="btn-primary-confirm" (click)="saveNewItem()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          <span>Kaydı Listeye Ekle</span>
+          <span>{{ tsService.translate('Kaydı Listeye Ekle') }}</span>
         </button>
       </div>
     </div>
@@ -580,8 +580,8 @@
             </svg>
           </div>
           <div>
-            <h3 class="modal-title">Çeviri Detayı: {{ selectedDetailItem.code }}</h3>
-            <p class="modal-subtitle">Kategori: {{ selectedDetailItem.categoryLabel }} (Tüm Dil Karşılıkları)</p>
+            <h3 class="modal-title">{{ tsService.translate('Çeviri Detayı') }}: {{ selectedDetailItem.code }}</h3>
+            <p class="modal-subtitle">{{ tsService.translate('Kategori') }}: {{ tsService.translate(selectedDetailItem.categoryLabel) }} ({{ tsService.translate('Tüm Dil Karşılıkları') }})</p>
           </div>
         </div>
         <button class="modal-close-btn" (click)="closeDetailModal()">✕</button>
@@ -590,57 +590,57 @@
       <div class="modal-body">
         <div class="modal-form-grid">
           <div class="form-group col-span-2">
-            <label class="form-label-bold">İNGİLİZCE (EN - KAYNAK)</label>
+            <label class="form-label-bold">{{ tsService.translate('İNGİLİZCE (EN - KAYNAK)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.en" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">TÜRKÇE (TR)</label>
+            <label class="form-label-bold">{{ tsService.translate('TÜRKÇE (TR)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.tr" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">ALMANCA (DE)</label>
+            <label class="form-label-bold">{{ tsService.translate('ALMANCA (DE)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.de" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">FRANSIZCA (FR)</label>
+            <label class="form-label-bold">{{ tsService.translate('FRANSIZCA (FR)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.fr" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">İSPANYOLCA (ES)</label>
+            <label class="form-label-bold">{{ tsService.translate('İSPANYOLCA (ES)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.es" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">İTALYANCA (IT)</label>
+            <label class="form-label-bold">{{ tsService.translate('İTALYANCA (IT)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.it" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">BULGARCA (BG)</label>
+            <label class="form-label-bold">{{ tsService.translate('BULGARCA (BG)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.bg" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">RUSÇA (RU)</label>
+            <label class="form-label-bold">{{ tsService.translate('RUSÇA (RU)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.ru" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">LEHÇE (PL)</label>
+            <label class="form-label-bold">{{ tsService.translate('LEHÇE (PL)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.pl" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">YUNANCA (EL)</label>
+            <label class="form-label-bold">{{ tsService.translate('YUNANCA (EL)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.el" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
-            <label class="form-label-bold">UKRAYNACA (UA)</label>
+            <label class="form-label-bold">{{ tsService.translate('UKRAYNACA (UA)') }}</label>
             <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.ua" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
         </div>
@@ -648,7 +648,7 @@
 
       <div class="modal-footer">
         <button class="btn-primary-confirm" (click)="closeDetailModal()">
-          <span>Tamamla</span>
+          <span>{{ tsService.translate('Tamamla') }}</span>
         </button>
       </div>
     </div>
@@ -667,11 +667,11 @@
           </div>
           <div>
             <div class="modal-title-row">
-              <h3 class="modal-title">HTML & Zengin Metin Editörü: {{ editingHtmlItem.code }}</h3>
-              <span class="badge-html-detected" *ngIf="isHtmlContent(currentHtmlValue)">HTML Tespit Edildi</span>
+              <h3 class="modal-title">{{ tsService.translate('HTML & Zengin Metin Editörü') }}: {{ editingHtmlItem.code }}</h3>
+              <span class="badge-html-detected" *ngIf="isHtmlContent(currentHtmlValue)">{{ tsService.translate('HTML Tespit Edildi') }}</span>
             </div>
             <p class="modal-subtitle">
-              Kategori: {{ editingHtmlItem.categoryLabel }} &bull; Düzenlenen Dil: <strong>{{ editingHtmlLang.toUpperCase() }}</strong>
+              {{ tsService.translate('Kategori') }}: {{ tsService.translate(editingHtmlItem.categoryLabel) }} &bull; {{ tsService.translate('Düzenlenen Dil') }}: <strong>{{ editingHtmlLang.toUpperCase() }}</strong>
             </p>
           </div>
         </div>
@@ -681,7 +681,7 @@
       <div class="modal-body editor-modal-body">
         <!-- All 11 Languages Switcher Bar -->
         <div class="editor-lang-selector-strip">
-          <span class="strip-label">ÇEVİRİ DİLİ SEÇİN (11 DİL):</span>
+          <span class="strip-label">{{ tsService.translate('ÇEVİRİ DİLİ SEÇİN (11 DİL):') }}</span>
           <div class="strip-pills-wrap">
             <button 
               *ngFor="let l of editorLanguages" 
@@ -689,10 +689,10 @@
               class="editor-lang-pill" 
               [class.active]="editingHtmlLang === l.code"
               (click)="switchHtmlLang(l.code)"
-              [title]="l.label + ' dilini düzenle'">
+              [title]="tsService.translate('{lang} dilini düzenle').replace('{lang}', l.label)">
               <span class="lang-flag">{{ l.flag }}</span>
               <span class="lang-code">{{ l.code.toUpperCase() }}</span>
-              <span *ngIf="isHtmlContent(getLangValue(editingHtmlItem, l.code))" class="lang-html-dot" title="HTML İçerik Barındırıyor">&lt;/&gt;</span>
+              <span *ngIf="isHtmlContent(getLangValue(editingHtmlItem, l.code))" class="lang-html-dot" [title]="tsService.translate('HTML İçerik Barındırıyor')">&lt;/&gt;</span>
             </button>
           </div>
         </div>
@@ -701,26 +701,26 @@
         <div class="editor-top-toolbar">
           <!-- Quick Format Buttons -->
           <div class="toolbar-format-group">
-            <span class="toolbar-label">Hızlı Etiketler:</span>
-            <button type="button" class="tool-chip-btn" (click)="insertTag('b')" title="Kalın (<strong>)"><b>B</b> Kalın</button>
-            <button type="button" class="tool-chip-btn" (click)="insertTag('i')" title="İtalik (<em>)"><i>I</i> İtalik</button>
-            <button type="button" class="tool-chip-btn" (click)="insertTag('p')" title="Paragraf (<p>)">&lt;p&gt; Paragraf</button>
-            <button type="button" class="tool-chip-btn" (click)="insertTag('br')" title="Satır Sonu (<br/>)">&lt;br/&gt; Alt Satır</button>
-            <button type="button" class="tool-chip-btn" (click)="insertTag('li')" title="Liste (&lt;ul&gt;&lt;li&gt;)">• Madde İmi</button>
-            <button type="button" class="tool-chip-btn" (click)="insertTag('a')" title="Link (&lt;a&gt;)">🔗 Link</button>
-            <button type="button" class="tool-chip-btn text-danger" (click)="stripHtml()" title="Tüm HTML Etiketlerini Kaldır">🧹 HTML'i Temizle</button>
+            <span class="toolbar-label">{{ tsService.translate('Hızlı Etiketler:') }}</span>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('b')" [title]="tsService.translate('Kalın') + ' (<strong>)'"><b>B</b> {{ tsService.translate('Kalın') }}</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('i')" [title]="tsService.translate('İtalik') + ' (<em>)'"><i>I</i> {{ tsService.translate('İtalik') }}</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('p')" [title]="tsService.translate('Paragraf') + ' (<p>)'">&lt;p&gt; {{ tsService.translate('Paragraf') }}</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('br')" [title]="tsService.translate('Satır Sonu') + ' (<br/>)'">&lt;br/&gt; {{ tsService.translate('Alt Satır') }}</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('li')" [title]="tsService.translate('Liste') + ' (&lt;ul&gt;&lt;li&gt;)'">• {{ tsService.translate('Madde İmi') }}</button>
+            <button type="button" class="tool-chip-btn" (click)="insertTag('a')" [title]="tsService.translate('Link') + ' (&lt;a&gt;)'">🔗 {{ tsService.translate('Link') }}</button>
+            <button type="button" class="tool-chip-btn text-danger" (click)="stripHtml()" [title]="tsService.translate('Tüm HTML Etiketlerini Kaldır')">🧹 {{ tsService.translate('HTML\'i Temizle') }}</button>
           </div>
 
           <!-- View Mode Tabs (Split / Code / Preview) -->
           <div class="editor-view-tabs">
             <button type="button" class="view-tab-btn" [class.active]="activeEditorTab === 'split'" (click)="activeEditorTab = 'split'">
-              <span>◫ Yan Yana (Split)</span>
+              <span>◫ {{ tsService.translate('Yan Yana (Split)') }}</span>
             </button>
             <button type="button" class="view-tab-btn" [class.active]="activeEditorTab === 'code'" (click)="activeEditorTab = 'code'">
-              <span>&lt;/&gt; Sadece Kod</span>
+              <span>&lt;/&gt; {{ tsService.translate('Sadece Kod') }}</span>
             </button>
             <button type="button" class="view-tab-btn" [class.active]="activeEditorTab === 'preview'" (click)="activeEditorTab = 'preview'">
-              <span>👁 Canlı Önizleme</span>
+              <span>👁 {{ tsService.translate('Canlı Önizleme') }}</span>
             </button>
           </div>
         </div>
@@ -728,8 +728,8 @@
         <!-- Source Context Bar (English Original) -->
         <div class="editor-source-box">
           <div class="source-box-header">
-            <span class="source-tag">İNGİLİZCE KAYNAK (EN - REFERANS)</span>
-            <span class="source-char-count">{{ sourceHtmlValue.length }} karakter</span>
+            <span class="source-tag">{{ tsService.translate('İNGİLİZCE KAYNAK (EN - REFERANS)') }}</span>
+            <span class="source-char-count">{{ sourceHtmlValue.length }} {{ tsService.translate('karakter') }}</span>
           </div>
           <div class="source-content-display">
             <div *ngIf="isHtmlContent(sourceHtmlValue)" class="source-rendered" [innerHTML]="sourceHtmlValue"></div>
@@ -742,37 +742,37 @@
           <!-- Pane 1: Code / Textarea -->
           <div class="editor-pane code-pane" *ngIf="activeEditorTab !== 'preview'">
             <div class="pane-header">
-              <span class="pane-title">Düzenlenen Metin / HTML Kaynak Kodu ({{ editingHtmlLang.toUpperCase() }})</span>
-              <span class="char-badge">{{ currentHtmlValue.length }} karakter</span>
+              <span class="pane-title">{{ tsService.translate('Düzenlenen Metin / HTML Kaynak Kodu') }} ({{ editingHtmlLang.toUpperCase() }})</span>
+              <span class="char-badge">{{ currentHtmlValue.length }} {{ tsService.translate('karakter') }}</span>
             </div>
             <textarea 
               class="html-code-textarea" 
               rows="9"
               [(ngModel)]="currentHtmlValue" 
-              placeholder="HTML veya uzun açıklama metnini buraya yazın..."></textarea>
+              [placeholder]="tsService.translate('HTML veya uzun açıklama metnini buraya yazın...')"></textarea>
           </div>
 
           <!-- Pane 2: Live HTML Rendered Preview -->
           <div class="editor-pane preview-pane" *ngIf="activeEditorTab !== 'code'">
             <div class="pane-header">
-              <span class="pane-title">Web Sayfasındaki Canlı Görünüm (HTML Render)</span>
-              <span class="preview-badge">Canlı Önizleme</span>
+              <span class="pane-title">{{ tsService.translate('Web Sayfasındaki Canlı Görünüm (HTML Render)') }}</span>
+              <span class="preview-badge">{{ tsService.translate('Canlı Önizleme') }}</span>
             </div>
             <div class="html-live-canvas">
               <div *ngIf="currentHtmlValue" class="rendered-html-output" [innerHTML]="currentHtmlValue"></div>
-              <div *ngIf="!currentHtmlValue" class="empty-preview-hint">Önizlenecek metin girilmedi...</div>
+              <div *ngIf="!currentHtmlValue" class="empty-preview-hint">{{ tsService.translate('Önizlenecek metin girilmedi...') }}</div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn-cancel" (click)="closeHtmlEditor()">Kapat</button>
+        <button class="btn-cancel" (click)="closeHtmlEditor()">{{ tsService.translate('Kapat') }}</button>
         <button class="btn-primary-confirm" (click)="closeHtmlEditor()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
-          <span>Kaydet ve Kapat</span>
+          <span>{{ tsService.translate('Kaydet ve Kapat') }}</span>
         </button>
       </div>
     </div>

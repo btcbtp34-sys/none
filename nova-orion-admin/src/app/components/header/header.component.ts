@@ -38,6 +38,14 @@ export class HeaderComponent {
     return found || this.languages[0];
   }
 
+  // "Bölge Yöneticisi (Avrupa)" gibi unvanlarda rol ve parantez içi bölge/ülke ayrı çevrilir
+  roleTitle(title: string): string {
+    if (this.tsService.currentLang() === 'tr') return title;
+    const match = /^(.*?)\s*\((.*)\)$/.exec(title ?? '');
+    if (!match) return this.tsService.translate(title);
+    return `${this.tsService.translate(match[1])} (${this.tsService.translate(match[2])})`;
+  }
+
   toggleLangDropdown(event: MouseEvent) {
     event.stopPropagation();
     this.showLangDropdown = !this.showLangDropdown;

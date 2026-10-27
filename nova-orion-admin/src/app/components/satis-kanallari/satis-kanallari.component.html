@@ -33,7 +33,7 @@
         <div class="filter-select-wrapper">
           <select class="filter-select" [(ngModel)]="filterCountry">
             <option value="ALL">{{ tsService.translate('Tüm Ülkeler') }}</option>
-            <option *ngFor="let c of availableCountriesList" [value]="c">{{ c }}</option>
+            <option *ngFor="let c of availableCountriesList" [value]="c">{{ tsService.translate(c) }}</option>
           </select>
         </div>
 
@@ -91,7 +91,7 @@
                 </div>
                 <div class="brand-info">
                   <span class="brand-name-bold">{{ item.brandName }}</span>
-                  <span class="brand-desc-sm" *ngIf="item.description">{{ item.description }}</span>
+                  <span class="brand-desc-sm" *ngIf="item.description">{{ tsService.translate(item.description) }}</span>
                 </div>
               </div>
             </td>
@@ -101,7 +101,7 @@
             <td>
               <div class="country-tags-wrap">
                 <span *ngFor="let c of item.countries" class="country-chip">
-                  {{ c }}
+                  {{ tsService.translate(c) }}
                 </span>
               </div>
             </td>
@@ -122,13 +122,13 @@
             </td>
             <td class="text-right">
               <div class="actions-group">
-                <button class="action-btn edit-btn" (click)="openEditModal(item)" title="Düzenle">
+                <button class="action-btn edit-btn" (click)="openEditModal(item)" [title]="tsService.translate('Düzenle')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-                <button class="action-btn delete-btn" (click)="deleteChannel(item.id)" title="Sil">
+                <button class="action-btn delete-btn" (click)="deleteChannel(item.id)" [title]="tsService.translate('Sil')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -141,7 +141,7 @@
           <tr *ngIf="filteredChannels.length === 0">
             <td colspan="7" class="empty-table-cell">
               <div class="empty-state-box">
-                <p class="empty-state-title">Kayıtlı satış kanalı bulunamadı.</p>
+                <p class="empty-state-title">{{ tsService.translate('Kayıtlı satış kanalı bulunamadı.') }}</p>
               </div>
             </td>
           </tr>
@@ -155,7 +155,7 @@
 <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
   <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3 class="modal-title">{{ editingId ? 'Satış Kanalını Düzenle' : 'Yeni Satış Kanalı Ekle' }}</h3>
+      <h3 class="modal-title">{{ editingId ? tsService.translate('Satış Kanalını Düzenle') : tsService.translate('Yeni Satış Kanalı Ekle') }}</h3>
       <button class="modal-close-btn" (click)="closeModal()">✕</button>
     </div>
 
@@ -163,28 +163,28 @@
       <!-- Row 1: Brand & Code -->
       <div class="form-row">
         <div class="form-group flex-2">
-          <label class="form-label-bold">MARKA / KANAL ADI *</label>
-          <input type="text" class="form-control-subtle" placeholder="Örn: Nova Climate Solutions" [(ngModel)]="formBrandName" />
+          <label class="form-label-bold">{{ tsService.translate('MARKA / KANAL ADI') }} *</label>
+          <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: Nova Climate Solutions')" [(ngModel)]="formBrandName" />
         </div>
         <div class="form-group flex-1">
-          <label class="form-label-bold">KANAL KODU *</label>
-          <input type="text" class="form-control-subtle" placeholder="Örn: SC-NOVA-TR" [(ngModel)]="formCode" />
+          <label class="form-label-bold">{{ tsService.translate('KANAL KODU') }} *</label>
+          <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: SC-NOVA-TR')" [(ngModel)]="formCode" />
         </div>
       </div>
 
       <!-- Row 2: Region & Status -->
       <div class="form-row">
         <div class="form-group flex-1">
-          <label class="form-label-bold">BÖLGE</label>
+          <label class="form-label-bold">{{ tsService.translate('BÖLGE') }}</label>
           <select class="form-control-subtle" [(ngModel)]="formRegion">
-            <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ r.name }}</option>
+            <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ tsService.translate(r.name) }}</option>
           </select>
         </div>
         <div class="form-group flex-1">
-          <label class="form-label-bold">DURUM</label>
+          <label class="form-label-bold">{{ tsService.translate('DURUM') }}</label>
           <select class="form-control-subtle" [(ngModel)]="formStatus">
-            <option value="Aktif">Aktif</option>
-            <option value="Pasif">Pasif</option>
+            <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
+            <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
           </select>
         </div>
       </div>
@@ -192,12 +192,12 @@
       <!-- Row 3: Countries Multi-Select (Super Admin & Region Admin can select from countries) -->
       <div class="form-group">
         <div class="label-row-between">
-          <label class="form-label-bold mb-0">EŞLEŞEN ÜLKELER *</label>
+          <label class="form-label-bold mb-0">{{ tsService.translate('EŞLEŞEN ÜLKELER') }} *</label>
           <div class="multi-select-header-actions">
-            <button type="button" class="btn-text-action" (click)="selectAllCountries()">Tümünü Seç</button>
+            <button type="button" class="btn-text-action" (click)="selectAllCountries()">{{ tsService.translate('Tümünü Seç') }}</button>
             <span class="action-divider">•</span>
-            <button type="button" class="btn-text-action" (click)="clearAllCountries()">Temizle</button>
-            <span class="multi-select-badge">{{ selectedCountries.length }} / {{ availableCountriesList.length }} Ülke Seçili</span>
+            <button type="button" class="btn-text-action" (click)="clearAllCountries()">{{ tsService.translate('Temizle') }}</button>
+            <span class="multi-select-badge">{{ selectedCountries.length }} / {{ availableCountriesList.length }} {{ tsService.translate('Ülke Seçili') }}</span>
           </div>
         </div>
 
@@ -208,21 +208,21 @@
             [class.checked]="isCountrySelected(c)"
             (click)="toggleCountrySelection(c)">
             <input type="checkbox" [checked]="isCountrySelected(c)" (click)="$event.stopPropagation(); toggleCountrySelection(c)" />
-            <span>{{ c }}</span>
+            <span>{{ tsService.translate(c) }}</span>
           </div>
         </div>
-        <span class="form-hint-subtle">Bu satış kanalının geçerli olacağı ülkeleri seçiniz.</span>
+        <span class="form-hint-subtle">{{ tsService.translate('Bu satış kanalının geçerli olacağı ülkeleri seçiniz.') }}</span>
       </div>
 
       <!-- Row 4: Products Multi-Select (Ürün Arama & Çoklu Seçim) -->
       <div class="form-group">
         <div class="label-row-between">
-          <label class="form-label-bold mb-0">İLİŞKİLİ ÜRÜN LİSTESİ (ÇOKLU SEÇİM) *</label>
+          <label class="form-label-bold mb-0">{{ tsService.translate('İLİŞKİLİ ÜRÜN LİSTESİ (ÇOKLU SEÇİM)') }} *</label>
           <div class="multi-select-header-actions">
-            <button type="button" class="btn-text-action" (click)="selectAllProducts()">Tümünü Seç</button>
+            <button type="button" class="btn-text-action" (click)="selectAllProducts()">{{ tsService.translate('Tümünü Seç') }}</button>
             <span class="action-divider">•</span>
-            <button type="button" class="btn-text-action" (click)="clearAllProducts()">Temizle</button>
-            <span class="multi-select-badge">{{ selectedProducts.length }} / {{ channelService.availableProducts.length }} Ürün Seçili</span>
+            <button type="button" class="btn-text-action" (click)="clearAllProducts()">{{ tsService.translate('Temizle') }}</button>
+            <span class="multi-select-badge">{{ selectedProducts.length }} / {{ channelService.availableProducts.length }} {{ tsService.translate('Ürün Seçili') }}</span>
           </div>
         </div>
 
@@ -235,7 +235,7 @@
           <input 
             type="text" 
             class="modal-search-input" 
-            placeholder="Ürün adı, kod veya model ara (Örn: AF4300, AF5300, MDCI)..." 
+            [placeholder]="tsService.translate('Ürün adı, kod veya model ara (Örn: AF4300, AF5300, MDCI)...')" 
             [(ngModel)]="productSearchQuery" />
           <button *ngIf="productSearchQuery" class="modal-search-clear" (click)="productSearchQuery = ''">✕</button>
         </div>
@@ -250,16 +250,16 @@
             <span class="product-chip-name">{{ p }}</span>
           </div>
           <div *ngIf="filteredAvailableProducts.length === 0" class="no-filter-results">
-            <span>"{{ productSearchQuery }}" kriterine uygun ürün bulunamadı.</span>
+            <span>{{ tsService.translate('"{query}" kriterine uygun ürün bulunamadı.').replace('{query}', productSearchQuery) }}</span>
           </div>
         </div>
-        <span class="form-hint-subtle">Kanalın satış ve projelendirme yetkisine sahip olduğu ürünleri işaretleyin.</span>
+        <span class="form-hint-subtle">{{ tsService.translate('Kanalın satış ve projelendirme yetkisine sahip olduğu ürünleri işaretleyin.') }}</span>
       </div>
 
       <!-- Row 5: Description -->
       <div class="form-group">
-        <label class="form-label-bold">AÇIKLAMA / NOT</label>
-        <textarea class="form-control-subtle" rows="2" placeholder="Kanal hakkında detaylı bilgi..." [(ngModel)]="formDescription"></textarea>
+        <label class="form-label-bold">{{ tsService.translate('AÇIKLAMA / NOT') }}</label>
+        <textarea class="form-control-subtle" rows="2" [placeholder]="tsService.translate('Kanal hakkında detaylı bilgi...')" [(ngModel)]="formDescription"></textarea>
       </div>
     </div>
 

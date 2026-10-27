@@ -39,7 +39,8 @@ export class ProjeTipleriComponent implements OnInit {
 
     return list.filter(item =>
       item.code.toLowerCase().includes(query) ||
-      item.value.toLowerCase().includes(query)
+      item.value.toLowerCase().includes(query) ||
+      this.tsService.translate(item.value).toLowerCase().includes(query)
     );
   }
 

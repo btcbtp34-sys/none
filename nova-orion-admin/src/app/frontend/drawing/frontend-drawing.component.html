@@ -22,8 +22,8 @@
       <div class="project-identity-chip">
         <div class="project-dot"></div>
         <div class="project-meta-col">
-          <span class="p-title">{{ projectName() }}</span>
-          <span class="p-sub">{{ projectId() }} &bull; {{ projectCity() }}, {{ projectCountry() }}</span>
+          <span class="p-title">{{ tsService.translate(projectName()) }}</span>
+          <span class="p-sub">{{ projectId() }} &bull; {{ tsService.translate(projectCity()) }}, {{ tsService.translate(projectCountry()) }}</span>
         </div>
       </div>
 
@@ -179,7 +179,7 @@
         [title]="tsService.translate('Çizime eklemek için tıklayın')">
         
         <div class="rpc-image-wrap">
-          <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.name" class="rpc-img" />
+          <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="tsService.translate(item.name)" class="rpc-img" />
           <div *ngIf="!item.imageUrl" class="rpc-fallback-badge" [style.background]="item.color">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M6 3v6l6 6v6M18 3v6l-6 6"></path>
@@ -195,7 +195,7 @@
           </div>
         </div>
 
-        <button type="button" class="rpc-add-btn" title="Ekle">
+        <button type="button" class="rpc-add-btn" [title]="tsService.translate('Ekle')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -226,9 +226,9 @@
 
       <!-- Floating Canvas Controls (Zoom In/Out, Fit) -->
       <div class="canvas-floating-controls">
-        <button type="button" class="ctrl-btn" (click)="zoomIn()" title="Yakınlaştır">+</button>
-        <button type="button" class="ctrl-btn" (click)="zoomOut()" title="Uzaklaştır">-</button>
-        <button type="button" class="ctrl-btn" (click)="zoomFit()" title="Tam Sığdır">
+        <button type="button" class="ctrl-btn" (click)="zoomIn()" [title]="tsService.translate('Yakınlaştır')">+</button>
+        <button type="button" class="ctrl-btn" (click)="zoomOut()" [title]="tsService.translate('Uzaklaştır')">-</button>
+        <button type="button" class="ctrl-btn" (click)="zoomFit()" [title]="tsService.translate('Tam Sığdır')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="15 3 21 3 21 9"></polyline>
             <polyline points="9 21 3 21 3 15"></polyline>
@@ -246,7 +246,7 @@
       <div class="inspector-body" *ngIf="selectedElement(); else noSelection">
         <!-- Element Image Preview -->
         <div class="inspector-preview-box" *ngIf="selectedElement()?.imageUrl">
-          <img [src]="selectedElement()?.imageUrl" [alt]="selectedElement()?.text" class="inspector-preview-img" />
+          <img [src]="selectedElement()?.imageUrl" [alt]="tsService.translate(selectedElement()?.text || '')" class="inspector-preview-img" />
         </div>
 
         <div class="prop-group">
@@ -256,12 +256,12 @@
 
         <div class="prop-group">
           <label class="prop-label">{{ tsService.translate('Eleman Adı') }}</label>
-          <input type="text" class="prop-input" [value]="selectedElement()?.text" readonly />
+          <input type="text" class="prop-input" [value]="tsService.translate(selectedElement()?.text || '')" readonly />
         </div>
 
         <div class="prop-group" *ngIf="selectedElement()?.roomName">
           <label class="prop-label">{{ tsService.translate('Oda / Mahal Adı') }}</label>
-          <input type="text" class="prop-input" [value]="selectedElement()?.roomName" />
+          <input type="text" class="prop-input" [value]="displayRoomName(selectedElement()?.roomName)" />
         </div>
 
         <div class="prop-row-2" *ngIf="selectedElement()?.coolingCapacity">
@@ -315,7 +315,7 @@
           </div>
           <div>
             <h2 class="report-modal-title">{{ tsService.translate('Sistem Özeti & Raporu') }}</h2>
-            <span class="report-modal-sub">{{ projectName() }} &bull; {{ projectId() }}</span>
+            <span class="report-modal-sub">{{ tsService.translate(projectName()) }} &bull; {{ projectId() }}</span>
           </div>
         </div>
         <button class="modal-close-btn" (click)="closeReports()">✕</button>
@@ -326,19 +326,19 @@
         <div class="metric-card">
           <span class="m-label">{{ tsService.translate('Toplam Soğutma Kapasitesi') }}</span>
           <span class="m-val text-cool">{{ reportData.totalCooling }} kW</span>
-          <span class="m-sub">{{ reportData.indoorCount }} İç Ünite</span>
+          <span class="m-sub">{{ reportData.indoorCount }} {{ tsService.translate('İç Ünite') }}</span>
         </div>
 
         <div class="metric-card">
           <span class="m-label">{{ tsService.translate('Toplam Isıtma Kapasitesi') }}</span>
           <span class="m-val text-heat">{{ reportData.totalHeating }} kW</span>
-          <span class="m-sub">Tasarım Yükü</span>
+          <span class="m-sub">{{ tsService.translate('Tasarım Yükü') }}</span>
         </div>
 
         <div class="metric-card">
           <span class="m-label">{{ tsService.translate('Dış Ünite Kapasitesi') }}</span>
           <span class="m-val text-out">{{ reportData.outdoorCapacity }} kW</span>
-          <span class="m-sub">{{ reportData.outdoorCount }} Dış Ünite</span>
+          <span class="m-sub">{{ reportData.outdoorCount }} {{ tsService.translate('Dış Ünite') }}</span>
         </div>
 
         <div class="metric-card">
@@ -370,7 +370,7 @@
               <td class="text-right font-bold">{{ item.qty }}</td>
             </tr>
             <tr *ngIf="reportData.bomItems.length === 0">
-              <td colspan="4" class="text-center py-4 text-muted">Çizimde henüz ekipman bulunmuyor.</td>
+              <td colspan="4" class="text-center py-4 text-muted">{{ tsService.translate('Çizimde henüz ekipman bulunmuyor.') }}</td>
             </tr>
           </tbody>
         </table>

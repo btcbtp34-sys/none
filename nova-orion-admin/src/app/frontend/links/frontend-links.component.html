@@ -51,12 +51,12 @@
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
           </svg>
         </div>
-        <span class="link-badge">{{ link.badge }}</span>
+        <span class="link-badge">{{ tsService.translate(link.badge) }}</span>
       </div>
 
       <div class="link-card-content">
-        <h3 class="link-title">{{ link.title }}</h3>
-        <p class="link-desc">{{ link.description }}</p>
+        <h3 class="link-title">{{ tsService.translate(link.title) }}</h3>
+        <p class="link-desc">{{ tsService.translate(link.description) }}</p>
         <span class="link-url-text">{{ link.url }}</span>
       </div>
 

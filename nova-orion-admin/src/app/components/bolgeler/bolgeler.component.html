@@ -45,12 +45,12 @@
               </div>
             </td>
             <td><span class="code-badge">{{ item.code }}</span></td>
-            <td><span class="desc-text">{{ item.description || '-' }}</span></td>
+            <td><span class="desc-text">{{ item.description ? tsService.translate(item.description) : '-' }}</span></td>
             <td>
               <div class="countries-badge-container">
                 <span class="count-pill">{{ getCountryCount(item.name) }} {{ tsService.translate('Ülke') }}</span>
                 <div class="country-mini-flags">
-                  <span *ngFor="let country of getCountriesInRegion(item.name) | slice:0:5" class="country-mini-pill" [title]="country.name">
+                  <span *ngFor="let country of getCountriesInRegion(item.name) | slice:0:5" class="country-mini-pill" [title]="tsService.translate(country.name)">
                     {{ country.code }}
                   </span>
                   <span *ngIf="getCountriesInRegion(item.name).length > 5" class="country-mini-more">
@@ -69,13 +69,13 @@
             </td>
             <td class="text-right">
               <div class="actions-group">
-                <button class="action-btn edit-btn" (click)="openEditModal(item)" title="Düzenle">
+                <button class="action-btn edit-btn" (click)="openEditModal(item)" [title]="tsService.translate('Düzenle')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-                <button class="action-btn delete-btn" (click)="deleteRegion(item.id)" title="Sil">
+                <button class="action-btn delete-btn" (click)="deleteRegion(item.id)" [title]="tsService.translate('Sil')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -103,18 +103,18 @@
       <div class="form-row">
         <div class="form-group flex-1">
           <label class="form-label-bold">{{ tsService.translate('BÖLGE KODU') }} *</label>
-          <input type="text" class="form-control-subtle" placeholder="Örn: EU, APAC, AMER" [(ngModel)]="formCode" />
+          <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: EU, APAC, AMER')" [(ngModel)]="formCode" />
         </div>
         <div class="form-group flex-2">
           <label class="form-label-bold">{{ tsService.translate('BÖLGE ADI') }} *</label>
-          <input type="text" class="form-control-subtle" placeholder="Örn: Avrupa, Asya Pasifik, Amerika" [(ngModel)]="formName" />
+          <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: Avrupa, Asya Pasifik, Amerika')" [(ngModel)]="formName" />
         </div>
       </div>
 
       <!-- Row 2: AÇIKLAMA -->
       <div class="form-group">
         <label class="form-label-bold">{{ tsService.translate('AÇIKLAMA') }}</label>
-        <textarea rows="3" class="form-control-subtle" placeholder="Bölge kapsamı ve açıklaması..." [(ngModel)]="formDescription"></textarea>
+        <textarea rows="3" class="form-control-subtle" [placeholder]="tsService.translate('Bölge kapsamı ve açıklaması...')" [(ngModel)]="formDescription"></textarea>
       </div>
 
       <!-- Row 3: DURUM -->

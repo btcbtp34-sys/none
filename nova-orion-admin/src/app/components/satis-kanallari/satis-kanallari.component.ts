@@ -57,7 +57,7 @@ export class SatisKanallariComponent implements OnInit {
   get filteredAvailableCountries(): string[] {
     const q = this.countrySearchQuery.trim().toLowerCase();
     if (!q) return this.availableCountriesList;
-    return this.availableCountriesList.filter(c => c.toLowerCase().includes(q));
+    return this.availableCountriesList.filter(c => c.toLowerCase().includes(q) || this.tsService.translate(c).toLowerCase().includes(q));
   }
 
   selectAllProducts() {
@@ -93,7 +93,7 @@ export class SatisKanallariComponent implements OnInit {
       const matchesSearch = !query || 
         item.brandName.toLowerCase().includes(query) ||
         item.code.toLowerCase().includes(query) ||
-        item.countries.some(c => c.toLowerCase().includes(query)) ||
+        item.countries.some(c => c.toLowerCase().includes(query) || this.tsService.translate(c).toLowerCase().includes(query)) ||
         item.products.some(p => p.toLowerCase().includes(query));
 
       // Country & Status filters
@@ -106,7 +106,7 @@ export class SatisKanallariComponent implements OnInit {
 
   get availableCountriesList(): string[] {
     const list = this.countryService.countries().map(c => c.name);
-    return Array.from(new Set(list)).sort();
+    return Array.from(new Set(list)).sort((a, b) => this.tsService.translate(a).localeCompare(this.tsService.translate(b), this.tsService.currentLang()));
   }
 
   openAddModal() {
@@ -201,7 +201,7 @@ export class SatisKanallariComponent implements OnInit {
   }
 
   deleteChannel(id: number) {
-    if (confirm('Bu satış kanalını silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu satış kanalını silmek istediğinizden emin misiniz?'))) {
       this.channelService.deleteChannel(id);
     }
   }

@@ -43,10 +43,6 @@ export class SsoLoginComponent {
   isProcessing = false;
   isFocused = false;
 
-  constructor() {
-    this.tsService.setLanguage('tr');
-  }
-
   setLang(lang: SupportedLang) {
     this.tsService.setLanguage(lang);
   }

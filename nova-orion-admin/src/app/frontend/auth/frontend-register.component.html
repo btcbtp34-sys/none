@@ -91,7 +91,7 @@
             class="form-input" 
             [(ngModel)]="fullName" 
             name="fullName" 
-            placeholder="Adınız ve Soyadınız" 
+            [placeholder]="tsService.translate('Adınız ve Soyadınız')" 
             required 
             autofocus />
         </div>
@@ -110,7 +110,7 @@
             class="form-input" 
             [(ngModel)]="email" 
             name="email" 
-            placeholder="kurumsal.eposta@sirketiniz.com" 
+            [placeholder]="tsService.translate('kurumsal.eposta@sirketiniz.com')" 
             required />
         </div>
       </div>
@@ -129,7 +129,7 @@
               class="form-input" 
               [(ngModel)]="company" 
               name="company" 
-              placeholder="Şirket Ünvanı" 
+              [placeholder]="tsService.translate('Şirket Ünvanı')" 
               required />
           </div>
         </div>
@@ -145,7 +145,7 @@
               class="form-input" 
               [(ngModel)]="jobPosition" 
               name="jobPosition" 
-              placeholder="Mühendis, Yönetici..." 
+              [placeholder]="tsService.translate('Mühendis, Yönetici...')" 
               required />
           </div>
         </div>
@@ -161,7 +161,7 @@
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
           </svg>
           <select class="form-select" [(ngModel)]="country" name="country">
-            <option *ngFor="let c of countries" [value]="c">{{ c }}</option>
+            <option *ngFor="let c of countries" [value]="c">{{ tsService.translate(c) }}</option>
           </select>
         </div>
       </div>

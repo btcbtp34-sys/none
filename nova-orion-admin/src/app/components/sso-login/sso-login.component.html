@@ -148,7 +148,7 @@
                 name="email" 
                 (focus)="isFocused = true" 
                 (blur)="isFocused = false" 
-                placeholder="ornek@sirketiniz.com"
+                [placeholder]="tsService.translate('ornek@sirketiniz.com')"
                 autocomplete="email"
                 required 
                 autofocus />
@@ -228,7 +228,7 @@
                 placeholder="••••••••••••"
                 required 
                 autofocus />
-              <button type="button" class="password-toggle-btn" (click)="toggleShowPassword()" [title]="showPassword ? 'Gizle' : 'Göster'">
+              <button type="button" class="password-toggle-btn" (click)="toggleShowPassword()" [title]="tsService.translate(showPassword ? 'Gizle' : 'Göster')">
                 <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>

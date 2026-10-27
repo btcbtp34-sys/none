@@ -26,7 +26,7 @@
         type="text" 
         class="dl-search-input" 
         [(ngModel)]="searchQuery" 
-        placeholder="Dosya veya doküman ara..." />
+        [placeholder]="tsService.translate('Dosya veya doküman ara...')" />
     </div>
   </div>
 
@@ -37,11 +37,11 @@
         <div class="dl-format-badge" [class.badge-pdf]="item.format === 'PDF'" [class.badge-zip]="item.format === 'ZIP'" [class.badge-dwg]="item.format === 'DWG'">
           {{ item.format }}
         </div>
-        <span class="dl-category-tag">{{ item.category }}</span>
+        <span class="dl-category-tag">{{ tsService.translate(item.category) }}</span>
       </div>
 
       <div class="dl-card-main">
-        <h3 class="dl-item-title">{{ item.title }}</h3>
+        <h3 class="dl-item-title">{{ tsService.translate(item.title) }}</h3>
         <div class="dl-item-meta">
           <span>{{ tsService.translate('Dosya Boyutu') }}: <strong>{{ item.size }}</strong></span>
           <span>&bull;</span>
@@ -50,7 +50,7 @@
       </div>
 
       <div class="dl-card-bottom">
-        <span class="dl-count-stat">{{ item.downloadCount }} indirme</span>
+        <span class="dl-count-stat">{{ item.downloadCount }} {{ tsService.translate('indirme') }}</span>
         <button 
           class="btn-dl" 
           [disabled]="downloadingId === item.id"

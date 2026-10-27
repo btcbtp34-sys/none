@@ -68,7 +68,7 @@ export class UrunListesiComponent implements OnInit {
   }
 
   name(entity: 'urun-grubu' | 'urun-tipi' | 'urun-ailesi', id: number | null | undefined): string {
-    return this.catalogService.itemName(entity, id);
+    return this.tsService.translate(this.catalogService.itemName(entity, id));
   }
 
   openDetail(id?: number) {

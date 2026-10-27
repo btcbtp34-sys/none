@@ -49,8 +49,9 @@ export class OrganizasyonelRollerComponent implements OnInit {
 
     return list.filter(r =>
       r.name.toLowerCase().includes(q) ||
+      this.tsService.translate(r.name).toLowerCase().includes(q) ||
       r.code.toLowerCase().includes(q) ||
-      (r.description && r.description.toLowerCase().includes(q))
+      (r.description && (r.description.toLowerCase().includes(q) || this.tsService.translate(r.description).toLowerCase().includes(q)))
     );
   }
 

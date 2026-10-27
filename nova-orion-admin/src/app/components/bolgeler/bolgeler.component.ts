@@ -28,10 +28,7 @@ export class BolgelerComponent implements OnInit {
   formStatus: 'Aktif' | 'Pasif' = 'Aktif';
 
   ngOnInit() {
-    this.pageTitleService.setPage(
-      this.tsService.translate('Bölgeler'),
-      this.tsService.translate('Sistemde tanımlı coğrafi bölgeler ve ülke eşleştirmeleri')
-    );
+    this.pageTitleService.setPage('Bölgeler', 'Sistemde tanımlı coğrafi bölgeler ve ülke eşleştirmeleri');
   }
 
   getCountryCount(regionName: string): number {
@@ -92,7 +89,7 @@ export class BolgelerComponent implements OnInit {
   }
 
   deleteRegion(id: number) {
-    if (confirm('Bu bölgeyi silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu bölgeyi silmek istediğinizden emin misiniz?'))) {
       this.regionService.deleteRegion(id);
     }
   }

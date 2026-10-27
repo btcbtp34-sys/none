@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -47,6 +47,26 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
   router = inject(Router);
 
   diagram: go.Diagram | null = null;
+
+  // GoJS metinleri bağlama ile çevrilir; dil değişince diyagram yeniden çevrilir
+  private langSync = effect(() => {
+    this.tsService.currentLang();
+    this.diagram?.updateAllTargetBindings();
+  });
+
+  private t(text: string): string {
+    return this.tsService.translate(text);
+  }
+
+  // Sabit metin için dile duyarlı bağlama
+  private tBinding(text: string): go.Binding {
+    return new go.Binding('text', '', () => this.t(text));
+  }
+
+  displayRoomName(room?: string): string {
+    const m = /^Oda (\d+)$/.exec(room || '');
+    return m ? this.t('Oda {n}').replace('{n}', m[1]) : this.t(room || '');
+  }
 
   // Active Project Data
   projectId = signal<string>('PRJ-2026-001');
@@ -287,11 +307,11 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
               $(go.Panel, 'Horizontal',
                 { alignment: go.Spot.Left },
                 $(go.Shape, 'Circle', { fill: '#0284c7', stroke: null, width: 8, height: 8, margin: new go.Margin(0, 6, 0, 0) }),
-                $(go.TextBlock, { text: 'DIŞ ÜNİTE', font: '800 10px monospace', stroke: '#0284c7' })
+                $(go.TextBlock, { font: '800 10px monospace', stroke: '#0284c7' }, this.tBinding('DIŞ ÜNİTE'))
               ),
               $(go.TextBlock,
                 { font: 'bold 13px sans-serif', stroke: '#0f172a', margin: new go.Margin(3, 0, 1, 0) },
-                new go.Binding('text', 'name')
+                new go.Binding('text', 'name', (n: string) => this.t(n))
               ),
               $(go.TextBlock,
                 { font: '600 11px monospace', stroke: '#64748b' },
@@ -299,7 +319,7 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
               ),
               $(go.TextBlock,
                 { font: 'bold 12px sans-serif', stroke: '#0284c7', margin: new go.Margin(3, 0, 0, 0) },
-                new go.Binding('text', 'coolingCapacity', (c: number) => `Kapasite: ${c} kW`)
+                new go.Binding('text', 'coolingCapacity', (c: number) => `${this.t('Kapasite')}: ${c} kW`)
               )
             )
           )
@@ -344,11 +364,11 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
               $(go.Panel, 'Horizontal',
                 { alignment: go.Spot.Left },
                 $(go.Shape, 'Circle', { fill: '#10b981', stroke: null, width: 8, height: 8, margin: new go.Margin(0, 6, 0, 0) }),
-                $(go.TextBlock, { text: 'İÇ ÜNİTE', font: '800 10px monospace', stroke: '#10b981' })
+                $(go.TextBlock, { font: '800 10px monospace', stroke: '#10b981' }, this.tBinding('İÇ ÜNİTE'))
               ),
               $(go.TextBlock,
                 { font: 'bold 13px sans-serif', stroke: '#0f172a', margin: new go.Margin(3, 0, 1, 0) },
-                new go.Binding('text', 'name')
+                new go.Binding('text', 'name', (n: string) => this.t(n))
               ),
               $(go.TextBlock,
                 { font: '600 11px monospace', stroke: '#64748b' },
@@ -356,7 +376,7 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
               ),
               $(go.TextBlock,
                 { font: 'bold 12px sans-serif', stroke: '#059669', margin: new go.Margin(3, 0, 0, 0) },
-                new go.Binding('text', 'coolingCapacity', (c: number) => `${c} kW (Soğutma)`)
+                new go.Binding('text', 'coolingCapacity', (c: number) => `${c} kW (${this.t('Soğutma')})`)
               )
             )
           )
@@ -416,10 +436,10 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
             ),
             $(go.Panel, 'Vertical',
               { alignment: go.Spot.Left },
-              $(go.TextBlock, { text: 'KONTROLÖR', font: '800 9px monospace', stroke: '#7c3aed' }),
+              $(go.TextBlock, { font: '800 9px monospace', stroke: '#7c3aed' }, this.tBinding('KONTROLÖR')),
               $(go.TextBlock,
                 { font: 'bold 12px sans-serif', stroke: '#0f172a', margin: new go.Margin(2, 0, 1, 0) },
-                new go.Binding('text', 'name')
+                new go.Binding('text', 'name', (n: string) => this.t(n))
               ),
               $(go.TextBlock,
                 { font: '600 10px monospace', stroke: '#6b7280' },
@@ -472,7 +492,7 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
           $(go.Shape, 'Circle', { fill: '#0284c7', stroke: null, width: 6, height: 6, margin: new go.Margin(0, 5, 0, 0) }),
           $(go.TextBlock,
             { font: 'bold 10.5px monospace', stroke: '#0369a1' },
-            new go.Binding('text', 'label', (l: string) => l || 'Likit/Gaz: Ø15.88 / Ø9.52')
+            new go.Binding('text', 'label', (l: string) => this.t(l || 'Likit/Gaz: Ø15.88 / Ø9.52'))
           )
         )
       )
@@ -519,7 +539,7 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
           $(go.Shape, 'Circle', { fill: '#7c3aed', stroke: null, width: 6, height: 6, margin: new go.Margin(0, 5, 0, 0) }),
           $(go.TextBlock,
             { font: 'bold 10.5px monospace', stroke: '#6d28d9' },
-            new go.Binding('text', 'label', (l: string) => l || 'Sinyal Bus: 2x0.75')
+            new go.Binding('text', 'label', (l: string) => this.t(l || 'Sinyal Bus: 2x0.75'))
           )
         )
       )
@@ -572,7 +592,7 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
       cursor: 'crosshair',
       toolTip: $(
         'ToolTip',
-        $(go.TextBlock, { margin: 4, font: 'bold 10px sans-serif', stroke: '#1e293b' }, portTitle)
+        $(go.TextBlock, { margin: 4, font: 'bold 10px sans-serif', stroke: '#1e293b' }, this.tBinding(portTitle))
       ),
       mouseEnter: (e: go.InputEvent, port: go.GraphObject) => {
         if (port instanceof go.Shape) {
@@ -657,7 +677,7 @@ export class FrontendDrawingComponent implements AfterViewInit, OnDestroy {
     }
 
     this.canvasNodeCount.set(this.diagram.nodes.count);
-    this.triggerToast(`${this.tsService.translate(item.name)} ${this.tsService.translate('çizime eklendi.')}`);
+    this.triggerToast(this.t('{name} çizime eklendi.').replace('{name}', this.t(item.name)));
   }
 
   // Tool Modes

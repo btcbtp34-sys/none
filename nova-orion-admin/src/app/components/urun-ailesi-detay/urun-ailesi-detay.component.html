@@ -25,38 +25,34 @@
       <div *ngIf="formError" class="alert-box-error">{{ formError }}</div>
       <div *ngIf="saveMessage && !formError" class="alert-box-success">{{ saveMessage }}</div>
 
-      <div class="family-layout">
-      <!-- Sol: Genel Bilgiler -->
-      <section class="info-card family-general-card">
-        <header class="info-card-header">{{ tsService.translate('GENEL BİLGİLER') }}</header>
-        <div class="family-general-grid">
+      <!-- Tabs -->
+      <div class="detail-tabs-row">
+        <button
+          *ngFor="let tab of tabs"
+          class="detail-tab-btn"
+          [class.active]="activeTab === tab.id"
+          (click)="activeTab = tab.id">
+          {{ tsService.translate(tab.label) }}
+        </button>
+      </div>
+
+      <!-- Tab: Genel Bilgiler -->
+      <div *ngIf="activeTab === 'genel'" class="info-cards-grid family-cards-grid">
+        <section class="info-card">
+          <header class="info-card-header">{{ tsService.translate('TEMEL BİLGİLER') }}</header>
           <div class="info-row">
             <label class="info-label">{{ tsService.translate('Adı') }} *</label>
             <input type="text" class="info-input" [(ngModel)]="formName" placeholder="—" />
-          </div>
-          <div class="info-row">
-            <label class="info-label">{{ tsService.translate('Durum') }}</label>
-            <select class="info-input" [(ngModel)]="formStatus">
-              <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
-              <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
-            </select>
           </div>
           <div class="info-row">
             <label class="info-label">{{ tsService.translate('Açıklama') }}</label>
             <textarea class="info-input" rows="1" [(ngModel)]="formDescription" placeholder="—"></textarea>
           </div>
           <div class="info-row">
-            <label class="info-label">{{ tsService.translate('Kendi Versiyonu') }}</label>
-            <select class="info-input" [(ngModel)]="formOwnVersionId">
-              <option [ngValue]="null">{{ tsService.translate('Seçiniz') }}</option>
-              <option *ngFor="let v of catalogService.items('versiyon')" [ngValue]="v.id">{{ v.name }}</option>
-            </select>
-          </div>
-          <div class="info-row">
             <label class="info-label">{{ tsService.translate('Ürün Grubu') }} *</label>
             <select class="info-input" [(ngModel)]="formGroupId">
               <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
-              <option *ngFor="let g of catalogService.items('urun-grubu')" [ngValue]="g.id">{{ g.name }}</option>
+              <option *ngFor="let g of catalogService.items('urun-grubu')" [ngValue]="g.id">{{ tsService.translate(g.name) }}</option>
             </select>
           </div>
           <div class="info-row">
@@ -65,7 +61,7 @@
               <option [ngValue]="null" disabled>
                 {{ tsService.translate(formGroupId === null ? 'Önce ürün grubu seçiniz' : 'Seçiniz') }}
               </option>
-              <option *ngFor="let t of typeOptions" [ngValue]="t.id">{{ t.name }}</option>
+              <option *ngFor="let t of typeOptions" [ngValue]="t.id">{{ tsService.translate(t.name) }}</option>
             </select>
           </div>
           <div class="info-row family-system-row">
@@ -80,34 +76,49 @@
                 [class.checked]="isSystemSelected(s.id)"
                 (click)="toggleSystem(s.id)">
                 <input type="checkbox" [checked]="isSystemSelected(s.id)" (click)="$event.stopPropagation(); toggleSystem(s.id)" />
-                <span>{{ s.name }}</span>
+                <span>{{ tsService.translate(s.name) }}</span>
               </div>
               <span *ngIf="!systemOptions.length" class="family-system-empty">
                 {{ tsService.translate(formGroupId === null ? 'Önce ürün grubu seçiniz' : 'Bağlı sistem yok.') }}
               </span>
             </div>
           </div>
-        </div>
-      </section>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Kendi Versiyonu') }}</label>
+            <select class="info-input" [(ngModel)]="formOwnVersionId">
+              <option [ngValue]="null">{{ tsService.translate('Seçiniz') }}</option>
+              <option *ngFor="let v of catalogService.items('versiyon')" [ngValue]="v.id">{{ v.name }}</option>
+            </select>
+          </div>
+          <div class="info-row">
+            <label class="info-label">{{ tsService.translate('Durum') }}</label>
+            <select class="info-input" [(ngModel)]="formStatus">
+              <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
+              <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
+            </select>
+          </div>
+        </section>
+      </div>
 
-      <!-- Sağ: İlişkiler -->
-      <section class="info-card">
-        <header class="info-card-header">{{ tsService.translate('İLİŞKİLER') }}</header>
+      <!-- Tab: İlişkiler -->
+      <div *ngIf="activeTab === 'iliskiler'" class="relations-grid">
+        <!-- Kart: Uyumlu Versiyonlar -->
+        <section class="info-card">
+          <header class="info-card-header relation-card-header">
+            <span>{{ tsService.translate('UYUMLU VERSİYONLAR') }}</span>
+            <span class="tab-count">{{ formVersionIds.length }}</span>
+          </header>
+          <app-version-checklist [(selectedIds)]="formVersionIds"></app-version-checklist>
+        </section>
 
-        <!-- Uyumlu Versiyonlar -->
-        <div class="relation-subheader">
-          <span>{{ tsService.translate('UYUMLU VERSİYONLAR') }}</span>
-          <span class="tab-count">{{ formVersionIds.length }}</span>
-        </div>
-        <app-version-checklist [(selectedIds)]="formVersionIds" [inline]="true"></app-version-checklist>
-
-        <!-- Ülkeler (Global > Bölge > Ülke) -->
-        <div class="relation-subheader">
-          <span>{{ tsService.translate('ÜLKELER') }}</span>
-          <span class="tab-count">{{ formCountryIds.length }}</span>
-        </div>
-        <app-country-tree [(selectedIds)]="formCountryIds"></app-country-tree>
-      </section>
+        <!-- Kart: Ülkeler (Global > Bölge > Ülke) -->
+        <section class="info-card">
+          <header class="info-card-header relation-card-header">
+            <span>{{ tsService.translate('ÜLKELER') }}</span>
+            <span class="tab-count">{{ formCountryIds.length }}</span>
+          </header>
+          <app-country-tree [(selectedIds)]="formCountryIds"></app-country-tree>
+        </section>
       </div>
     </ng-container>
   </div>

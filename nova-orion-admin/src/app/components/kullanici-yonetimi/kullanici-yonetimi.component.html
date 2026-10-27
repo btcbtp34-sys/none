@@ -146,7 +146,7 @@
           <input 
             type="text" 
             class="form-control-subtle" 
-            placeholder="Örn: Caner Demir" 
+            [placeholder]="tsService.translate('Örn: Caner Demir')" 
             [(ngModel)]="formName" />
         </div>
         <div class="form-group flex-1">
@@ -154,7 +154,7 @@
           <input 
             type="email" 
             class="form-control-subtle" 
-            placeholder="ornek@nova.com" 
+            [placeholder]="tsService.translate('ornek@nova.com')" 
             [(ngModel)]="formEmail" />
         </div>
       </div>
@@ -174,7 +174,7 @@
           <input 
             type="text" 
             class="form-control-subtle" 
-            placeholder="Örn: Türkiye, Avrupa veya Global" 
+            [placeholder]="tsService.translate('Örn: Türkiye, Avrupa veya Global')" 
             [(ngModel)]="formScope" />
         </div>
       </div>

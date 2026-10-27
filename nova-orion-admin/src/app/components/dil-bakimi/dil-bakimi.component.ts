@@ -174,14 +174,15 @@ export class DilBakimiComponent implements OnInit {
   insertTag(tag: 'b' | 'i' | 'p' | 'br' | 'li' | 'a') {
     if (!this.editingHtmlItem) return;
     const current = this.currentHtmlValue;
+    const t = (k: string) => this.tsService.translate(k);
     let snippet = '';
     switch (tag) {
-      case 'b': snippet = '<strong>Metin</strong>'; break;
-      case 'i': snippet = '<em>Metin</em>'; break;
-      case 'p': snippet = '<p>Yeni paragraf metni</p>'; break;
+      case 'b': snippet = `<strong>${t('Metin')}</strong>`; break;
+      case 'i': snippet = `<em>${t('Metin')}</em>`; break;
+      case 'p': snippet = `<p>${t('Yeni paragraf metni')}</p>`; break;
       case 'br': snippet = '<br/>\n'; break;
-      case 'li': snippet = '<ul>\n  <li>Madde 1</li>\n  <li>Madde 2</li>\n</ul>'; break;
-      case 'a': snippet = '<a href="https://..." target="_blank">Bağlantı</a>'; break;
+      case 'li': snippet = `<ul>\n  <li>${t('Madde')} 1</li>\n  <li>${t('Madde')} 2</li>\n</ul>`; break;
+      case 'a': snippet = `<a href="https://..." target="_blank">${t('Bağlantı')}</a>`; break;
     }
     this.currentHtmlValue = current ? current + ' ' + snippet : snippet;
   }
@@ -351,19 +352,19 @@ export class DilBakimiComponent implements OnInit {
   saveNewItem() {
     const code = this.newItemForm.code.trim();
     if (!code) {
-      this.errorMessage = 'Lütfen anahtar kodunu (Key) giriniz (örn: btn_generate_report).';
+      this.errorMessage = this.tsService.translate('Lütfen anahtar kodunu (Key) giriniz (örn: btn_generate_report).');
       return;
     }
 
     // Check duplicate code
     const exists = this.allItems.some(i => i.code.toLowerCase() === code.toLowerCase());
     if (exists) {
-      this.errorMessage = `"${code}" koduna sahip bir çeviri anahtarı zaten mevcut. Farklı bir anahtar kodu belirleyin.`;
+      this.errorMessage = this.tsService.translate('"{code}" koduna sahip bir çeviri anahtarı zaten mevcut. Farklı bir anahtar kodu belirleyin.').replace('{code}', code);
       return;
     }
 
     if (!this.newItemForm.en.trim() && !this.newItemForm.tr.trim()) {
-      this.errorMessage = 'Lütfen en azından İngilizce (EN) veya Türkçe (TR) kaynak metni giriniz.';
+      this.errorMessage = this.tsService.translate('Lütfen en azından İngilizce (EN) veya Türkçe (TR) kaynak metni giriniz.');
       return;
     }
 
@@ -393,7 +394,7 @@ export class DilBakimiComponent implements OnInit {
     this.filterSearch = code;
     this.currentPage = 1;
 
-    this.successMessage = `"${code}" yeni çeviri kaydı başarıyla eklendi. "Değişiklikleri Sisteme Kaydet" butonuyla kalıcı hale getirebilirsiniz.`;
+    this.successMessage = this.tsService.translate('"{code}" yeni çeviri kaydı başarıyla eklendi. "Değişiklikleri Sisteme Kaydet" butonuyla kalıcı hale getirebilirsiniz.').replace('{code}', code);
     setTimeout(() => {
       this.successMessage = '';
     }, 6000);
@@ -411,9 +412,9 @@ export class DilBakimiComponent implements OnInit {
   }
 
   deleteItem(item: TranslationItem) {
-    if (confirm(`"${item.code}" anahtarlı çeviri kaydını silmek istediğinizden emin misiniz?`)) {
+    if (confirm(this.tsService.translate('"{code}" anahtarlı çeviri kaydını silmek istediğinizden emin misiniz?').replace('{code}', item.code))) {
       this.allItems = this.allItems.filter(i => i.id !== item.id);
-      this.successMessage = `"${item.code}" kaydı listeden silindi.`;
+      this.successMessage = this.tsService.translate('"{code}" kaydı listeden silindi.').replace('{code}', item.code);
       setTimeout(() => {
         this.successMessage = '';
       }, 4000);
@@ -468,7 +469,7 @@ export class DilBakimiComponent implements OnInit {
     }
     localStorage.setItem('nova_runtime_dictionary', JSON.stringify(customDict));
 
-    this.successMessage = `Tüm değişiklikler başarıyla kaydedildi (${this.allItems.length} çeviri kaydı güncel dil dosyası olarak aktif edildi).`;
+    this.successMessage = this.tsService.translate('Tüm değişiklikler başarıyla kaydedildi ({count} çeviri kaydı güncel dil dosyası olarak aktif edildi).').replace('{count}', String(this.allItems.length));
     setTimeout(() => {
       this.successMessage = '';
     }, 5000);
@@ -476,12 +477,12 @@ export class DilBakimiComponent implements OnInit {
 
   // Reset to original dataset
   resetToDefault() {
-    if (confirm('Tüm özel düzenlemeleri sıfırlayıp orijinal AirSelect Excel şablon verilerine dönmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Tüm özel düzenlemeleri sıfırlayıp orijinal AirSelect Excel şablon verilerine dönmek istediğinizden emin misiniz?'))) {
       localStorage.removeItem(this.STORAGE_KEY);
       localStorage.removeItem('nova_custom_translations_dataset');
       localStorage.removeItem('nova_runtime_dictionary');
       this.loadDataset();
-      this.successMessage = 'Dil dosyası orijinal şablon verilerine sıfırlandı.';
+      this.successMessage = this.tsService.translate('Dil dosyası orijinal şablon verilerine sıfırlandı.');
       setTimeout(() => {
         this.successMessage = '';
       }, 4000);
@@ -507,7 +508,7 @@ export class DilBakimiComponent implements OnInit {
       if (this.uploadProgress >= 100) {
         clearInterval(interval);
         this.isUploading = false;
-        this.successMessage = `"${this.selectedFile?.name}" başarıyla ayrıştırıldı ve 1.969 satırlık şablon canlı listeye yüklendi.`;
+        this.successMessage = this.tsService.translate('"{file}" başarıyla ayrıştırıldı ve 1.969 satırlık şablon canlı listeye yüklendi.').replace('{file}', this.selectedFile?.name || '');
         this.loadDataset();
         setTimeout(() => {
           this.successMessage = '';
@@ -519,7 +520,7 @@ export class DilBakimiComponent implements OnInit {
   // Temp İndir (Download Template based on Category & Role Language)
   downloadTemplate() {
     const catObj = this.categoriesList.find(c => c.code === this.downloadCategory);
-    const catTitle = catObj ? catObj.name : 'Tüm_Kategoriler';
+    const catTitle = catObj ? this.tsService.translate(catObj.name) : 'Tüm_Kategoriler';
     const langUpper = this.downloadLanguage === 'ALL' ? 'TUM_DILLER' : this.downloadLanguage.toUpperCase();
     const filename = `AirSelect_Ceviri_Sablonu_${this.downloadCategory}_${langUpper}.${this.downloadFormat}`;
 
@@ -577,8 +578,9 @@ export class DilBakimiComponent implements OnInit {
       URL.revokeObjectURL(url);
     }
 
-    const langLabel = this.downloadLanguage === 'ALL' ? 'Tüm Diller' : this.downloadLanguage.toUpperCase();
-    this.successMessage = `Şablon hazırlandı ve indirildi: ${filename} (Yetkili Dil: ${langLabel}, Kategori: ${catTitle})`;
+    const langLabel = this.downloadLanguage === 'ALL' ? this.tsService.translate('Tüm Diller') : this.downloadLanguage.toUpperCase();
+    this.successMessage = this.tsService.translate('Şablon hazırlandı ve indirildi: {file} (Yetkili Dil: {lang}, Kategori: {category})')
+      .replace('{file}', filename).replace('{lang}', langLabel).replace('{category}', catTitle);
     setTimeout(() => {
       this.successMessage = '';
     }, 4000);

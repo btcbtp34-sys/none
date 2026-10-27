@@ -82,10 +82,10 @@ export class DilYonetimiComponent implements OnInit {
 
   deleteLanguage(id: number) {
     if (!this.canDeleteLanguage) {
-      alert('Dil silme yetkisi yalnızca Süper Admin (Super Admin) kullanıcısına aittir.');
+      alert(this.tsService.translate('Dil silme yetkisi yalnızca Süper Admin (Super Admin) kullanıcısına aittir.'));
       return;
     }
-    if (confirm('Bu dili silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu dili silmek istediğinizden emin misiniz?'))) {
       this.langService.deleteLanguage(id);
     }
   }

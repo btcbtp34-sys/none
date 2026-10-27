@@ -61,8 +61,8 @@
             <td><span class="index-text">{{ i + 1 }}</span></td>
             <td>
               <div class="param-cell">
-                <span class="param-name-text">{{ item.name }}</span>
-                <span class="param-desc-sub">{{ item.description }}</span>
+                <span class="param-name-text">{{ tsService.translate(item.name) }}</span>
+                <span class="param-desc-sub">{{ tsService.translate(item.description) }}</span>
               </div>
             </td>
             <td><span class="code-badge">{{ item.key }}</span></td>
@@ -146,7 +146,7 @@
           <input 
             type="text" 
             class="form-control-subtle font-mono" 
-            placeholder="Örn: MAX_LOGIN_ATTEMPTS" 
+            [placeholder]="tsService.translate('Örn: MAX_LOGIN_ATTEMPTS')" 
             [(ngModel)]="formKey" />
         </div>
         <div class="form-group flex-1">
@@ -154,7 +154,7 @@
           <input 
             type="text" 
             class="form-control-subtle" 
-            placeholder="Örn: Maksimum Giriş Denemesi" 
+            [placeholder]="tsService.translate('Örn: Maksimum Giriş Denemesi')" 
             [(ngModel)]="formName" />
         </div>
       </div>
@@ -172,7 +172,7 @@
           <input 
             type="text" 
             class="form-control-subtle" 
-            placeholder="Örn: 5 veya true/false" 
+            [placeholder]="tsService.translate('Örn: 5 veya true/false')" 
             [(ngModel)]="formValue" />
         </div>
       </div>
@@ -183,7 +183,7 @@
         <textarea 
           rows="2" 
           class="form-control-subtle" 
-          placeholder="Parametrenin işlevi ve etki alanı hakkında bilgi..." 
+          [placeholder]="tsService.translate('Parametrenin işlevi ve etki alanı hakkında bilgi...')" 
           [(ngModel)]="formDescription"></textarea>
       </div>
     </div>

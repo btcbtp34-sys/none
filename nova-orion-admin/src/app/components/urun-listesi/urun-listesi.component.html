@@ -33,14 +33,14 @@
         <div class="filter-select-wrapper">
           <select class="filter-select" [(ngModel)]="filterGroup" (ngModelChange)="onGroupFilterChange()">
             <option value="ALL">{{ tsService.translate('Tüm Ürün Grupları') }}</option>
-            <option *ngFor="let g of catalogService.items('urun-grubu')" [value]="g.id">{{ g.name }}</option>
+            <option *ngFor="let g of catalogService.items('urun-grubu')" [value]="g.id">{{ tsService.translate(g.name) }}</option>
           </select>
         </div>
 
         <div class="filter-select-wrapper">
           <select class="filter-select" [(ngModel)]="filterFamily">
             <option value="ALL">{{ tsService.translate('Tüm Ürün Aileleri') }}</option>
-            <option *ngFor="let f of familyFilterOptions" [value]="f.id">{{ f.name }}</option>
+            <option *ngFor="let f of familyFilterOptions" [value]="f.id">{{ tsService.translate(f.name) }}</option>
           </select>
         </div>
 
@@ -82,8 +82,8 @@
         <tbody>
           <tr *ngFor="let p of filteredProducts; let i = index" class="clickable-row" (click)="openDetail(p.id)">
             <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
-            <td><span class="brand-name-bold">{{ p.name }}</span></td>
-            <td><span class="brand-desc-sm">{{ p.description || '—' }}</span></td>
+            <td><span class="brand-name-bold">{{ tsService.translate(p.name) }}</span></td>
+            <td><span class="brand-desc-sm">{{ tsService.translate(p.description) || '—' }}</span></td>
             <td><span class="brand-desc-sm">{{ name('urun-grubu', p.parentIds[0]) || '—' }}</span></td>
             <td><span class="brand-desc-sm">{{ name('urun-tipi', p.productTypeId) || '—' }}</span></td>
             <td>
@@ -102,13 +102,13 @@
             </td>
             <td class="text-right">
               <div class="actions-group">
-                <button class="action-btn edit-btn" (click)="$event.stopPropagation(); openDetail(p.id)" title="Düzenle">
+                <button class="action-btn edit-btn" (click)="$event.stopPropagation(); openDetail(p.id)" [title]="tsService.translate('Düzenle')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-                <button class="action-btn delete-btn" (click)="$event.stopPropagation(); deleteProduct(p.id)" title="Sil">
+                <button class="action-btn delete-btn" (click)="$event.stopPropagation(); deleteProduct(p.id)" [title]="tsService.translate('Sil')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

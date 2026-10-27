@@ -14,7 +14,7 @@
       <div class="lang-card-header">
         <span class="card-flag">{{ l.flag }}</span>
         <div class="card-title-group">
-          <h3 class="card-lang-name">{{ l.name }}</h3>
+          <h3 class="card-lang-name">{{ tsService.translate(l.name) }}</h3>
           <span class="card-native-name">{{ l.nativeName }}</span>
         </div>
         <div class="card-check-circle" *ngIf="tsService.currentLang() === l.code">
@@ -24,7 +24,7 @@
         </div>
       </div>
 
-      <p class="card-lang-desc">{{ l.description }}</p>
+      <p class="card-lang-desc">{{ tsService.translate(l.description) }}</p>
 
       <div class="card-footer">
         <span class="active-pill" *ngIf="tsService.currentLang() === l.code">✓ {{ tsService.translate('Aktif') }}</span>

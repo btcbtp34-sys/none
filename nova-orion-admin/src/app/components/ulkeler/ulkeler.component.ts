@@ -152,9 +152,11 @@ export class UlkelerComponent implements OnInit {
       }
 
       if (!query) return true;
-      return c.name.toLowerCase().includes(query) || 
-             c.code.toLowerCase().includes(query) || 
-             c.region.toLowerCase().includes(query);
+      return c.name.toLowerCase().includes(query) ||
+             this.tsService.translate(c.name).toLowerCase().includes(query) ||
+             c.code.toLowerCase().includes(query) ||
+             c.region.toLowerCase().includes(query) ||
+             this.tsService.translate(c.region).toLowerCase().includes(query);
     });
 
     // 2. Identify distinct regions and sort them alphabetically
@@ -165,7 +167,7 @@ export class UlkelerComponent implements OnInit {
       const matchedRegion = this.regionService.regions().find(r => r.name.toLowerCase() === rName.toLowerCase());
       const countriesInRegion = filteredCountries
         .filter(c => (c.region || 'Diğer').toLowerCase() === rName.toLowerCase())
-        .sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+        .sort((a, b) => this.tsService.translate(a.name).localeCompare(this.tsService.translate(b.name), this.tsService.currentLang()));
 
       return {
         regionName: rName,
@@ -178,7 +180,7 @@ export class UlkelerComponent implements OnInit {
   getCountriesForRegion(regionName: string): PredefinedCountry[] {
     return this.allPredefinedCountries
       .filter(c => c.region.toLowerCase() === regionName.toLowerCase())
-      .sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+      .sort((a, b) => this.tsService.translate(a.name).localeCompare(this.tsService.translate(b.name), this.tsService.currentLang()));
   }
 
   getCurrentCountryStates(): string[] {
@@ -324,7 +326,7 @@ export class UlkelerComponent implements OnInit {
   }
 
   deleteCountry(id: number) {
-    if (confirm('Bu ülkeyi silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu ülkeyi silmek istediğinizden emin misiniz?'))) {
       this.countryService.deleteCountry(id);
     }
   }

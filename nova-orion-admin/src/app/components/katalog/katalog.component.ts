@@ -69,7 +69,7 @@ export class KatalogComponent implements OnInit {
   }
 
   parentName(id: number): string {
-    return this.config.parent ? this.catalogService.itemName(this.config.parent, id) : '';
+    return this.config.parent ? this.tsService.translate(this.catalogService.itemName(this.config.parent, id)) : '';
   }
 
   get filteredItems(): CatalogItem[] {
@@ -163,7 +163,7 @@ export class KatalogComponent implements OnInit {
   }
 
   systemName(id: number): string {
-    return this.catalogService.itemName('sistem', id);
+    return this.tsService.translate(this.catalogService.itemName('sistem', id));
   }
 
   versionName(id: number | null | undefined): string {
@@ -176,7 +176,7 @@ export class KatalogComponent implements OnInit {
   }
 
   productTypeName(id: number | null | undefined): string {
-    return this.catalogService.itemName('urun-tipi', id);
+    return this.tsService.translate(this.catalogService.itemName('urun-tipi', id));
   }
 
   get columnCount(): number {

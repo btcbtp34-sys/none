@@ -33,7 +33,7 @@
         <div class="filter-select-wrapper" *ngIf="config.parent">
           <select class="filter-select" [(ngModel)]="filterParent">
             <option value="ALL">{{ tsService.translate('Tümü') }} ({{ tsService.translate(config.parentLabel) }})</option>
-            <option *ngFor="let p of parentItems" [value]="p.id">{{ p.name }}</option>
+            <option *ngFor="let p of parentItems" [value]="p.id">{{ tsService.translate(p.name) }}</option>
           </select>
         </div>
 
@@ -74,8 +74,8 @@
         <tbody>
           <tr *ngFor="let item of filteredItems; let i = index" [class.clickable-row]="config.detailRoute" (click)="config.detailRoute && openModal(item)">
             <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
-            <td><span class="brand-name-bold">{{ item.name }}</span></td>
-            <td><span class="brand-desc-sm">{{ item.description || '—' }}</span></td>
+            <td><span class="brand-name-bold">{{ tsService.translate(item.name) }}</span></td>
+            <td><span class="brand-desc-sm">{{ tsService.translate(item.description) || '—' }}</span></td>
             <td *ngIf="config.hasVersionsAndCountries">
               <span *ngIf="item.ownVersionId; else noVersion" class="code-badge">{{ versionName(item.ownVersionId) }}</span>
               <ng-template #noVersion><span class="brand-desc-sm">—</span></ng-template>
@@ -107,13 +107,13 @@
             </td>
             <td class="text-right">
               <div class="actions-group" (click)="$event.stopPropagation()">
-                <button class="action-btn edit-btn" (click)="openModal(item)" title="Düzenle">
+                <button class="action-btn edit-btn" (click)="openModal(item)" [title]="tsService.translate('Düzenle')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                   </svg>
                 </button>
-                <button class="action-btn delete-btn" (click)="deleteItem(item.id)" title="Sil">
+                <button class="action-btn delete-btn" (click)="deleteItem(item.id)" [title]="tsService.translate('Sil')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -195,7 +195,7 @@
               [class.checked]="isSystemSelected(s.id)"
               (click)="toggleSystem(s.id)">
               <input type="checkbox" [checked]="isSystemSelected(s.id)" (click)="$event.stopPropagation(); toggleSystem(s.id)" />
-              <span>{{ s.name }}</span>
+              <span>{{ tsService.translate(s.name) }}</span>
             </div>
             <div *ngIf="!systemOptions.length" class="no-filter-results">
               <span>{{ tsService.translate(singleParentId === null ? 'Önce ürün grubu seçiniz' : 'Bağlı sistem yok.') }}</span>
@@ -210,7 +210,7 @@
           <label class="form-label-bold">{{ tsService.translate(config.parentLabel) }} *</label>
           <select class="form-control-subtle" [(ngModel)]="singleParentId">
             <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
-            <option *ngFor="let p of parentItems" [ngValue]="p.id">{{ p.name }}</option>
+            <option *ngFor="let p of parentItems" [ngValue]="p.id">{{ tsService.translate(p.name) }}</option>
           </select>
         </div>
 
@@ -227,7 +227,7 @@
             <option [ngValue]="null" disabled>
               {{ tsService.translate(singleParentId === null ? 'Önce ürün grubu seçiniz' : 'Seçiniz') }}
             </option>
-            <option *ngFor="let t of productTypeOptions" [ngValue]="t.id">{{ t.name }}</option>
+            <option *ngFor="let t of productTypeOptions" [ngValue]="t.id">{{ tsService.translate(t.name) }}</option>
           </select>
           <span class="form-hint-subtle" *ngIf="singleParentId !== null && productTypeOptions.length === 0">
             {{ tsService.translate('Bu ürün grubuna ait ürün tipi tanımlı değil.') }}
@@ -253,7 +253,7 @@
             [class.checked]="isParentSelected(p.id)"
             (click)="toggleParentSelection(p.id)">
             <input type="checkbox" [checked]="isParentSelected(p.id)" (click)="$event.stopPropagation(); toggleParentSelection(p.id)" />
-            <span>{{ p.name }}</span>
+            <span>{{ tsService.translate(p.name) }}</span>
           </div>
           <div *ngIf="parentItems.length === 0" class="no-filter-results">
             <span>{{ tsService.translate('Önce bağlanacak kayıtları tanımlayınız.') }}</span>

@@ -24,11 +24,11 @@
           <path d="M2 17l10 5 10-5"></path>
           <path d="M2 12l10 5 10-5"></path>
         </svg>
-        <span>{{ projectService.currentProject().id === 'nova' ? 'Proje Nova' : 'Proje Orion' }}</span>
+        <span>{{ tsService.translate(projectService.currentProject().id === 'nova' ? 'Proje Nova' : 'Proje Orion') }}</span>
       </div>
 
       <h1 class="banner-title">
-        {{ projectService.currentProject().id === 'nova' ? 'Proje Nova' : 'Proje Orion' }}
+        {{ tsService.translate(projectService.currentProject().id === 'nova' ? 'Proje Nova' : 'Proje Orion') }}
       </h1>
 
       <p class="banner-tagline">
@@ -57,7 +57,7 @@
 
         <div class="card-body">
           <h2 class="card-title">{{ tsService.translate('Yeni Proje') }}</h2>
-          <p class="card-desc">Yeni bir proje oluşturun, proje tipini ve parametrelerini belirleyin.</p>
+          <p class="card-desc">{{ tsService.translate('Yeni bir proje oluşturun, proje tipini ve parametrelerini belirleyin.') }}</p>
         </div>
 
         <div class="card-foot">
@@ -82,7 +82,7 @@
 
         <div class="card-body">
           <h2 class="card-title">{{ tsService.translate('Proje Aç') }}</h2>
-          <p class="card-desc">Önceden oluşturulmuş ve sistemde kayıtlı mevcut projelerinizi görüntüleyin ve açın.</p>
+          <p class="card-desc">{{ tsService.translate('Önceden oluşturulmuş ve sistemde kayıtlı mevcut projelerinizi görüntüleyin ve açın.') }}</p>
         </div>
 
         <div class="card-foot">
@@ -121,12 +121,12 @@
         <div class="form-row-2">
           <div class="form-group">
             <label class="form-label">{{ tsService.translate('Proje Adı') }} *</label>
-            <input type="text" class="form-input" [(ngModel)]="newProjectName" name="name" placeholder="Örn: Kuzey Kampüs Projesi" required autofocus />
+            <input type="text" class="form-input" [(ngModel)]="newProjectName" name="name" [placeholder]="tsService.translate('Örn: Kuzey Kampüs Projesi')" required autofocus />
           </div>
 
           <div class="form-group">
             <label class="form-label">{{ tsService.translate('Proje Kodu') }}</label>
-            <input type="text" class="form-input font-mono" [(ngModel)]="newProjectCode" name="code" placeholder="Örn: PRJ-2026-001" />
+            <input type="text" class="form-input font-mono" [(ngModel)]="newProjectCode" name="code" [placeholder]="tsService.translate('Örn: PRJ-2026-001')" />
           </div>
         </div>
 
@@ -134,14 +134,14 @@
           <div class="form-group">
             <label class="form-label">{{ tsService.translate('Ülke') }}</label>
             <select class="form-select" [(ngModel)]="newProjectCountry" (change)="onCountryChange()" name="country">
-              <option *ngFor="let c of countryCityDatabase" [value]="c.country">{{ c.country }}</option>
+              <option *ngFor="let c of countryCityDatabase" [value]="c.country">{{ tsService.translate(c.country) }}</option>
             </select>
           </div>
 
           <div class="form-group">
             <label class="form-label">{{ tsService.translate('Şehir') }}</label>
             <select class="form-select" [(ngModel)]="newProjectCity" (change)="onCityChange()" name="city">
-              <option *ngFor="let ct of currentAvailableCities" [value]="ct">{{ ct }}</option>
+              <option *ngFor="let ct of currentAvailableCities" [value]="ct">{{ tsService.translate(ct) }}</option>
             </select>
           </div>
         </div>
@@ -168,12 +168,12 @@
         <div class="form-row-2">
           <div class="form-group">
             <label class="form-label">{{ tsService.translate('CRM Kodu') }}</label>
-            <input type="text" class="form-input font-mono" [(ngModel)]="newProjectCrmCode" name="crmCode" placeholder="Örn: CRM-8842" />
+            <input type="text" class="form-input font-mono" [(ngModel)]="newProjectCrmCode" name="crmCode" [placeholder]="tsService.translate('Örn: CRM-8842')" />
           </div>
 
           <div class="form-group">
             <label class="form-label">{{ tsService.translate('Ürün Açıklaması') }}</label>
-            <input type="text" class="form-input" [(ngModel)]="newProjectDescription" name="description" placeholder="Proje ve ürün açıklaması..." />
+            <input type="text" class="form-input" [(ngModel)]="newProjectDescription" name="description" [placeholder]="tsService.translate('Proje ve ürün açıklaması...')" />
           </div>
         </div>
 
@@ -267,7 +267,7 @@
           </div>
           <div>
             <h2 class="modal-title">{{ tsService.translate('Proje Aç') }}</h2>
-            <span class="modal-sub">Mevcut projelerden birini seçerek çalışma alanına yükleyin</span>
+            <span class="modal-sub">{{ tsService.translate('Mevcut projelerden birini seçerek çalışma alanına yükleyin') }}</span>
           </div>
         </div>
         <button class="modal-close-btn" (click)="closeOpenModal()">✕</button>
@@ -297,13 +297,13 @@
           </div>
           <div class="prj-info-meta">
             <div class="prj-title-row">
-              <span class="prj-name">{{ prj.name }}</span>
+              <span class="prj-name">{{ tsService.translate(prj.name) }}</span>
               <span class="prj-code">{{ prj.code }}</span>
             </div>
             <div class="prj-sub-meta">
               <span class="pill-mini">{{ tsService.translate(prj.type) }}</span>
               <span>&bull;</span>
-              <span>{{ prj.country }}</span>
+              <span>{{ tsService.translate(prj.country) }}</span>
               <span>&bull;</span>
               <span>{{ prj.updatedAt }}</span>
             </div>
@@ -312,7 +312,7 @@
         </div>
 
         <div class="empty-state-list" *ngIf="filteredProjects.length === 0">
-          <p>Arama kriterine uygun proje bulunamadı.</p>
+          <p>{{ tsService.translate('Arama kriterine uygun proje bulunamadı.') }}</p>
         </div>
       </div>
 

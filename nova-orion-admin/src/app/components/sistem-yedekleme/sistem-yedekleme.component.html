@@ -151,7 +151,7 @@
           <tr *ngIf="settingsService.backups().length === 0">
             <td colspan="7" class="empty-table-cell">
               <div class="empty-state-box">
-                <p class="empty-state-title">Kayıtlı sistem yedeği bulunamadı.</p>
+                <p class="empty-state-title">{{ tsService.translate('Kayıtlı sistem yedeği bulunamadı.') }}</p>
               </div>
             </td>
           </tr>

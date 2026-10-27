@@ -61,7 +61,7 @@
                 </div>
                 <div class="role-info">
                   <span class="role-title-text">{{ tsService.translate(item.name) }}</span>
-                  <span class="role-desc-sub">{{ item.description }}</span>
+                  <span class="role-desc-sub">{{ tsService.translate(item.description) }}</span>
                 </div>
               </div>
             </td>
@@ -72,7 +72,7 @@
             <td>
               <div class="perms-tag-group">
                 <span *ngFor="let perm of item.permissions | slice:0:3" class="perm-mini-badge">
-                  {{ perm }}
+                  {{ tsService.translate(perm) }}
                 </span>
                 <span *ngIf="item.permissions.length > 3" class="perm-more-badge">
                   +{{ item.permissions.length - 3 }}
@@ -146,7 +146,7 @@
           <input 
             type="text" 
             class="form-control-subtle font-mono" 
-            placeholder="Örn: REGION_LEAD" 
+            [placeholder]="tsService.translate('Örn: REGION_LEAD')" 
             [(ngModel)]="formCode" />
         </div>
         <div class="form-group flex-2">
@@ -154,7 +154,7 @@
           <input 
             type="text" 
             class="form-control-subtle" 
-            placeholder="Örn: Bölge Lideri" 
+            [placeholder]="tsService.translate('Örn: Bölge Lideri')" 
             [(ngModel)]="formName" />
         </div>
       </div>
@@ -184,9 +184,9 @@
         <input 
           type="text" 
           class="form-control-subtle" 
-          placeholder="Örn: Dil Yönetimi, Satış Kanalları, Hava Durumu (Virgülle ayırın)" 
+          [placeholder]="tsService.translate('Örn: Dil Yönetimi, Satış Kanalları, Hava Durumu (Virgülle ayırın)')" 
           [(ngModel)]="formPermissionsStr" />
-        <span class="field-hint">Virgülle ayrılmış izin etiketleri giriniz</span>
+        <span class="field-hint">{{ tsService.translate('Virgülle ayrılmış izin etiketleri giriniz') }}</span>
       </div>
 
       <!-- Row 4: Description -->
@@ -195,7 +195,7 @@
         <textarea 
           rows="2" 
           class="form-control-subtle" 
-          placeholder="Rolün sistem içindeki sorumluluk alanı ve hiyerarşik tanımı..." 
+          [placeholder]="tsService.translate('Rolün sistem içindeki sorumluluk alanı ve hiyerarşik tanımı...')" 
           [(ngModel)]="formDescription"></textarea>
       </div>
     </div>

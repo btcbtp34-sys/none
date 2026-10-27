@@ -1,14 +1,37 @@
 import { Injectable, signal } from '@angular/core';
 
-export type SupportedLang = 'tr' | 'en' | 'de' | 'fr';
+import { SupportedLang, TranslationEntries } from '../i18n/types';
+import { KATALOG_TRANSLATIONS } from '../i18n/katalog.i18n';
+import { DIL_TRANSLATIONS } from '../i18n/dil.i18n';
+import { SSS_DESTEK_TRANSLATIONS } from '../i18n/sss-destek.i18n';
+import { SISTEM_TRANSLATIONS } from '../i18n/sistem.i18n';
+import { FRONTEND_TRANSLATIONS } from '../i18n/frontend.i18n';
+
+export type { SupportedLang } from '../i18n/types';
+
+const LANG_STORAGE_KEY = 'nova_orion_lang';
+
+function storedLang(): SupportedLang {
+  try {
+    const lang = localStorage.getItem(LANG_STORAGE_KEY);
+    if (lang === 'tr' || lang === 'en' || lang === 'de' || lang === 'fr') return lang;
+  } catch {}
+  return 'tr';
+}
+
+// CSS text-transform: uppercase sayfa diline göre çalışır; lang="tr" kalırsa EN'de "SETTİNGS" gibi noktalı İ oluşur
+function applyDocumentLang(lang: SupportedLang) {
+  if (typeof document !== 'undefined') document.documentElement.lang = lang;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranslationService {
-  currentLang = signal<SupportedLang>('tr');
+  // Seçilen dil sayfa yenilense de korunur
+  currentLang = signal<SupportedLang>(storedLang());
 
-  private dictionary: Record<string, Record<SupportedLang, string>> = {
+  private dictionary: TranslationEntries = {
     // Top Bar, Brand & Navigation
     'Project Selector': { tr: 'Proje Seçici', en: 'Project Selector', de: 'Projektauswahl', fr: 'Sélecteur de Projet' },
     'Proje Seçici': { tr: 'Proje Seçici', en: 'Project Selector', de: 'Projektauswahl', fr: 'Sélecteur de Projet' },
@@ -400,11 +423,25 @@ export class TranslationService {
       en: 'Start drawing by selecting an indoor or outdoor unit from the top palette.',
       de: 'Wählen Sie ein Innen- oder Außengerät aus der oberen Palette, um mit dem Zeichnen zu beginnen.',
       fr: 'Commencez à dessiner en sélectionnant une unité intérieure ou extérieure dans la palette supérieure.'
-    }
+    },
+    // Alan bazlı çeviri dosyaları (src/app/i18n); aynı anahtar varsa alan dosyası geçerlidir
+    ...KATALOG_TRANSLATIONS,
+    ...DIL_TRANSLATIONS,
+    ...SSS_DESTEK_TRANSLATIONS,
+    ...SISTEM_TRANSLATIONS,
+    ...FRONTEND_TRANSLATIONS
   };
+
+  constructor() {
+    applyDocumentLang(this.currentLang());
+  }
 
   setLanguage(lang: SupportedLang) {
     this.currentLang.set(lang);
+    applyDocumentLang(lang);
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, lang);
+    } catch {}
   }
 
   translate(key: string): string {
@@ -412,9 +449,8 @@ export class TranslationService {
     const lang = this.currentLang();
     const cleanKey = key.trim();
     const entry = this.dictionary[cleanKey];
-    if (entry && entry[lang]) {
-      return entry[lang];
-    }
-    return cleanKey;
+    if (!entry) return cleanKey;
+    // de/fr çevirisi yoksa İngilizceye düşülür; Türkçe dışındaki dillerde Türkçe metin gösterilmez
+    return entry[lang] || (lang === 'tr' ? entry.tr : entry.en) || cleanKey;
   }
 }

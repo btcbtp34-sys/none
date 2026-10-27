@@ -55,21 +55,21 @@
             <label class="info-label">{{ tsService.translate('Ürün Grubu') }} *</label>
             <select class="info-input" [(ngModel)]="formGroupId">
               <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
-              <option *ngFor="let g of catalogService.items('urun-grubu')" [ngValue]="g.id">{{ g.name }}</option>
+              <option *ngFor="let g of catalogService.items('urun-grubu')" [ngValue]="g.id">{{ tsService.translate(g.name) }}</option>
             </select>
           </div>
           <div class="info-row">
             <label class="info-label">{{ tsService.translate('Ürün Tipi') }}<span *ngIf="typeOptions.length"> *</span></label>
             <select class="info-input" [(ngModel)]="formTypeId" [disabled]="!typeOptions.length">
               <option [ngValue]="null">{{ typeOptions.length ? tsService.translate('Seçiniz') : '—' }}</option>
-              <option *ngFor="let t of typeOptions" [ngValue]="t.id">{{ t.name }}</option>
+              <option *ngFor="let t of typeOptions" [ngValue]="t.id">{{ tsService.translate(t.name) }}</option>
             </select>
           </div>
           <div class="info-row">
             <label class="info-label">{{ tsService.translate('Ürün Ailesi') }}<span *ngIf="familyOptions.length"> *</span></label>
             <select class="info-input" [(ngModel)]="formFamilyId" [disabled]="!familyOptions.length">
               <option [ngValue]="null">{{ familyOptions.length ? tsService.translate('Seçiniz') : '—' }}</option>
-              <option *ngFor="let f of familyOptions" [ngValue]="f.id">{{ f.name }}</option>
+              <option *ngFor="let f of familyOptions" [ngValue]="f.id">{{ tsService.translate(f.name) }}</option>
             </select>
           </div>
           <div class="info-row">
@@ -214,7 +214,7 @@
                   <input type="number" step="any" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
                 </td>
                 <td class="col-actions">
-                  <button class="action-btn delete-btn" (click)="removeCapacityRow(i)" title="Sil">
+                  <button class="action-btn delete-btn" (click)="removeCapacityRow(i)" [title]="tsService.translate('Sil')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="3 6 5 6 21 6"></polyline>
                       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

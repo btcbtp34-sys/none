@@ -76,10 +76,12 @@ export class ModullerComponent implements OnInit {
 
     const query = this.searchFilter().trim().toLowerCase();
     if (query) {
+      // Hem kayıtlı metinde hem de aktif dildeki karşılığında ara
+      const has = (s: string) => s.toLowerCase().includes(query) || this.tsService.translate(s).toLowerCase().includes(query);
       list = list.filter(c =>
-        c.title.toLowerCase().includes(query) ||
-        c.bullets.some(b => b.toLowerCase().includes(query)) ||
-        (c.footerNote && c.footerNote.toLowerCase().includes(query))
+        has(c.title) ||
+        c.bullets.some(b => has(b)) ||
+        (c.footerNote && has(c.footerNote))
       );
     }
 

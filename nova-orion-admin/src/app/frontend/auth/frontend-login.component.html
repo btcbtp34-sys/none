@@ -149,7 +149,7 @@
               class="sso-input" 
               [(ngModel)]="email" 
               name="email" 
-              placeholder="kurumsal.eposta@sirketiniz.com"
+              [placeholder]="tsService.translate('kurumsal.eposta@sirketiniz.com')"
               required 
               autofocus />
           </div>

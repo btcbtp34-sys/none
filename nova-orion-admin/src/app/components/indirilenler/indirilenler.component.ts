@@ -73,6 +73,7 @@ export class IndirilenlerComponent implements OnInit {
       if (query) {
         const matches = 
           item.title.toLowerCase().includes(query) ||
+          this.tsService.translate(item.title).toLowerCase().includes(query) ||
           item.filename.toLowerCase().includes(query) ||
           item.region.toLowerCase().includes(query) ||
           item.uploader.toLowerCase().includes(query);
@@ -193,12 +194,12 @@ export class IndirilenlerComponent implements OnInit {
 
   deleteFile(id: number) {
     if (!this.authService.isSuperAdmin()) return;
-    if (confirm('Bu dosyayı silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu dosyayı silmek istediğinizden emin misiniz?'))) {
       this.downloadService.deleteDownload(id);
     }
   }
 
   downloadFile(item: DownloadItem) {
-    alert(`"${item.title}" (${item.filename}) indiriliyor...`);
+    alert(this.tsService.translate('"{title}" ({file}) indiriliyor...').replace('{title}', this.tsService.translate(item.title)).replace('{file}', item.filename));
   }
 }

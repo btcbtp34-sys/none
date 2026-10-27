@@ -67,9 +67,9 @@
               <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
               <td>
                 <div class="country-cell">
-                  <img [src]="'flags/' + item.code.toLowerCase() + '.svg'" [alt]="item.name" class="country-table-flag" onerror="this.style.display='none'" />
-                  <span class="country-name-text">{{ item.name }}</span>
-                  <span *ngIf="item.state" class="state-pill" [title]="'Eyalet: ' + item.state">
+                  <img [src]="'flags/' + item.code.toLowerCase() + '.svg'" [alt]="tsService.translate(item.name)" class="country-table-flag" onerror="this.style.display='none'" />
+                  <span class="country-name-text">{{ tsService.translate(item.name) }}</span>
+                  <span *ngIf="item.state" class="state-pill" [title]="tsService.translate('Eyalet') + ': ' + item.state">
                     {{ item.state }}
                   </span>
                 </div>
@@ -91,13 +91,13 @@
               </td>
               <td class="text-right">
                 <div class="actions-group">
-                  <button class="action-btn edit-btn" (click)="openEditModal(item)" title="Düzenle">
+                  <button class="action-btn edit-btn" (click)="openEditModal(item)" [title]="tsService.translate('Düzenle')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                     </svg>
                   </button>
-                  <button class="action-btn delete-btn" (click)="deleteCountry(item.id)" title="Sil" *ngIf="!authService.isCountryAdmin()">
+                  <button class="action-btn delete-btn" (click)="deleteCountry(item.id)" [title]="tsService.translate('Sil')" *ngIf="!authService.isCountryAdmin()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="3 6 5 6 21 6"></polyline>
                       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -111,7 +111,7 @@
       </div>
 
       <div *ngIf="groupedCountries.length === 0" class="empty-state-box">
-        <p class="empty-state-title">Arama kriterlerine uygun ülke bulunamadı.</p>
+        <p class="empty-state-title">{{ tsService.translate('Arama kriterlerine uygun ülke bulunamadı.') }}</p>
       </div>
     </div>
   </div>
@@ -134,7 +134,7 @@
             {{ tsService.translate(reg.name) }} ({{ reg.code }})
           </option>
         </select>
-        <span class="form-hint-subtle">Ülkenin bağlı olduğu coğrafi bölge.</span>
+        <span class="form-hint-subtle">{{ tsService.translate('Ülkenin bağlı olduğu coğrafi bölge.') }}</span>
       </div>
 
       <!-- Row 2: Seçilen Bölgeye Göre Ülke & Eyalet Seçimi -->
@@ -146,23 +146,23 @@
           </div>
           <select class="form-control-subtle country-select-highlight" [(ngModel)]="selectedPresetCode" (change)="onPresetChange()">
             <option *ngFor="let c of getCountriesForRegion(formRegion)" [value]="c.code">
-              {{ c.name }} ({{ c.code }})
+              {{ tsService.translate(c.name) }} ({{ c.code }})
             </option>
             <option value="CUSTOM">-- {{ tsService.translate('Özel Ülke / Manuel Giriş') }} --</option>
           </select>
-          <span class="form-hint-subtle">{{ tsService.translate(formRegion) }} bölgesine ait alfabetik sıralı ülkeler.</span>
+          <span class="form-hint-subtle">{{ tsService.translate('{region} bölgesine ait alfabetik sıralı ülkeler.').replace('{region}', tsService.translate(formRegion)) }}</span>
         </div>
 
         <div class="form-group flex-1 state-field-animated" *ngIf="hasStates()">
           <div class="label-row-between">
             <label class="form-label-bold mb-0">{{ tsService.translate('EYALET / STATE') }} *</label>
-            <span class="state-active-badge">Eyalet Tanımı</span>
+            <span class="state-active-badge">{{ tsService.translate('Eyalet Tanımı') }}</span>
           </div>
           <select class="form-control-subtle state-select" [(ngModel)]="formState">
             <option value="">{{ tsService.translate('Eyalet Seçiniz') }}...</option>
             <option *ngFor="let state of getCurrentCountryStates()" [value]="state">{{ state }}</option>
           </select>
-          <span class="form-hint-subtle">Seçilen ülke için eyalet / bölge tanımı.</span>
+          <span class="form-hint-subtle">{{ tsService.translate('Seçilen ülke için eyalet / bölge tanımı.') }}</span>
         </div>
       </div>
 
@@ -170,19 +170,19 @@
       <div class="form-row">
         <div class="form-group flex-1">
           <label class="form-label-bold">{{ tsService.translate('KOD') }} *</label>
-          <input type="text" class="form-control-subtle" placeholder="Örn: TR, DE, US" [(ngModel)]="formCode" />
+          <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: TR, DE, US')" [(ngModel)]="formCode" />
         </div>
         <div class="form-group flex-2">
           <label class="form-label-bold">{{ tsService.translate('ÜLKE ADI') }} *</label>
-          <input type="text" class="form-control-subtle" placeholder="Örn: Türkiye, Almanya" [(ngModel)]="formName" />
+          <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: Türkiye, Almanya')" [(ngModel)]="formName" />
         </div>
       </div>
 
       <!-- Row 4: Desteklenen / Kullanılan Diller (Bütün Diller Önceden Seçili Gelir) -->
       <div class="form-group">
         <div class="label-row-between">
-          <label class="form-label-bold mb-0">DESTEKLENEN DİLLER (TÜM DİLLER SEÇİLİ) *</label>
-          <span class="multi-select-badge">{{ availableLanguages.length }} Dil Aktif</span>
+          <label class="form-label-bold mb-0">{{ tsService.translate('DESTEKLENEN DİLLER (TÜM DİLLER SEÇİLİ)') }} *</label>
+          <span class="multi-select-badge">{{ availableLanguages.length }} {{ tsService.translate('Dil Aktif') }}</span>
         </div>
 
         <div class="languages-checkbox-card">
@@ -196,7 +196,7 @@
             <span class="lang-code-pill-sm">{{ lang.code }}</span>
           </div>
         </div>
-        <span class="form-hint-subtle">Bu ülkede geçerli diller varsayılan olarak hepsi seçili getirilmiştir.</span>
+        <span class="form-hint-subtle">{{ tsService.translate('Bu ülkede geçerli diller varsayılan olarak hepsi seçili getirilmiştir.') }}</span>
       </div>
 
       <!-- Row 5: Saat Dilimi & Durum -->

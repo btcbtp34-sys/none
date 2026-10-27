@@ -84,7 +84,7 @@ export class SssKategorileriComponent implements OnInit {
   }
 
   deleteCategory(id: number) {
-    if (confirm('Bu kategoriyi silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu kategoriyi silmek istediğinizden emin misiniz?'))) {
       this.catService.deleteCategory(id);
     }
   }

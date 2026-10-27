@@ -52,7 +52,8 @@ export class KullaniciYonetimiComponent implements OnInit {
       const matchesSearch = !q ||
         u.name.toLowerCase().includes(q) ||
         u.email.toLowerCase().includes(q) ||
-        u.scope.toLowerCase().includes(q);
+        u.scope.toLowerCase().includes(q) ||
+        this.tsService.translate(u.scope).toLowerCase().includes(q);
 
       const matchesRole = this.filterRole === 'ALL' || u.roleCode === this.filterRole;
 

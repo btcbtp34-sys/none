@@ -41,6 +41,12 @@ export class HavaKosullariComponent implements OnInit {
     this.pageTitleService.setPage('Weather Conditions', 'Şehir ve bölge bazlı hava durumu yapılandırması');
   }
 
+  // Ülke yöneticisi bilgi notu; ülke adı kalın gösterildiği için metin iki parçaya bölünür
+  countryAdminNoteParts(): string[] {
+    const parts = this.tsService.translate('Ülke Yöneticisi olarak yalnızca {country} ülkesine ait şehirleri görüntüleyebilir, yeni şehir ekleyebilir ve hava koşullarını düzenleyebilirsiniz.').split('{country}');
+    return [parts[0] || '', parts[1] || ''];
+  }
+
   // Country admin only sees their own country
   get userAllowedCountries(): string[] {
     const user = this.authService.currentUser();
@@ -49,7 +55,8 @@ export class HavaKosullariComponent implements OnInit {
     }
     const list = this.weatherService.weatherData().map(w => w.country);
     const fromCountries = this.countryService.countries().map(c => c.name);
-    return Array.from(new Set([...list, ...fromCountries])).filter(Boolean).sort();
+    return Array.from(new Set([...list, ...fromCountries])).filter(Boolean)
+      .sort((a, b) => this.tsService.translate(a).localeCompare(this.tsService.translate(b), this.tsService.currentLang()));
   }
 
   getDistinctCountries(): string[] {
@@ -68,7 +75,9 @@ export class HavaKosullariComponent implements OnInit {
 
       const matchesSearch = !query || 
         item.city.toLowerCase().includes(query) ||
+        this.tsService.translate(item.city).toLowerCase().includes(query) ||
         item.country.toLowerCase().includes(query) ||
+        this.tsService.translate(item.country).toLowerCase().includes(query) ||
         (item.altitude != null && item.altitude.toString().includes(query));
       
       const matchesCountry = this.filterCountry === 'ALL' || item.country.toLowerCase() === this.filterCountry.toLowerCase();
@@ -145,7 +154,7 @@ export class HavaKosullariComponent implements OnInit {
   }
 
   deleteCity(id: number) {
-    if (confirm('Bu şehri silmek istediğinizden emin misiniz?')) {
+    if (confirm(this.tsService.translate('Bu şehri silmek istediğinizden emin misiniz?'))) {
       this.weatherService.deleteWeather(id);
     }
   }

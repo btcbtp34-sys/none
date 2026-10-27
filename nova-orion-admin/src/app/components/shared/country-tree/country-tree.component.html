@@ -11,7 +11,7 @@
       </button>
       <label class="tree-check">
         <input type="checkbox" [checked]="regionState(region) === 'all'" [indeterminate]="regionState(region) === 'some'" (change)="toggleRegion(region)" />
-        <span class="tree-label">{{ region.name }}</span>
+        <span class="tree-label">{{ tsService.translate(region.name) }}</span>
         <span class="tree-count">{{ regionCountries(region).length }}</span>
       </label>
     </div>
@@ -19,7 +19,7 @@
     <ng-container *ngIf="expandedRegionIds.has(region.id)">
       <label class="tree-row tree-level-2" *ngFor="let country of regionCountries(region)">
         <input type="checkbox" [checked]="isCountrySelected(country.id)" (change)="toggleCountry(country.id)" />
-        <span class="tree-label">{{ country.name }}</span>
+        <span class="tree-label">{{ tsService.translate(country.name) }}</span>
         <span class="tree-code">{{ country.code }}</span>
       </label>
       <p class="tree-empty" *ngIf="!regionCountries(region).length">{{ tsService.translate('Bu bölgede ülke tanımlı değil.') }}</p>
