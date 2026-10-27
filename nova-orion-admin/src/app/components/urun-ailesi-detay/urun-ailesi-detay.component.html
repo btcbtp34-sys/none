@@ -25,7 +25,8 @@
       <div *ngIf="formError" class="alert-box-error">{{ formError }}</div>
       <div *ngIf="saveMessage && !formError" class="alert-box-success">{{ saveMessage }}</div>
 
-      <!-- Genel Bilgiler -->
+      <div class="family-layout">
+      <!-- Sol: Genel Bilgiler -->
       <section class="info-card family-general-card">
         <header class="info-card-header">{{ tsService.translate('GENEL BİLGİLER') }}</header>
         <div class="family-general-grid">
@@ -89,26 +90,24 @@
         </div>
       </section>
 
-      <!-- İlişkiler -->
-      <h3 class="family-section-title">{{ tsService.translate('İLİŞKİLER') }}</h3>
-      <div class="relations-grid">
-        <!-- Kart: Uyumlu Versiyonlar -->
-        <section class="info-card">
-          <header class="info-card-header relation-card-header">
-            <span>{{ tsService.translate('UYUMLU VERSİYONLAR') }}</span>
-            <span class="tab-count">{{ formVersionIds.length }}</span>
-          </header>
-          <app-version-checklist [(selectedIds)]="formVersionIds" [inline]="true"></app-version-checklist>
-        </section>
+      <!-- Sağ: İlişkiler -->
+      <section class="info-card">
+        <header class="info-card-header">{{ tsService.translate('İLİŞKİLER') }}</header>
 
-        <!-- Kart: Ülkeler (Global > Bölge > Ülke) -->
-        <section class="info-card">
-          <header class="info-card-header relation-card-header">
-            <span>{{ tsService.translate('ÜLKELER') }}</span>
-            <span class="tab-count">{{ formCountryIds.length }}</span>
-          </header>
-          <app-country-tree [(selectedIds)]="formCountryIds"></app-country-tree>
-        </section>
+        <!-- Uyumlu Versiyonlar -->
+        <div class="relation-subheader">
+          <span>{{ tsService.translate('UYUMLU VERSİYONLAR') }}</span>
+          <span class="tab-count">{{ formVersionIds.length }}</span>
+        </div>
+        <app-version-checklist [(selectedIds)]="formVersionIds" [inline]="true"></app-version-checklist>
+
+        <!-- Ülkeler (Global > Bölge > Ülke) -->
+        <div class="relation-subheader">
+          <span>{{ tsService.translate('ÜLKELER') }}</span>
+          <span class="tab-count">{{ formCountryIds.length }}</span>
+        </div>
+        <app-country-tree [(selectedIds)]="formCountryIds"></app-country-tree>
+      </section>
       </div>
     </ng-container>
   </div>
