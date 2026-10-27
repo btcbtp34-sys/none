@@ -12,6 +12,8 @@ export interface CatalogItem {
   parentIds: number[];
   // Sadece hasProductType olan kataloglarda kullanılır
   productTypeId?: number | null;
+  // Sadece hasSystem olan kataloglarda: üst ürün grubunun sistemlerinden seçilenler
+  systemIds?: number[];
   // Sadece Ürün kataloğunda kullanılan alanlar
   productFamilyId?: number | null;
   // İlişkiler: bağlı versiyonlar ve ürünün geçerli olduğu ülkeler
@@ -87,6 +89,8 @@ export interface CatalogEntityConfig {
   multiParent: boolean;
   // true: seçilen ürün grubuna ait bir ürün tipi de seçilir
   hasProductType?: boolean;
+  // true: seçilen ürün grubunun bağlı olduğu sistemlerden seçim yapılır
+  hasSystem?: boolean;
 }
 
 export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
@@ -120,7 +124,8 @@ export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
     singular: 'Ürün Tipi',
     parent: 'urun-grubu',
     parentLabel: 'ÜRÜN GRUBU',
-    multiParent: false
+    multiParent: false,
+    hasSystem: true
   },
   'urun-ailesi': {
     title: 'Ürün Ailesi',
@@ -142,7 +147,7 @@ export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
   }
 };
 
-const STORAGE_KEY = 'nova_orion_catalog_v13';
+const STORAGE_KEY = 'nova_orion_catalog_v14';
 
 // [OutdoorDBc, TCkW, PIkW, IndoorWbc]; diğer sütunlar tüm satırlarda aynı
 const SAMPLE_AF5301A_CAPACITY_ROWS: CapacityRow[] = [
@@ -202,13 +207,14 @@ const INITIAL_CATALOG: Record<CatalogEntity, CatalogItem[]> = {
     { id: 6, name: 'Aksesuar', description: '', parentIds: [4], status: 'Aktif' }
   ],
   'urun-tipi': [
-    { id: 1, name: 'R32', description: '', parentIds: [2], status: 'Aktif' },
-    { id: 2, name: 'R410', description: '', parentIds: [2], status: 'Aktif' },
-    { id: 3, name: 'Mini VRF', description: '', parentIds: [2], status: 'Aktif' },
-    { id: 4, name: 'Kaset', description: '', parentIds: [4], status: 'Aktif' },
-    { id: 5, name: 'Duvar', description: '', parentIds: [4], status: 'Aktif' },
-    { id: 6, name: 'Yer', description: '', parentIds: [4], status: 'Aktif' },
-    { id: 7, name: 'Kanal', description: '', parentIds: [4], status: 'Aktif' }
+    // Örnek veride her tip, ürün grubunun tüm sistemlerine bağlı başlar
+    { id: 1, name: 'R32', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 2, name: 'R410', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 3, name: 'Mini VRF', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 4, name: 'Kaset', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 5, name: 'Duvar', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 6, name: 'Yer', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 7, name: 'Kanal', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' }
   ],
   'urun-ailesi': [
     { id: 1, name: 'AF5301', description: '', parentIds: [2], status: 'Aktif' },
@@ -251,6 +257,13 @@ export class CatalogService {
   }
 
   // Ürün grubuna ait ürün tipleri
+  // Ürün grubunun bağlı olduğu sistemler
+  groupSystemOptions(groupId: number | null): CatalogItem[] {
+    const group = groupId !== null ? this.getItem('urun-grubu', groupId) : undefined;
+    if (!group) return [];
+    return this.items('sistem').filter(s => group.parentIds.includes(s.id));
+  }
+
   productTypeOptions(groupId: number | null): CatalogItem[] {
     if (groupId === null) return [];
     return this.items('urun-tipi').filter(t => t.parentIds.includes(groupId));
@@ -327,6 +340,17 @@ export class CatalogService {
         .filter(key => CATALOG_ENTITIES[key].hasProductType)
         .forEach(key => {
           next[key] = next[key].map(i => (i.productTypeId === id ? { ...i, productTypeId: null } : i));
+        });
+    }
+
+    // Silinen sistemi, sistem seçimi olan kayıtlardan da kaldır
+    if (entity === 'sistem') {
+      (Object.keys(next) as CatalogEntity[])
+        .filter(key => CATALOG_ENTITIES[key].hasSystem)
+        .forEach(key => {
+          next[key] = next[key].map(i =>
+            i.systemIds?.includes(id) ? { ...i, systemIds: i.systemIds.filter(s => s !== id) } : i
+          );
         });
     }
 

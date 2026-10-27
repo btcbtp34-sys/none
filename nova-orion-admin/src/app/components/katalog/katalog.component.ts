@@ -41,6 +41,7 @@ export class KatalogComponent implements OnInit {
   formDescription = '';
   formParentIds: number[] = [];
   formProductTypeId: number | null = null;
+  formSystemIds: number[] = [];
   formStatus: CatalogStatus = 'Aktif';
   formError = '';
 
@@ -92,6 +93,7 @@ export class KatalogComponent implements OnInit {
     this.formDescription = item?.description ?? '';
     this.formParentIds = item ? [...item.parentIds] : [];
     this.formProductTypeId = item?.productTypeId ?? null;
+    this.formSystemIds = [...(item?.systemIds ?? [])];
     this.formStatus = item?.status ?? 'Aktif';
     this.formError = '';
     this.showModal = true;
@@ -114,6 +116,30 @@ export class KatalogComponent implements OnInit {
     if (!this.productTypeOptions.some(t => t.id === this.formProductTypeId)) {
       this.formProductTypeId = null;
     }
+
+    // Sistemler seçilen ürün grubundan gelir; grup değişince grubun tüm sistemleri seçili başlar
+    if (this.config.hasSystem) {
+      this.formSystemIds = this.systemOptions.map(s => s.id);
+    }
+  }
+
+  // Seçili ürün grubunun bağlı olduğu sistemler
+  get systemOptions(): CatalogItem[] {
+    return this.catalogService.groupSystemOptions(this.singleParentId);
+  }
+
+  isSystemSelected(id: number): boolean {
+    return this.formSystemIds.includes(id);
+  }
+
+  toggleSystem(id: number) {
+    this.formSystemIds = this.isSystemSelected(id)
+      ? this.formSystemIds.filter(s => s !== id)
+      : [...this.formSystemIds, id];
+  }
+
+  systemName(id: number): string {
+    return this.catalogService.itemName('sistem', id);
   }
 
   // Seçili ürün grubuna ait ürün tipleri
@@ -126,7 +152,7 @@ export class KatalogComponent implements OnInit {
   }
 
   get columnCount(): number {
-    return 5 + (this.config.parent ? 1 : 0) + (this.config.hasProductType ? 1 : 0);
+    return 5 + (this.config.parent ? 1 : 0) + (this.config.hasProductType ? 1 : 0) + (this.config.hasSystem ? 1 : 0);
   }
 
   isParentSelected(id: number): boolean {
@@ -157,11 +183,17 @@ export class KatalogComponent implements OnInit {
       return;
     }
 
+    if (this.config.hasSystem && this.systemOptions.length > 0 && this.formSystemIds.length === 0) {
+      this.formError = this.tsService.translate('Lütfen en az bir sistem seçiniz.');
+      return;
+    }
+
     const payload = {
       name,
       description: this.formDescription.trim(),
       parentIds: this.config.parent ? this.formParentIds : [],
       ...(this.config.hasProductType ? { productTypeId: this.formProductTypeId } : {}),
+      ...(this.config.hasSystem ? { systemIds: this.formSystemIds } : {}),
       status: this.formStatus
     };
 
