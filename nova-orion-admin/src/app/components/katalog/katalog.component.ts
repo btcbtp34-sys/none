@@ -123,9 +123,19 @@ export class KatalogComponent implements OnInit {
     }
   }
 
-  // Seçili ürün grubunun bağlı olduğu sistemler
+  // Seçili ürün tipinin (yoksa ürün grubunun) bağlı olduğu sistemler
   get systemOptions(): CatalogItem[] {
-    return this.catalogService.groupSystemOptions(this.singleParentId);
+    return this.catalogService.systemOptions(
+      this.singleParentId,
+      this.config.hasProductType ? this.formProductTypeId : null
+    );
+  }
+
+  // Ürün tipi değişince sistemler yeni tipten gelir ve hepsi seçili başlar
+  onProductTypeChange() {
+    if (this.config.hasSystem) {
+      this.formSystemIds = this.systemOptions.map(s => s.id);
+    }
   }
 
   isSystemSelected(id: number): boolean {

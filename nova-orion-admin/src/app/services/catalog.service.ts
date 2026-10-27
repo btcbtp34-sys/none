@@ -134,7 +134,8 @@ export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
     parent: 'urun-grubu',
     parentLabel: 'ÜRÜN GRUBU',
     multiParent: false,
-    hasProductType: true
+    hasProductType: true,
+    hasSystem: true
   },
   'urun': {
     title: 'Ürün',
@@ -147,7 +148,7 @@ export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
   }
 };
 
-const STORAGE_KEY = 'nova_orion_catalog_v14';
+const STORAGE_KEY = 'nova_orion_catalog_v15';
 
 // [OutdoorDBc, TCkW, PIkW, IndoorWbc]; diğer sütunlar tüm satırlarda aynı
 const SAMPLE_AF5301A_CAPACITY_ROWS: CapacityRow[] = [
@@ -217,10 +218,10 @@ const INITIAL_CATALOG: Record<CatalogEntity, CatalogItem[]> = {
     { id: 7, name: 'Kanal', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' }
   ],
   'urun-ailesi': [
-    { id: 1, name: 'AF5301', description: '', parentIds: [2], status: 'Aktif' },
-    { id: 2, name: 'AF4300', description: '', parentIds: [2], status: 'Aktif' },
-    { id: 3, name: 'AF2', description: '', parentIds: [4], status: 'Aktif' },
-    { id: 4, name: 'AF', description: '', parentIds: [4], status: 'Aktif' }
+    { id: 1, name: 'AF5301', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 2, name: 'AF4300', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 3, name: 'AF2', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' },
+    { id: 4, name: 'AF', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' }
   ],
   'urun': ['25-3', '28-3', '33-3', '40-3', '45-3', '50-3', '56-3', '62-3', '67-3', '73-3'].map((model, i) => ({
     id: i + 1,
@@ -262,6 +263,13 @@ export class CatalogService {
     const group = groupId !== null ? this.getItem('urun-grubu', groupId) : undefined;
     if (!group) return [];
     return this.items('sistem').filter(s => group.parentIds.includes(s.id));
+  }
+
+  // Ürün tipi seçiliyse tipin sistemleri, değilse ürün grubunun sistemleri
+  systemOptions(groupId: number | null, typeId: number | null): CatalogItem[] {
+    const type = typeId ? this.getItem('urun-tipi', typeId) : undefined;
+    if (!type) return this.groupSystemOptions(groupId);
+    return this.items('sistem').filter(s => type.systemIds?.includes(s.id));
   }
 
   productTypeOptions(groupId: number | null): CatalogItem[] {

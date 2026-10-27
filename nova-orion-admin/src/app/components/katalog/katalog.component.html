@@ -64,8 +64,8 @@
             <th>{{ tsService.translate('ADI') }}</th>
             <th>{{ tsService.translate('AÇIKLAMA') }}</th>
             <th *ngIf="config.parent">{{ tsService.translate(config.parentLabel) }}</th>
-            <th *ngIf="config.hasSystem">{{ tsService.translate('SİSTEM') }}</th>
             <th *ngIf="config.hasProductType">{{ tsService.translate('ÜRÜN TİPİ') }}</th>
+            <th *ngIf="config.hasSystem">{{ tsService.translate('SİSTEM') }}</th>
             <th style="width: 110px;">{{ tsService.translate('DURUM') }}</th>
             <th class="text-right" style="width: 100px;">{{ tsService.translate('İŞLEMLER') }}</th>
           </tr>
@@ -82,15 +82,15 @@
                 </span>
               </div>
             </td>
+            <td *ngIf="config.hasProductType">
+              <span *ngIf="item.productTypeId; else noType" class="country-chip">{{ productTypeName(item.productTypeId) }}</span>
+              <ng-template #noType><span class="brand-desc-sm">—</span></ng-template>
+            </td>
             <td *ngIf="config.hasSystem">
               <div class="country-tags-wrap" *ngIf="item.systemIds?.length; else noSystem">
                 <span *ngFor="let sid of item.systemIds" class="country-chip">{{ systemName(sid) }}</span>
               </div>
               <ng-template #noSystem><span class="brand-desc-sm">—</span></ng-template>
-            </td>
-            <td *ngIf="config.hasProductType">
-              <span *ngIf="item.productTypeId; else noType" class="country-chip">{{ productTypeName(item.productTypeId) }}</span>
-              <ng-template #noType><span class="brand-desc-sm">—</span></ng-template>
             </td>
             <td>
               <button class="status-indicator-btn" (click)="catalogService.toggleStatus(entity, item.id)">
@@ -167,17 +167,9 @@
         <textarea class="form-control-subtle" rows="2" [(ngModel)]="formDescription"></textarea>
       </div>
 
-      <!-- Row 3: Parent Single-Select (1:1) + yanında, seçilen gruptan gelen sistemler -->
-      <div class="form-row" *ngIf="config.parent && !config.multiParent">
-        <div class="form-group flex-1">
-          <label class="form-label-bold">{{ tsService.translate(config.parentLabel) }} *</label>
-          <select class="form-control-subtle" [(ngModel)]="singleParentId">
-            <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
-            <option *ngFor="let p of parentItems" [ngValue]="p.id">{{ p.name }}</option>
-          </select>
-        </div>
-
-        <div class="form-group flex-2" *ngIf="config.hasSystem">
+      <!-- Sistem seçimi: ürün tipi olan kataloglarda tipin, olmayanlarda ürün grubunun yanında gösterilir -->
+      <ng-template #systemPicker>
+        <div class="form-group flex-2">
           <div class="label-row-between">
             <label class="form-label-bold mb-0">{{ tsService.translate('SİSTEM') }}<span *ngIf="systemOptions.length"> *</span></label>
             <span class="multi-select-badge" *ngIf="systemOptions.length">{{ formSystemIds.length }} / {{ systemOptions.length }}</span>
@@ -192,24 +184,45 @@
               <span>{{ s.name }}</span>
             </div>
             <div *ngIf="!systemOptions.length" class="no-filter-results">
-              <span>{{ tsService.translate(singleParentId === null ? 'Önce ürün grubu seçiniz' : 'Bu ürün grubuna bağlı sistem yok.') }}</span>
+              <span>{{ tsService.translate(singleParentId === null ? 'Önce ürün grubu seçiniz' : 'Bağlı sistem yok.') }}</span>
             </div>
           </div>
         </div>
+      </ng-template>
+
+      <!-- Row 3: Parent Single-Select (1:1) -->
+      <div class="form-row" *ngIf="config.parent && !config.multiParent">
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate(config.parentLabel) }} *</label>
+          <select class="form-control-subtle" [(ngModel)]="singleParentId">
+            <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
+            <option *ngFor="let p of parentItems" [ngValue]="p.id">{{ p.name }}</option>
+          </select>
+        </div>
+
+        <ng-container *ngIf="config.hasSystem && !config.hasProductType">
+          <ng-container *ngTemplateOutlet="systemPicker"></ng-container>
+        </ng-container>
       </div>
 
       <!-- Row 4: Product Type (seçili ürün grubuna göre filtrelenir) -->
-      <div class="form-group" *ngIf="config.hasProductType">
-        <label class="form-label-bold">{{ tsService.translate('ÜRÜN TİPİ') }} *</label>
-        <select class="form-control-subtle" [(ngModel)]="formProductTypeId" [disabled]="singleParentId === null">
-          <option [ngValue]="null" disabled>
-            {{ tsService.translate(singleParentId === null ? 'Önce ürün grubu seçiniz' : 'Seçiniz') }}
-          </option>
-          <option *ngFor="let t of productTypeOptions" [ngValue]="t.id">{{ t.name }}</option>
-        </select>
-        <span class="form-hint-subtle" *ngIf="singleParentId !== null && productTypeOptions.length === 0">
-          {{ tsService.translate('Bu ürün grubuna ait ürün tipi tanımlı değil.') }}
-        </span>
+      <div class="form-row" *ngIf="config.hasProductType">
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('ÜRÜN TİPİ') }} *</label>
+          <select class="form-control-subtle" [(ngModel)]="formProductTypeId" (ngModelChange)="onProductTypeChange()" [disabled]="singleParentId === null">
+            <option [ngValue]="null" disabled>
+              {{ tsService.translate(singleParentId === null ? 'Önce ürün grubu seçiniz' : 'Seçiniz') }}
+            </option>
+            <option *ngFor="let t of productTypeOptions" [ngValue]="t.id">{{ t.name }}</option>
+          </select>
+          <span class="form-hint-subtle" *ngIf="singleParentId !== null && productTypeOptions.length === 0">
+            {{ tsService.translate('Bu ürün grubuna ait ürün tipi tanımlı değil.') }}
+          </span>
+        </div>
+
+        <ng-container *ngIf="config.hasSystem">
+          <ng-container *ngTemplateOutlet="systemPicker"></ng-container>
+        </ng-container>
       </div>
 
       <!-- Row 3: Parent Multi-Select -->
