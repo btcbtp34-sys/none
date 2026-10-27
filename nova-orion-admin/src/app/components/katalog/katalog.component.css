@@ -690,3 +690,11 @@
   border-radius: 12px;
   margin-top: 8px;
 }
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover td {
+  background: #f8fafc;
+}

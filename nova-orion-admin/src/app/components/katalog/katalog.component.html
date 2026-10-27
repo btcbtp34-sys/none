@@ -72,7 +72,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of filteredItems; let i = index">
+          <tr *ngFor="let item of filteredItems; let i = index" [class.clickable-row]="config.detailRoute" (click)="config.detailRoute && openModal(item)">
             <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
             <td><span class="brand-name-bold">{{ item.name }}</span></td>
             <td><span class="brand-desc-sm">{{ item.description || '—' }}</span></td>
@@ -98,7 +98,7 @@
               <ng-template #noSystem><span class="brand-desc-sm">—</span></ng-template>
             </td>
             <td>
-              <button class="status-indicator-btn" (click)="catalogService.toggleStatus(entity, item.id)">
+              <button class="status-indicator-btn" (click)="$event.stopPropagation(); catalogService.toggleStatus(entity, item.id)">
                 <span class="status-dot" [class.active]="item.status === 'Aktif'"></span>
                 <span class="status-text" [class.active]="item.status === 'Aktif'">
                   {{ tsService.translate(item.status) }}
@@ -106,7 +106,7 @@
               </button>
             </td>
             <td class="text-right">
-              <div class="actions-group">
+              <div class="actions-group" (click)="$event.stopPropagation()">
                 <button class="action-btn edit-btn" (click)="openModal(item)" title="Düzenle">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>

@@ -95,6 +95,8 @@ export interface CatalogEntityConfig {
   hasSystem?: boolean;
   // true: kendi versiyonu, uyumlu versiyonlar ve ülke seçimi yapılır
   hasVersionsAndCountries?: boolean;
+  // Tanımlıysa ekleme/düzenleme modal yerine bu adresteki detay sayfasında yapılır
+  detailRoute?: string;
 }
 
 export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
@@ -140,7 +142,8 @@ export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
     multiParent: false,
     hasProductType: true,
     hasSystem: true,
-    hasVersionsAndCountries: true
+    hasVersionsAndCountries: true,
+    detailRoute: '/katalog/urun-ailesi'
   },
   'urun': {
     title: 'Ürün',

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   CatalogService,
   CatalogItem,
@@ -23,6 +23,7 @@ import { VersionChecklistComponent } from '../shared/version-checklist/version-c
 })
 export class KatalogComponent implements OnInit {
   route = inject(ActivatedRoute);
+  router = inject(Router);
   catalogService = inject(CatalogService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
@@ -93,6 +94,11 @@ export class KatalogComponent implements OnInit {
   }
 
   openModal(item?: CatalogItem) {
+    if (this.config.detailRoute) {
+      this.router.navigate([this.config.detailRoute, item?.id ?? 'yeni']);
+      return;
+    }
+
     this.editingId = item?.id ?? null;
     this.formName = item?.name ?? '';
     this.formDescription = item?.description ?? '';

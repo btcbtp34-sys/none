@@ -21,6 +21,7 @@ import { ModullerComponent } from './components/moduller/moduller.component';
 import { KatalogComponent } from './components/katalog/katalog.component';
 import { UrunListesiComponent } from './components/urun-listesi/urun-listesi.component';
 import { UrunDetayComponent } from './components/urun-detay/urun-detay.component';
+import { UrunAilesiDetayComponent } from './components/urun-ailesi-detay/urun-ailesi-detay.component';
 
 // Frontend Portal Components
 import { FrontendLayoutComponent } from './frontend/frontend-layout/frontend-layout.component';
@@ -84,6 +85,7 @@ export const routes: Routes = [
       { path: 'katalog/urun-grubu', component: KatalogComponent, data: { entity: 'urun-grubu' } },
       { path: 'katalog/urun-tipi', component: KatalogComponent, data: { entity: 'urun-tipi' } },
       { path: 'katalog/urun-ailesi', component: KatalogComponent, data: { entity: 'urun-ailesi' } },
+      { path: 'katalog/urun-ailesi/:id', component: UrunAilesiDetayComponent },
       { path: 'katalog/versiyon', component: KatalogComponent, data: { entity: 'versiyon' } },
       { path: 'katalog/urun', component: UrunListesiComponent },
       { path: 'katalog/urun/:id', component: UrunDetayComponent },
