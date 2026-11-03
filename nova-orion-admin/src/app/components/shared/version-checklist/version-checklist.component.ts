@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CatalogService } from '../../../services/catalog.service';
 import { TranslationService } from '../../../services/translation.service';
 
-// Katalog > Versiyon kayıtlarından yuvarlak checkbox ile çoklu seçim; [(selectedIds)] ile bağlanır
+// Sistem Yönetimi > Versiyon kayıtlarından yuvarlak checkbox ile çoklu seçim; [(selectedIds)] ile bağlanır
 @Component({
   selector: 'app-version-checklist',
   standalone: true,

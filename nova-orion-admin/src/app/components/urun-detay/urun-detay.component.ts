@@ -10,25 +10,21 @@ import {
   CapacityType,
   ProductCapacity,
   ProductDimensions,
-  ProductImageGroupKey,
   ProductImageGroups,
-  PRODUCT_IMAGE_GROUPS,
   emptyImageGroups
 } from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
+import { ImageGroupsComponent } from '../shared/image-groups/image-groups.component';
 
 export type ProductTab = 'genel' | 'gorseller' | 'iliskiler' | 'kapasite' | 'kombinasyon';
-
-// Yüklenen görseller depolama alanını korumak için bu boyuta küçültülür
-const MAX_IMAGE_SIZE = 1200;
 
 @Component({
   selector: 'app-urun-detay',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CountryTreeComponent, VersionChecklistComponent],
+  imports: [CommonModule, FormsModule, RouterLink, CountryTreeComponent, VersionChecklistComponent, ImageGroupsComponent],
   templateUrl: './urun-detay.component.html',
   styleUrls: ['../katalog/katalog.component.css', './urun-detay.component.css']
 })
@@ -61,7 +57,6 @@ export class UrunDetayComponent implements OnInit {
   formFamilyId: number | null = null;
   formStatus: CatalogStatus = 'Aktif';
   formImageGroups: ProductImageGroups = emptyImageGroups();
-  imageGroups = PRODUCT_IMAGE_GROUPS;
   formDimensions: ProductDimensions = this.emptyDimensions();
 
   dimensionFields: { key: keyof ProductDimensions; label: string; unit: string }[] = [
@@ -197,53 +192,6 @@ export class UrunDetayComponent implements OnInit {
 
   get totalImageCount(): number {
     return Object.values(this.formImageGroups).reduce((sum, list) => sum + list.length, 0);
-  }
-
-  onImagesSelected(event: Event, group: ProductImageGroupKey) {
-    const input = event.target as HTMLInputElement;
-    const files = Array.from(input.files ?? []).filter(f => f.type.startsWith('image/'));
-    input.value = '';
-
-    files.forEach(file => {
-      this.resizeImage(file).then(dataUrl => {
-        this.formImageGroups = {
-          ...this.formImageGroups,
-          [group]: [...this.formImageGroups[group], dataUrl]
-        };
-      });
-    });
-  }
-
-  private resizeImage(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onerror = reject;
-      reader.onload = () => {
-        const img = new Image();
-        img.onerror = reject;
-        img.onload = () => {
-          const scale = Math.min(1, MAX_IMAGE_SIZE / Math.max(img.width, img.height));
-          const canvas = document.createElement('canvas');
-          canvas.width = Math.round(img.width * scale);
-          canvas.height = Math.round(img.height * scale);
-          const ctx = canvas.getContext('2d')!;
-          // Şeffaf PNG'ler JPEG'e çevrilirken siyah arka plan oluşmasın
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          resolve(canvas.toDataURL('image/jpeg', 0.85));
-        };
-        img.src = reader.result as string;
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  removeImage(group: ProductImageGroupKey, index: number) {
-    this.formImageGroups = {
-      ...this.formImageGroups,
-      [group]: this.formImageGroups[group].filter((_, i) => i !== index)
-    };
   }
 
   // Kapasite tablosu

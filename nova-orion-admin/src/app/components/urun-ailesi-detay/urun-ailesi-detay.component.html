@@ -20,6 +20,7 @@
 
       <div *ngIf="formError" class="alert-box-error">{{ formError }}</div>
       <div *ngIf="saveMessage && !formError" class="alert-box-success">{{ saveMessage }}</div>
+      <div *ngIf="saveWarning" class="alert-box-warning">{{ saveWarning }}</div>
 
       <!-- Tabs -->
       <div class="detail-tabs-row">
@@ -29,6 +30,7 @@
           [class.active]="activeTab === tab.id"
           (click)="activeTab = tab.id">
           {{ tsService.translate(tab.label) }}
+          <span *ngIf="tab.id === 'gorseller' && totalImageCount" class="tab-count">{{ totalImageCount }}</span>
         </button>
       </div>
 
@@ -95,6 +97,9 @@
           </div>
         </section>
       </div>
+
+      <!-- Tab: Görseller -->
+      <app-image-groups *ngIf="activeTab === 'gorseller'" [(groups)]="formImageGroups"></app-image-groups>
 
       <!-- Tab: İlişkiler -->
       <div *ngIf="activeTab === 'iliskiler'" class="relations-grid">

@@ -54,6 +54,7 @@ export class SidebarComponent implements OnInit {
 
   categoryItemsMap: Record<CategoryId, string[]> = {
     system: [
+      'Markalar',
       'Dil Yönetimi',
       'Dil Bakımı',
       'İndirilenler',
@@ -62,15 +63,14 @@ export class SidebarComponent implements OnInit {
       'Satış Kanalları',
       'Hava Koşulları',
       'Proje Tipi',
-      'Markalar'
+      'Versiyon'
     ],
     catalog: [
       'Sistem',
       'Ürün Grubu',
       'Ürün Tipi',
       'Ürün Ailesi',
-      'Ürün',
-      'Versiyon'
+      'Ürün'
     ],
     support: [
       'Kategoriler',

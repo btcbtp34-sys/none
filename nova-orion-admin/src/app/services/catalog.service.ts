@@ -226,7 +226,8 @@ const INITIAL_CATALOG: Record<CatalogEntity, CatalogItem[]> = {
     { id: 7, name: 'Kanal', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' }
   ],
   'urun-ailesi': [
-    { id: 1, name: 'AF5301', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
+    // AF5301 ailesi, ilk ürünü AF5301A 25-3 ile aynı örnek görsellerle gelir
+    { id: 1, name: 'AF5301', description: '', parentIds: [2], systemIds: [1, 3, 4], imageGroups: SAMPLE_AF5301A_IMAGES, status: 'Aktif' },
     { id: 2, name: 'AF4300', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
     { id: 3, name: 'AF2', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' },
     { id: 4, name: 'AF', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' }
@@ -299,7 +300,13 @@ export class CatalogService {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === 'object') {
-          return { ...INITIAL_CATALOG, ...parsed };
+          const data = { ...INITIAL_CATALOG, ...parsed };
+          // Görselleri hiç kaydedilmemiş ürün aileleri örnek görselleri alır (kullanıcının boşalttığı görsellere dokunulmaz)
+          data['urun-ailesi'] = data['urun-ailesi'].map((f: CatalogItem) => {
+            const seed = INITIAL_CATALOG['urun-ailesi'].find(s => s.id === f.id && s.name === f.name);
+            return f.imageGroups === undefined && seed?.imageGroups ? { ...f, imageGroups: seed.imageGroups } : f;
+          });
+          return data;
         }
       }
     } catch {

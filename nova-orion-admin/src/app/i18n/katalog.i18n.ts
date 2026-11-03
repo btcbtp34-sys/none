@@ -59,7 +59,7 @@ export const KATALOG_TRANSLATIONS: TranslationEntries = {
   'Önce bağlanacak kayıtları tanımlayınız.': { tr: 'Önce bağlanacak kayıtları tanımlayınız.', en: 'Define the records to link first.' },
   'Bu kaydın bağlı olduğu kayıtları seçiniz.': { tr: 'Bu kaydın bağlı olduğu kayıtları seçiniz.', en: 'Select the records this item is linked to.' },
   'Bu bölgede ülke tanımlı değil.': { tr: 'Bu bölgede ülke tanımlı değil.', en: 'No countries are defined in this region.' },
-  'Katalog > Versiyon sayfasından versiyon tanımlayınız.': { tr: 'Katalog > Versiyon sayfasından versiyon tanımlayınız.', en: 'Define versions on the Catalog > Version page.' },
+  'Sistem Yönetimi > Versiyon sayfasından versiyon tanımlayınız.': { tr: 'Sistem Yönetimi > Versiyon sayfasından versiyon tanımlayınız.', en: 'Define versions on the System Management > Version page.' },
   // Katalog doğrulama ve onay mesajları
   'Lütfen ad alanını doldurunuz.': { tr: 'Lütfen ad alanını doldurunuz.', en: 'Please fill in the name field.' },
   'Lütfen en az bir sistem seçiniz.': { tr: 'Lütfen en az bir sistem seçiniz.', en: 'Please select at least one system.' },

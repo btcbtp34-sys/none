@@ -1,0 +1,26 @@
+<div class="image-groups">
+  <section class="image-group" *ngFor="let group of imageGroups">
+    <header class="image-group-header">
+      <span class="image-group-title">{{ group.label }}</span>
+      <span class="tab-count">{{ groups[group.key].length }}</span>
+    </header>
+
+    <div class="image-group-body">
+      <div class="image-card" *ngFor="let img of groups[group.key]; let i = index">
+        <a [href]="img" target="_blank" rel="noopener"><img [src]="img" [alt]="group.label" /></a>
+        <div class="image-actions">
+          <button class="image-action-btn danger" (click)="removeImage(group.key, i)">{{ tsService.translate('Sil') }}</button>
+        </div>
+      </div>
+      <div class="image-empty" *ngIf="!groups[group.key].length">
+        {{ tsService.translate('Henüz görsel yok') }}
+      </div>
+    </div>
+
+    <label class="image-group-upload-btn">
+      <input type="file" accept="image/*" multiple (change)="onImagesSelected($event, group.key)" hidden />
+      <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
+      <span>{{ tsService.translate('Görsel Yükle') }}</span>
+    </label>
+  </section>
+</div>

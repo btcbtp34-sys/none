@@ -2,19 +2,26 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CatalogService, CatalogItem, CatalogStatus } from '../../services/catalog.service';
+import {
+  CatalogService,
+  CatalogItem,
+  CatalogStatus,
+  ProductImageGroups,
+  emptyImageGroups
+} from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
+import { ImageGroupsComponent } from '../shared/image-groups/image-groups.component';
 
-export type FamilyTab = 'genel' | 'iliskiler';
+export type FamilyTab = 'genel' | 'gorseller' | 'iliskiler';
 
-// Ürün Ailesi detay sayfası: Ürün detayı gibi sekmeli; genel bilgiler ve ilişkiler (uyumlu versiyonlar, ülkeler)
+// Ürün Ailesi detay sayfası: Ürün detayı gibi sekmeli; genel bilgiler, görseller ve ilişkiler (uyumlu versiyonlar, ülkeler)
 @Component({
   selector: 'app-urun-ailesi-detay',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CountryTreeComponent, VersionChecklistComponent],
+  imports: [CommonModule, FormsModule, RouterLink, CountryTreeComponent, VersionChecklistComponent, ImageGroupsComponent],
   templateUrl: './urun-ailesi-detay.component.html',
   styleUrls: [
     '../katalog/katalog.component.css',
@@ -31,6 +38,7 @@ export class UrunAilesiDetayComponent implements OnInit {
 
   tabs: { id: FamilyTab; label: string }[] = [
     { id: 'genel', label: 'Genel Bilgiler' },
+    { id: 'gorseller', label: 'Görseller' },
     { id: 'iliskiler', label: 'İlişkiler' }
   ];
   activeTab: FamilyTab = 'genel';
@@ -46,6 +54,7 @@ export class UrunAilesiDetayComponent implements OnInit {
   formSystemIds: number[] = [];
   formOwnVersionId: number | null = null;
   formStatus: CatalogStatus = 'Aktif';
+  formImageGroups: ProductImageGroups = emptyImageGroups();
 
   // İlişkiler
   formVersionIds: number[] = [];
@@ -53,6 +62,7 @@ export class UrunAilesiDetayComponent implements OnInit {
 
   formError = '';
   saveMessage = '';
+  saveWarning = '';
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -73,10 +83,12 @@ export class UrunAilesiDetayComponent implements OnInit {
     this.formSystemIds = [...(family?.systemIds ?? [])];
     this.formOwnVersionId = family?.ownVersionId ?? null;
     this.formStatus = family?.status ?? 'Aktif';
+    this.formImageGroups = { ...emptyImageGroups(), ...family?.imageGroups };
     this.formVersionIds = [...(family?.versionIds ?? [])];
     this.formCountryIds = [...(family?.countryIds ?? [])];
     this.formError = '';
     this.saveMessage = '';
+    this.saveWarning = '';
 
     this.pageTitleService.setPage(family ? family.name : 'Yeni Ürün Ailesi', 'Ürün ailesi detayları');
   }
@@ -111,6 +123,10 @@ export class UrunAilesiDetayComponent implements OnInit {
     return this.catalogService.systemOptions(this.groupId, this.typeId);
   }
 
+  get totalImageCount(): number {
+    return Object.values(this.formImageGroups).reduce((sum, list) => sum + list.length, 0);
+  }
+
   isSystemSelected(id: number): boolean {
     return this.formSystemIds.includes(id);
   }
@@ -123,6 +139,7 @@ export class UrunAilesiDetayComponent implements OnInit {
 
   saveFamily() {
     this.saveMessage = '';
+    this.saveWarning = '';
     const name = this.formName.trim();
 
     if (!name) {
@@ -147,19 +164,27 @@ export class UrunAilesiDetayComponent implements OnInit {
       ownVersionId: this.formOwnVersionId,
       versionIds: this.formVersionIds,
       countryIds: this.formCountryIds,
+      imageGroups: this.formImageGroups,
       status: this.formStatus
     };
 
+    let persisted: boolean;
     if (this.familyId !== null) {
-      this.catalogService.updateItem('urun-ailesi', this.familyId, payload);
+      persisted = this.catalogService.updateItem('urun-ailesi', this.familyId, payload);
       this.pageTitleService.setPage(name, 'Ürün ailesi detayları');
     } else {
       const result = this.catalogService.addItem('urun-ailesi', payload);
+      persisted = result.persisted;
       this.router.navigate(['/katalog/urun-ailesi', result.id], { replaceUrl: true });
     }
 
     this.formError = '';
     this.saveMessage = this.tsService.translate('Ürün ailesi kaydedildi.');
+    if (!persisted) {
+      this.saveWarning = this.tsService.translate(
+        'Tarayıcı depolama alanı doldu; değişiklikler sayfa yenilenince kaybolabilir. Görsel sayısını azaltmayı deneyin.'
+      );
+    }
   }
 
   private showError(message: string) {

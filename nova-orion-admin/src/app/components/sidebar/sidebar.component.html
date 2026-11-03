@@ -35,6 +35,17 @@
       </div>
 
       <nav class="nav-menu" *ngIf="isCategoryOpen('system')">
+        <!-- Markalar -->
+        <a
+          routerLink="/markalar"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Markalar')">
+          <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#certificate"></use></svg>
+          <span class="nav-link-text">{{ tsService.translate('Markalar') }}</span>
+          <span class="count-badge">{{ brandService.brands().length }}</span>
+        </a>
+
         <a 
           routerLink="/dil-yonetimi" 
           routerLinkActive="active" 
@@ -118,15 +129,15 @@
           <span class="count-badge">{{ projectTypeService.projectTypes().length }}</span>
         </a>
 
-        <!-- Markalar -->
+        <!-- Versiyon -->
         <a
-          routerLink="/markalar"
+          routerLink="/versiyon"
           routerLinkActive="active"
           class="nav-link"
-          *ngIf="matchesSearch('Markalar')">
-          <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#certificate"></use></svg>
-          <span class="nav-link-text">{{ tsService.translate('Markalar') }}</span>
-          <span class="count-badge">{{ brandService.brands().length }}</span>
+          *ngIf="matchesSearch('Versiyon')">
+          <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#history"></use></svg>
+          <span class="nav-link-text">{{ tsService.translate('Versiyon') }}</span>
+          <span class="count-badge">{{ catalogService.items('versiyon').length }}</span>
         </a>
       </nav>
     </div>
@@ -195,17 +206,6 @@
           <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#box"></use></svg>
           <span class="nav-link-text">{{ tsService.translate('Ürün') }}</span>
           <span class="count-badge">{{ catalogService.items('urun').length }}</span>
-        </a>
-
-        <!-- Versiyon -->
-        <a
-          routerLink="/katalog/versiyon"
-          routerLinkActive="active"
-          class="nav-link"
-          *ngIf="matchesSearch('Versiyon')">
-          <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#history"></use></svg>
-          <span class="nav-link-text">{{ tsService.translate('Versiyon') }}</span>
-          <span class="count-badge">{{ catalogService.items('versiyon').length }}</span>
         </a>
       </nav>
     </div>
