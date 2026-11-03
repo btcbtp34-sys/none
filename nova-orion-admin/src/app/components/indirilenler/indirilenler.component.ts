@@ -7,6 +7,7 @@ import { RegionService } from '../../services/region.service';
 import { CountryService, CountryItem } from '../../services/country.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
+import { BrandService } from '../../services/brand.service';
 
 @Component({
   selector: 'app-indirilenler',
@@ -22,6 +23,7 @@ export class IndirilenlerComponent implements OnInit {
   countryService = inject(CountryService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
+  brandService = inject(BrandService);
 
   showModal = false;
   showCountryStatusModal = false;
@@ -36,13 +38,17 @@ export class IndirilenlerComponent implements OnInit {
   // Search & Filter
   searchQuery = '';
   filterRegion = 'ALL';
+  filterBrand: 'ALL' | number = 'ALL';
 
   // Form Fields (Only Super Admin can upload)
+  editingId: number | null = null;
+  editingFilename = '';
   selectedFile: File | null = null;
   formTitle = '';
   formSize = '';
   formRegion: DownloadRegion = 'Global';
   formPermission: 'all' | 'logged_in' = 'all';
+  formBrandId: number | null = null;
 
   ngOnInit() {
     this.pageTitleService.setPage('Downloads', 'Kullanıcı dokümanları, PDF rehberler ve indirilebilir dosyalar');
@@ -69,6 +75,11 @@ export class IndirilenlerComponent implements OnInit {
         return false;
       }
 
+      // Marka filtresi
+      if (this.filterBrand !== 'ALL' && item.brandId !== this.filterBrand) {
+        return false;
+      }
+
       // 3. Search Query Filter
       if (query) {
         const matches = 
@@ -76,6 +87,7 @@ export class IndirilenlerComponent implements OnInit {
           this.tsService.translate(item.title).toLowerCase().includes(query) ||
           item.filename.toLowerCase().includes(query) ||
           item.region.toLowerCase().includes(query) ||
+          this.brandService.brandName(item.brandId).toLowerCase().includes(query) ||
           item.uploader.toLowerCase().includes(query);
         if (!matches) return false;
       }
@@ -102,17 +114,36 @@ export class IndirilenlerComponent implements OnInit {
   openUploadModal() {
     // Only Super Admin can upload
     if (!this.authService.isSuperAdmin()) return;
+    this.editingId = null;
+    this.editingFilename = '';
     this.selectedFile = null;
     this.formTitle = '';
     this.formSize = '';
     this.formRegion = 'Global';
     this.formPermission = 'all';
+    this.formBrandId = null;
+    this.showModal = true;
+  }
+
+  // Düzenleme: mevcut meta alanlar forma yüklenir, dosya değiştirmek opsiyonel
+  openEditModal(item: DownloadItem) {
+    if (!this.authService.isSuperAdmin()) return;
+    this.editingId = item.id;
+    this.editingFilename = item.filename;
+    this.selectedFile = null;
+    this.formTitle = item.title;
+    this.formSize = item.size;
+    this.formRegion = item.region;
+    this.formPermission = item.permission;
+    this.formBrandId = item.brandId ?? null;
     this.showModal = true;
   }
 
   closeModal() {
     this.showModal = false;
     this.selectedFile = null;
+    this.editingId = null;
+    this.editingFilename = '';
   }
 
   openCountryStatusModal(item: DownloadItem) {
@@ -177,6 +208,22 @@ export class IndirilenlerComponent implements OnInit {
   saveFile() {
     if (!this.authService.isSuperAdmin()) return;
     if (!this.formTitle.trim()) return;
+    if (this.formBrandId === null) {
+      alert(this.tsService.translate('Lütfen bir marka seçiniz.'));
+      return;
+    }
+
+    if (this.editingId) {
+      this.downloadService.updateDownload(this.editingId, {
+        title: this.formTitle.trim(),
+        region: this.formRegion,
+        permission: this.formPermission,
+        brandId: this.formBrandId,
+        ...(this.selectedFile ? { filename: this.selectedFile.name, size: this.formSize } : {})
+      });
+      this.closeModal();
+      return;
+    }
 
     const fileName = this.selectedFile ? this.selectedFile.name : `${this.formTitle.trim()}.pdf`;
     const fileSize = this.formSize.trim() || '2.4 MB';
@@ -186,7 +233,8 @@ export class IndirilenlerComponent implements OnInit {
       filename: fileName,
       size: fileSize,
       region: this.formRegion,
-      permission: this.formPermission
+      permission: this.formPermission,
+      brandId: this.formBrandId
     });
 
     this.closeModal();

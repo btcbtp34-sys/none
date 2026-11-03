@@ -49,6 +49,7 @@
           <tr>
             <th style="width: 50px;">NO</th>
             <th>{{ tsService.translate('MODÜL') }}</th>
+            <th>{{ tsService.translate('MARKA') }}</th>
             <th>{{ tsService.translate('KATEGORİ ADI') }}</th>
             <th>{{ tsService.translate('AÇIKLAMA') }}</th>
             <th>{{ tsService.translate('DURUM') }}</th>
@@ -64,6 +65,10 @@
               <span class="module-pill" [class.sss-pill]="item.module === 'SSS'" [class.egitim-pill]="item.module === 'Eğitim'" [class.contact-pill]="item.module === 'Bize Ulaşın'">
                 {{ tsService.translate(item.module || 'SSS') }}
               </span>
+            </td>
+            <td>
+              <span class="code-badge" *ngIf="brandService.brandName(item.brandId); else noBrand">{{ brandService.brandName(item.brandId) }}</span>
+              <ng-template #noBrand><span class="desc-text">—</span></ng-template>
             </td>
             <td>
               <span class="cat-name-bold">{{ tsService.translate(item.name) }}</span>
@@ -113,6 +118,14 @@
           <option value="Bize Ulaşın">{{ tsService.translate('Bize Ulaşın') }}</option>
         </select>
         <span class="form-hint-subtle">{{ tsService.translate('Bu kategorinin kullanılacağı modülü seçiniz.') }}</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('MARKA') }} *</label>
+        <select class="form-control-subtle" [(ngModel)]="formBrandId">
+          <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
+          <option *ngFor="let b of brandService.selectableBrands(formBrandId !== null ? [formBrandId] : [])" [ngValue]="b.id">{{ b.name }}</option>
+        </select>
       </div>
 
       <div class="form-group">

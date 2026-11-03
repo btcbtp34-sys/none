@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectTypeService, ProjectTypeItem } from '../../services/project-type.service';
+import { BrandService } from '../../services/brand.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 
@@ -14,6 +15,7 @@ import { TranslationService } from '../../services/translation.service';
 })
 export class ProjeTipleriComponent implements OnInit {
   projectTypeService = inject(ProjectTypeService);
+  brandService = inject(BrandService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
 
@@ -22,10 +24,12 @@ export class ProjeTipleriComponent implements OnInit {
 
   // Search & Filter
   searchQuery = '';
+  filterBrand: number | 'ALL' = 'ALL';
 
-  // Form Fields (sadece kod ve değer)
+  // Form Fields
   formCode = '';
   formValue = '';
+  formBrandId: number | null = null;
   formError = '';
 
   ngOnInit() {
@@ -34,13 +38,15 @@ export class ProjeTipleriComponent implements OnInit {
 
   filteredProjectTypes(): ProjectTypeItem[] {
     const query = this.searchQuery.trim().toLowerCase();
-    const list = this.projectTypeService.projectTypes();
+    const list = this.projectTypeService.projectTypes()
+      .filter(item => this.filterBrand === 'ALL' || item.brandId === this.filterBrand);
     if (!query) return list;
 
     return list.filter(item =>
       item.code.toLowerCase().includes(query) ||
       item.value.toLowerCase().includes(query) ||
-      this.tsService.translate(item.value).toLowerCase().includes(query)
+      this.tsService.translate(item.value).toLowerCase().includes(query) ||
+      this.brandService.brandName(item.brandId).toLowerCase().includes(query)
     );
   }
 
@@ -49,11 +55,13 @@ export class ProjeTipleriComponent implements OnInit {
       this.editingId = item.id;
       this.formCode = item.code;
       this.formValue = item.value;
+      this.formBrandId = item.brandId ?? null;
       this.formError = '';
     } else {
       this.editingId = null;
       this.formCode = '';
       this.formValue = '';
+      this.formBrandId = null;
       this.formError = '';
     }
     this.showModal = true;
@@ -64,6 +72,7 @@ export class ProjeTipleriComponent implements OnInit {
     this.editingId = null;
     this.formCode = '';
     this.formValue = '';
+    this.formBrandId = null;
     this.formError = '';
   }
 
@@ -76,15 +85,22 @@ export class ProjeTipleriComponent implements OnInit {
       return;
     }
 
+    if (!this.formBrandId) {
+      this.formError = this.tsService.translate('Lütfen bir marka seçiniz.');
+      return;
+    }
+
     if (this.editingId) {
       this.projectTypeService.updateProjectType(this.editingId, {
         code: code.toUpperCase(),
-        value: val
+        value: val,
+        brandId: this.formBrandId
       });
     } else {
       this.projectTypeService.addProjectType({
         code: code.toUpperCase(),
-        value: val
+        value: val,
+        brandId: this.formBrandId
       });
     }
 

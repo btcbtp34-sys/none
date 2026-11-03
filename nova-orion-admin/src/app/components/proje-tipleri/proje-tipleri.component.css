@@ -116,6 +116,30 @@
   padding: 4px;
 }
 
+.filter-right-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-select {
+  height: 38px;
+  min-width: 160px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0 12px;
+  color: #0f172a;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+}
+
 .stats-counter-tag {
   font-size: 12.5px;
   color: #64748b;
@@ -183,6 +207,21 @@
   border: 1px solid #e2e8f0;
   letter-spacing: 0.5px;
   display: inline-block;
+}
+
+.brand-badge {
+  display: inline-block;
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.muted-dash {
+  color: #94a3b8;
 }
 
 .val-text {

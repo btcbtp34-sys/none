@@ -7,6 +7,7 @@ export interface UserManagementItem {
   roleCode: string;
   roleTitle: string;
   scope: string;
+  brandIds: number[];
   status: 'Aktif' | 'Pasif';
   lastLogin: string;
   avatarInitials: string;
@@ -24,7 +25,8 @@ const INITIAL_USERS: UserManagementItem[] = [
     scope: 'Global (Tüm Sistem)',
     status: 'Aktif',
     lastLogin: '10.09.2026 14:10',
-    avatarInitials: 'HK'
+    avatarInitials: 'HK',
+    brandIds: [1, 2]
   },
   {
     id: 2,
@@ -35,7 +37,8 @@ const INITIAL_USERS: UserManagementItem[] = [
     scope: 'Avrupa',
     status: 'Aktif',
     lastLogin: '10.09.2026 11:45',
-    avatarInitials: 'ER'
+    avatarInitials: 'ER',
+    brandIds: [2]
   },
   {
     id: 3,
@@ -46,7 +49,8 @@ const INITIAL_USERS: UserManagementItem[] = [
     scope: 'Türkiye',
     status: 'Aktif',
     lastLogin: '09.09.2026 18:20',
-    avatarInitials: 'AY'
+    avatarInitials: 'AY',
+    brandIds: [1]
   },
   {
     id: 4,
@@ -57,7 +61,8 @@ const INITIAL_USERS: UserManagementItem[] = [
     scope: 'Almanya',
     status: 'Aktif',
     lastLogin: '09.09.2026 16:30',
-    avatarInitials: 'SM'
+    avatarInitials: 'SM',
+    brandIds: [2]
   },
   {
     id: 5,
@@ -68,7 +73,8 @@ const INITIAL_USERS: UserManagementItem[] = [
     scope: 'Fransa',
     status: 'Aktif',
     lastLogin: '08.09.2026 12:15',
-    avatarInitials: 'CD'
+    avatarInitials: 'CD',
+    brandIds: [1]
   },
   {
     id: 6,
@@ -79,7 +85,8 @@ const INITIAL_USERS: UserManagementItem[] = [
     scope: 'Asya Pasifik',
     status: 'Aktif',
     lastLogin: '07.09.2026 09:10',
-    avatarInitials: 'KS'
+    avatarInitials: 'KS',
+    brandIds: [1, 2]
   }
 ];
 

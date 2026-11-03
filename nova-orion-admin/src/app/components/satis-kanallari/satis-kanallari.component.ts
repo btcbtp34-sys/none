@@ -34,23 +34,14 @@ export class SatisKanallariComponent implements OnInit {
   formCode = '';
   formRegion = 'Avrupa';
   selectedCountries: string[] = [];
-  selectedProducts: string[] = [];
   formStatus: 'Aktif' | 'Pasif' = 'Aktif';
   formDescription = '';
 
   // Modal Search Filter Fields
-  productSearchQuery = '';
   countrySearchQuery = '';
 
   ngOnInit() {
-    this.pageTitleService.setPage('Satış Kanalları', 'Marka, ülke eşleştirmeleri ve ilişkili ürün dağıtım yönetimi');
-  }
-
-  // Filtered available products for modal multi-select
-  get filteredAvailableProducts(): string[] {
-    const q = this.productSearchQuery.trim().toLowerCase();
-    if (!q) return this.channelService.availableProducts;
-    return this.channelService.availableProducts.filter(p => p.toLowerCase().includes(q));
+    this.pageTitleService.setPage('Satış Kanalları', 'Marka ve ülke eşleştirmeleri yönetimi');
   }
 
   // Filtered available countries for modal multi-select
@@ -58,14 +49,6 @@ export class SatisKanallariComponent implements OnInit {
     const q = this.countrySearchQuery.trim().toLowerCase();
     if (!q) return this.availableCountriesList;
     return this.availableCountriesList.filter(c => c.toLowerCase().includes(q) || this.tsService.translate(c).toLowerCase().includes(q));
-  }
-
-  selectAllProducts() {
-    this.selectedProducts = [...this.channelService.availableProducts];
-  }
-
-  clearAllProducts() {
-    this.selectedProducts = [];
   }
 
   selectAllCountries() {
@@ -93,8 +76,7 @@ export class SatisKanallariComponent implements OnInit {
       const matchesSearch = !query || 
         item.brandName.toLowerCase().includes(query) ||
         item.code.toLowerCase().includes(query) ||
-        item.countries.some(c => c.toLowerCase().includes(query) || this.tsService.translate(c).toLowerCase().includes(query)) ||
-        item.products.some(p => p.toLowerCase().includes(query));
+        item.countries.some(c => c.toLowerCase().includes(query) || this.tsService.translate(c).toLowerCase().includes(query));
 
       // Country & Status filters
       const matchesCountry = this.filterCountry === 'ALL' || item.countries.includes(this.filterCountry);
@@ -121,10 +103,8 @@ export class SatisKanallariComponent implements OnInit {
     this.formCode = item.code;
     this.formRegion = item.region || 'Avrupa';
     this.selectedCountries = [...item.countries];
-    this.selectedProducts = [...item.products];
     this.formStatus = item.status;
     this.formDescription = item.description || '';
-    this.productSearchQuery = '';
     this.countrySearchQuery = '';
     this.showModal = true;
   }
@@ -139,10 +119,8 @@ export class SatisKanallariComponent implements OnInit {
     this.formCode = 'SC-' + Math.floor(100 + Math.random() * 900);
     this.formRegion = 'Avrupa';
     this.selectedCountries = this.authService.isCountryAdmin() && this.authService.currentUser().assignedCountry ? [this.authService.currentUser().assignedCountry!] : ['Türkiye'];
-    this.selectedProducts = [this.channelService.availableProducts[0], this.channelService.availableProducts[1]];
     this.formStatus = 'Aktif';
     this.formDescription = '';
-    this.productSearchQuery = '';
     this.countrySearchQuery = '';
   }
 
@@ -159,19 +137,6 @@ export class SatisKanallariComponent implements OnInit {
     return this.selectedCountries.includes(countryName);
   }
 
-  toggleProductSelection(productName: string) {
-    const idx = this.selectedProducts.indexOf(productName);
-    if (idx > -1) {
-      this.selectedProducts.splice(idx, 1);
-    } else {
-      this.selectedProducts.push(productName);
-    }
-  }
-
-  isProductSelected(productName: string): boolean {
-    return this.selectedProducts.includes(productName);
-  }
-
   saveChannel() {
     if (!this.formBrandName.trim() || !this.formCode.trim()) return;
 
@@ -181,7 +146,6 @@ export class SatisKanallariComponent implements OnInit {
         code: this.formCode.trim(),
         region: this.formRegion,
         countries: this.selectedCountries,
-        products: this.selectedProducts,
         status: this.formStatus,
         description: this.formDescription.trim()
       });
@@ -191,7 +155,6 @@ export class SatisKanallariComponent implements OnInit {
         code: this.formCode.trim(),
         region: this.formRegion,
         countries: this.selectedCountries,
-        products: this.selectedProducts,
         status: this.formStatus,
         description: this.formDescription.trim()
       });

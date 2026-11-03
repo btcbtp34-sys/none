@@ -183,5 +183,30 @@ export const SISTEM_TRANSLATIONS: TranslationEntries = {
 
   // Sistem Yedekleme
   'Kayıtlı sistem yedeği bulunamadı.': { tr: 'Kayıtlı sistem yedeği bulunamadı.', en: 'No system backups found.' },
-  'Bu yedek dosyasını silmek istediğinizden emin misiniz?': { tr: 'Bu yedek dosyasını silmek istediğinizden emin misiniz?', en: 'Are you sure you want to delete this backup file?' }
+  'Bu yedek dosyasını silmek istediğinizden emin misiniz?': { tr: 'Bu yedek dosyasını silmek istediğinizden emin misiniz?', en: 'Are you sure you want to delete this backup file?' },
+
+  // Satış Kanalları / Kullanıcı Yönetimi — marka entegrasyonu
+  'Marka ve ülke eşleştirmeleri yönetimi': { tr: 'Marka ve ülke eşleştirmeleri yönetimi', en: 'Brand and country mapping management' },
+  'Marka, kanal kodu veya ülke ara...': { tr: 'Marka, kanal kodu veya ülke ara...', en: 'Search brand, channel code or country...' },
+  'Kullanıcının erişebileceği markaları seçiniz.': { tr: 'Kullanıcının erişebileceği markaları seçiniz.', en: 'Select the brands this user can access.' },
+
+  // Markalar
+  'Markalar': { tr: 'Markalar', en: 'Brands' },
+  'Marka': { tr: 'Marka', en: 'Brand' },
+  'MARKA': { tr: 'MARKA', en: 'BRAND' },
+  'MARKA ADI': { tr: 'MARKA ADI', en: 'BRAND NAME' },
+  'Yeni Marka Ekle': { tr: 'Yeni Marka Ekle', en: 'Add New Brand' },
+  'Marka Düzenle': { tr: 'Marka Düzenle', en: 'Edit Brand' },
+  'İndirilenler, proje tipleri, kategoriler ve kullanıcıların bağlandığı markalar': { tr: 'İndirilenler, proje tipleri, kategoriler ve kullanıcıların bağlandığı markalar', en: 'Brands linked to downloads, project types, categories and users' },
+  'Kod, marka adı veya açıklama ara...': { tr: 'Kod, marka adı veya açıklama ara...', en: 'Search code, brand name or description...' },
+  'Örn: NOVA': { tr: 'Örn: NOVA', en: 'e.g. NOVA' },
+  'Örn: Nova': { tr: 'Örn: Nova', en: 'e.g. Nova' },
+  'Lütfen kod ve marka adı alanlarını doldurunuz.': { tr: 'Lütfen kod ve marka adı alanlarını doldurunuz.', en: 'Please fill in the code and brand name fields.' },
+  'Bu kod ile tanımlı bir marka zaten var.': { tr: 'Bu kod ile tanımlı bir marka zaten var.', en: 'A brand with this code already exists.' },
+  'Bu markayı silmek istediğinizden emin misiniz?': { tr: 'Bu markayı silmek istediğinizden emin misiniz?', en: 'Are you sure you want to delete this brand?' },
+  'Project Nova markası': { tr: 'Project Nova markası', en: 'Project Nova brand' },
+  'Project Orion markası': { tr: 'Project Orion markası', en: 'Project Orion brand' },
+  'Lütfen bir marka seçiniz.': { tr: 'Lütfen bir marka seçiniz.', en: 'Please select a brand.' },
+  'Lütfen en az bir marka seçiniz.': { tr: 'Lütfen en az bir marka seçiniz.', en: 'Please select at least one brand.' },
+  'Tüm Markalar': { tr: 'Tüm Markalar', en: 'All Brands' }
 };

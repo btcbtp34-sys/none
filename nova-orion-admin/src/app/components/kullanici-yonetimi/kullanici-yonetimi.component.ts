@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserManagementService, UserManagementItem } from '../../services/user-management.service';
 import { UserRoleService } from '../../services/user-role.service';
+import { BrandService } from '../../services/brand.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 
@@ -16,6 +17,7 @@ import { TranslationService } from '../../services/translation.service';
 export class KullaniciYonetimiComponent implements OnInit {
   userService = inject(UserManagementService);
   roleService = inject(UserRoleService);
+  brandService = inject(BrandService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
 
@@ -23,12 +25,14 @@ export class KullaniciYonetimiComponent implements OnInit {
   editingId: number | null = null;
   searchQuery = '';
   filterRole = 'ALL';
+  filterBrand: number | 'ALL' = 'ALL';
 
   // Form Fields
   formName = '';
   formEmail = '';
   formRoleCode = 'COUNTRY_ADMIN';
   formScope = 'Türkiye';
+  formBrandIds: number[] = [];
   formStatus: 'Aktif' | 'Pasif' = 'Aktif';
   formError = '';
 
@@ -56,8 +60,9 @@ export class KullaniciYonetimiComponent implements OnInit {
         this.tsService.translate(u.scope).toLowerCase().includes(q);
 
       const matchesRole = this.filterRole === 'ALL' || u.roleCode === this.filterRole;
+      const matchesBrand = this.filterBrand === 'ALL' || (u.brandIds || []).includes(this.filterBrand);
 
-      return matchesSearch && matchesRole;
+      return matchesSearch && matchesRole && matchesBrand;
     });
   }
 
@@ -68,6 +73,7 @@ export class KullaniciYonetimiComponent implements OnInit {
       this.formEmail = item.email;
       this.formRoleCode = item.roleCode;
       this.formScope = item.scope;
+      this.formBrandIds = [...(item.brandIds || [])];
       this.formStatus = item.status;
       this.formError = '';
     } else {
@@ -76,6 +82,7 @@ export class KullaniciYonetimiComponent implements OnInit {
       this.formEmail = '';
       this.formRoleCode = 'COUNTRY_ADMIN';
       this.formScope = 'Türkiye';
+      this.formBrandIds = [];
       this.formStatus = 'Aktif';
       this.formError = '';
     }
@@ -88,12 +95,32 @@ export class KullaniciYonetimiComponent implements OnInit {
     this.formError = '';
   }
 
+  // Kayıtlı eski verilerde brandIds olmayabilir
+  userBrandNames(user: UserManagementItem): string[] {
+    return (user.brandIds || []).map(id => this.brandService.brandName(id)).filter(n => !!n);
+  }
+
+  isBrandSelected(id: number): boolean {
+    return this.formBrandIds.includes(id);
+  }
+
+  toggleBrand(id: number) {
+    this.formBrandIds = this.isBrandSelected(id)
+      ? this.formBrandIds.filter(b => b !== id)
+      : [...this.formBrandIds, id];
+  }
+
   saveUser() {
     const name = this.formName.trim();
     const email = this.formEmail.trim();
 
     if (!name || !email) {
       this.formError = this.tsService.translate('Lütfen isim ve e-posta alanlarını eksiksiz doldurunuz.');
+      return;
+    }
+
+    if (this.formBrandIds.length === 0) {
+      this.formError = this.tsService.translate('Lütfen en az bir marka seçiniz.');
       return;
     }
 
@@ -107,6 +134,7 @@ export class KullaniciYonetimiComponent implements OnInit {
         roleCode: this.formRoleCode,
         roleTitle,
         scope: this.formScope.trim() || 'Global (Tüm Sistem)',
+        brandIds: [...this.formBrandIds],
         status: this.formStatus
       });
     } else {
@@ -118,6 +146,7 @@ export class KullaniciYonetimiComponent implements OnInit {
         roleCode: this.formRoleCode,
         roleTitle,
         scope: this.formScope.trim() || 'Global (Tüm Sistem)',
+        brandIds: [...this.formBrandIds],
         status: this.formStatus,
         lastLogin: dateStr
       });

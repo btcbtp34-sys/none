@@ -8,6 +8,8 @@ export interface FaqCategoryItem {
   name: string;
   module: CategoryModuleType;
   description: string;
+  // Marka (Nova/Orion) — BrandService id'si
+  brandId?: number | null;
   status: 'Aktif' | 'Pasif';
 }
 
@@ -16,15 +18,15 @@ export interface FaqCategoryItem {
 })
 export class FaqCategoryService {
   private categoriesList = signal<FaqCategoryItem[]>([
-    { id: 1, no: '#1', name: 'Getting Started', module: 'SSS', description: 'Başlangıç ve genel kullanım rehberleri', status: 'Aktif' },
-    { id: 2, no: '#2', name: 'VRF Design', module: 'SSS', description: 'VRF sistem tasarım ve projelendirme soru ve yanıtları', status: 'Aktif' },
-    { id: 3, no: '#3', name: 'Multi-Split', module: 'SSS', description: 'Multi-Split klima seçim ve konfigürasyon kuralları', status: 'Aktif' },
-    { id: 4, no: '#4', name: 'Reports', module: 'SSS', description: 'Teknik raporlama, hesaplama ve çıktı alma işlemleri', status: 'Aktif' },
-    { id: 5, no: '#5', name: 'Troubleshooting', module: 'SSS', description: 'Hata kodları, sorun giderme ve teknik çözümler', status: 'Aktif' },
-    { id: 6, no: '#6', name: 'Saha Montaj Eğitimleri', module: 'Eğitim', description: 'VRF ve Isı Pompası saha montaj ve devreye alma eğitim modülleri', status: 'Aktif' },
-    { id: 7, no: '#7', name: 'Yazılım & Projelendirme', module: 'Eğitim', description: 'Air Select yazılımı eğitim videoları ve tasarım ipuçları', status: 'Aktif' },
-    { id: 8, no: '#8', name: 'Teknik Destek & Servis', module: 'Bize Ulaşın', description: 'Bölgesel yetkili teknik servis ve çağrı merkezi iletişim talepleri', status: 'Aktif' },
-    { id: 9, no: '#9', name: 'Satış & Teklif Talepleri', module: 'Bize Ulaşın', description: 'Satış kanalı danışmanlığı ve kurumsal proje teklif başvuruları', status: 'Aktif' }
+    { id: 1, no: '#1', brandId: 1, name: 'Getting Started', module: 'SSS', description: 'Başlangıç ve genel kullanım rehberleri', status: 'Aktif' },
+    { id: 2, no: '#2', brandId: 2, name: 'VRF Design', module: 'SSS', description: 'VRF sistem tasarım ve projelendirme soru ve yanıtları', status: 'Aktif' },
+    { id: 3, no: '#3', brandId: 1, name: 'Multi-Split', module: 'SSS', description: 'Multi-Split klima seçim ve konfigürasyon kuralları', status: 'Aktif' },
+    { id: 4, no: '#4', brandId: 2, name: 'Reports', module: 'SSS', description: 'Teknik raporlama, hesaplama ve çıktı alma işlemleri', status: 'Aktif' },
+    { id: 5, no: '#5', brandId: 1, name: 'Troubleshooting', module: 'SSS', description: 'Hata kodları, sorun giderme ve teknik çözümler', status: 'Aktif' },
+    { id: 6, no: '#6', brandId: 2, name: 'Saha Montaj Eğitimleri', module: 'Eğitim', description: 'VRF ve Isı Pompası saha montaj ve devreye alma eğitim modülleri', status: 'Aktif' },
+    { id: 7, no: '#7', brandId: 1, name: 'Yazılım & Projelendirme', module: 'Eğitim', description: 'Air Select yazılımı eğitim videoları ve tasarım ipuçları', status: 'Aktif' },
+    { id: 8, no: '#8', brandId: 2, name: 'Teknik Destek & Servis', module: 'Bize Ulaşın', description: 'Bölgesel yetkili teknik servis ve çağrı merkezi iletişim talepleri', status: 'Aktif' },
+    { id: 9, no: '#9', brandId: 1, name: 'Satış & Teklif Talepleri', module: 'Bize Ulaşın', description: 'Satış kanalı danışmanlığı ve kurumsal proje teklif başvuruları', status: 'Aktif' }
   ]);
 
   categories = this.categoriesList.asReadonly();

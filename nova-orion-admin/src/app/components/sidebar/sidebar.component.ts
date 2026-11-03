@@ -17,6 +17,7 @@ import { FaqCategoryService } from '../../services/faq-category.service';
 import { AuthService } from '../../services/auth.service';
 import { TranslationService } from '../../services/translation.service';
 import { CatalogService } from '../../services/catalog.service';
+import { BrandService } from '../../services/brand.service';
 
 export type CategoryId = 'system' | 'catalog' | 'support' | 'users' | 'settings';
 
@@ -43,6 +44,7 @@ export class SidebarComponent implements OnInit {
   authService = inject(AuthService);
   tsService = inject(TranslationService);
   catalogService = inject(CatalogService);
+  brandService = inject(BrandService);
 
   activeProject = this.projectService.currentProject;
 
@@ -59,7 +61,8 @@ export class SidebarComponent implements OnInit {
       'Ülkeler',
       'Satış Kanalları',
       'Hava Koşulları',
-      'Proje Tipi'
+      'Proje Tipi',
+      'Markalar'
     ],
     catalog: [
       'Sistem',

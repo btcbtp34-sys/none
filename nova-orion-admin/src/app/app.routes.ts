@@ -19,6 +19,7 @@ import { EgitimComponent } from './components/egitim/egitim.component';
 import { BizeUlasinComponent } from './components/bize-ulasin/bize-ulasin.component';
 import { ModullerComponent } from './components/moduller/moduller.component';
 import { KatalogComponent } from './components/katalog/katalog.component';
+import { MarkalarComponent } from './components/markalar/markalar.component';
 import { UrunListesiComponent } from './components/urun-listesi/urun-listesi.component';
 import { UrunDetayComponent } from './components/urun-detay/urun-detay.component';
 import { UrunAilesiDetayComponent } from './components/urun-ailesi-detay/urun-ailesi-detay.component';
@@ -80,6 +81,7 @@ export const routes: Routes = [
       { path: 'hava-kosullari', component: HavaKosullariComponent },
       { path: 'proje-tipleri', component: ProjeTipleriComponent },
       { path: 'proje-tipi', redirectTo: 'proje-tipleri', pathMatch: 'full' },
+      { path: 'markalar', component: MarkalarComponent },
       { path: 'katalog', redirectTo: 'katalog/sistem', pathMatch: 'full' },
       { path: 'katalog/sistem', component: KatalogComponent, data: { entity: 'sistem' } },
       { path: 'katalog/urun-grubu', component: KatalogComponent, data: { entity: 'urun-grubu' } },

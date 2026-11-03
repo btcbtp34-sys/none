@@ -13,6 +13,8 @@ export interface DownloadItem {
   permissionText: string;
   iconType: 'pdf' | 'zip' | 'doc';
   region: DownloadRegion;
+  // Marka (Nova/Orion) — BrandService id'si
+  brandId?: number | null;
   status: 'Aktif' | 'Pasif';
   // Country-level active/passive override flags controlled by Regional Admin
   countryStatus: Record<string, boolean>;
@@ -34,6 +36,7 @@ export class DownloadService {
       permissionText: 'Tüm Kullanıcılar (Herkes)',
       iconType: 'pdf',
       region: 'Global',
+      brandId: 1,
       status: 'Aktif',
       countryStatus: {
         'Türkiye': true,
@@ -55,6 +58,7 @@ export class DownloadService {
       permissionText: 'Sadece Giriş Yapanlar',
       iconType: 'pdf',
       region: 'Avrupa',
+      brandId: 2,
       status: 'Aktif',
       countryStatus: {
         'Türkiye': true,
@@ -76,6 +80,7 @@ export class DownloadService {
       permissionText: 'Sadece Giriş Yapanlar',
       iconType: 'zip',
       region: 'Avrupa',
+      brandId: 1,
       status: 'Aktif',
       countryStatus: {
         'Türkiye': true,
@@ -95,6 +100,7 @@ export class DownloadService {
       permissionText: 'Sadece Giriş Yapanlar',
       iconType: 'pdf',
       region: 'Amerika',
+      brandId: 2,
       status: 'Aktif',
       countryStatus: {
         'Amerika Birleşik Devletleri': true,
@@ -109,6 +115,7 @@ export class DownloadService {
     title: string; 
     permission: 'all' | 'logged_in'; 
     region: DownloadRegion; 
+    brandId: number | null;
     filename?: string; 
     size?: string 
   }) {
@@ -127,6 +134,7 @@ export class DownloadService {
       permissionText: item.permission === 'all' ? 'Tüm Kullanıcılar (Herkes)' : 'Sadece Giriş Yapanlar',
       iconType: item.filename?.endsWith('.zip') ? 'zip' : 'pdf',
       region: item.region,
+      brandId: item.brandId,
       status: 'Aktif',
       countryStatus: {}
     };
@@ -139,9 +147,11 @@ export class DownloadService {
       this.downloadsList().map(d => {
         if (d.id !== id) return d;
         const newPerm = updated.permission || d.permission;
+        const newFile = updated.filename || d.filename;
         return {
           ...d,
           ...updated,
+          iconType: newFile.endsWith('.zip') ? 'zip' : 'pdf',
           permissionText: newPerm === 'all' ? 'Tüm Kullanıcılar (Herkes)' : 'Sadece Giriş Yapanlar'
         };
       })

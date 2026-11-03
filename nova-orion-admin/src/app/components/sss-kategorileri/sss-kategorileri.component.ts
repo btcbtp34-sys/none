@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { FaqCategoryService, FaqCategoryItem, CategoryModuleType } from '../../services/faq-category.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
+import { BrandService } from '../../services/brand.service';
 
 @Component({
   selector: 'app-sss-kategorileri',
@@ -16,6 +17,7 @@ export class SssKategorileriComponent implements OnInit {
   catService = inject(FaqCategoryService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
+  brandService = inject(BrandService);
 
   showModal = false;
   editingId: number | null = null;
@@ -24,6 +26,7 @@ export class SssKategorileriComponent implements OnInit {
   formCategoryName = '';
   formModule: CategoryModuleType = 'SSS';
   formDescription = '';
+  formBrandId: number | null = null;
 
   ngOnInit() {
     this.pageTitleService.setPage('Kategoriler', 'SSS, Eğitim ve Bize Ulaşın modülleri için merkezi kategori yönetimi');
@@ -47,6 +50,7 @@ export class SssKategorileriComponent implements OnInit {
     this.formCategoryName = item.name;
     this.formModule = item.module || 'SSS';
     this.formDescription = item.description;
+    this.formBrandId = item.brandId ?? null;
     this.showModal = true;
   }
 
@@ -59,16 +63,22 @@ export class SssKategorileriComponent implements OnInit {
     this.formCategoryName = '';
     this.formModule = this.selectedModuleFilter !== 'ALL' ? this.selectedModuleFilter : 'SSS';
     this.formDescription = '';
+    this.formBrandId = null;
   }
 
   saveCategory() {
     if (!this.formCategoryName.trim()) return;
+    if (this.formBrandId === null) {
+      alert(this.tsService.translate('Lütfen bir marka seçiniz.'));
+      return;
+    }
 
     if (this.editingId) {
       this.catService.updateCategory(this.editingId, {
         name: this.formCategoryName.trim(),
         module: this.formModule,
         description: this.formDescription.trim(),
+        brandId: this.formBrandId,
         status: 'Aktif'
       });
     } else {
@@ -76,6 +86,7 @@ export class SssKategorileriComponent implements OnInit {
         name: this.formCategoryName.trim(),
         module: this.formModule,
         description: this.formDescription.trim(),
+        brandId: this.formBrandId,
         status: 'Aktif'
       });
     }

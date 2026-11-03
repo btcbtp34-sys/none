@@ -31,6 +31,13 @@
           </select>
         </div>
 
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="filterBrand">
+            <option value="ALL">{{ tsService.translate('Tüm Markalar') }}</option>
+            <option *ngFor="let b of brandService.brands()" [ngValue]="b.id">{{ b.name }}</option>
+          </select>
+        </div>
+
         <div class="stats-counter-tag">
           <span>{{ tsService.translate('Toplam') }}: <strong>{{ filteredUsers().length }}</strong></span>
         </div>
@@ -46,6 +53,7 @@
             <th>{{ tsService.translate('KULLANICI') }}</th>
             <th>{{ tsService.translate('ROL') }}</th>
             <th>{{ tsService.translate('KAPSAM (BÖLGE/ÜLKE)') }}</th>
+            <th>{{ tsService.translate('MARKA') }}</th>
             <th>{{ tsService.translate('SON GİRİŞ') }}</th>
             <th>{{ tsService.translate('STATUS') }}</th>
             <th class="text-right">{{ tsService.translate('TRANSACTIONS') }}</th>
@@ -74,6 +82,12 @@
               <span class="scope-pill">{{ tsService.translate(user.scope) }}</span>
             </td>
             <td>
+              <div class="brand-tags-wrap" *ngIf="userBrandNames(user).length; else noBrand">
+                <span *ngFor="let b of userBrandNames(user)" class="brand-badge">{{ b }}</span>
+              </div>
+              <ng-template #noBrand><span class="muted-dash">—</span></ng-template>
+            </td>
+            <td>
               <span class="last-login-text">{{ user.lastLogin }}</span>
             </td>
             <td>
@@ -97,10 +111,10 @@
           </tr>
 
           <tr *ngIf="filteredUsers().length === 0">
-            <td colspan="7" class="empty-table-cell">
+            <td colspan="8" class="empty-table-cell">
               <div class="empty-state-box">
                 <p class="empty-state-title">{{ tsService.translate('Arama kriterine uygun kullanıcı bulunamadı.') }}</p>
-                <button *ngIf="searchQuery" class="filter-reset-btn" (click)="searchQuery = ''; filterRole = 'ALL'">
+                <button *ngIf="searchQuery || filterRole !== 'ALL' || filterBrand !== 'ALL'" class="filter-reset-btn" (click)="searchQuery = ''; filterRole = 'ALL'; filterBrand = 'ALL'">
                   {{ tsService.translate('Filtreyi Temizle') }}
                 </button>
               </div>
@@ -165,6 +179,22 @@
             [placeholder]="tsService.translate('Örn: Türkiye, Avrupa veya Global')" 
             [(ngModel)]="formScope" />
         </div>
+      </div>
+
+      <!-- Marka (çoklu seçim) -->
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('MARKA') }} *</label>
+        <div class="brand-checkbox-grid">
+          <div
+            *ngFor="let b of brandService.selectableBrands(formBrandIds)"
+            class="checkbox-chip-item"
+            [class.checked]="isBrandSelected(b.id)"
+            (click)="toggleBrand(b.id)">
+            <input type="checkbox" [checked]="isBrandSelected(b.id)" (click)="$event.stopPropagation(); toggleBrand(b.id)" />
+            <span>{{ b.name }}</span>
+          </div>
+        </div>
+        <span class="field-hint">{{ tsService.translate('Kullanıcının erişebileceği markaları seçiniz.') }}</span>
       </div>
 
       <!-- Durum -->

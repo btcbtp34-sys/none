@@ -3,7 +3,7 @@
     <div class="card-header">
       <div class="card-header-titles">
         <h2 class="card-title">{{ tsService.translate('Satış Kanalları') }}</h2>
-        <p class="card-subtitle">{{ tsService.translate('Marka, ülke eşleştirmeleri ve ilişkili ürün dağıtım yönetimi') }}</p>
+        <p class="card-subtitle">{{ tsService.translate('Marka ve ülke eşleştirmeleri yönetimi') }}</p>
       </div>
       <button class="primary-btn" (click)="openAddModal()">
         <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
@@ -18,7 +18,7 @@
         <input 
           type="text" 
           class="filter-search-input" 
-          [placeholder]="tsService.translate('Marka, kanal kodu veya ürün ara...')" 
+          [placeholder]="tsService.translate('Marka, kanal kodu veya ülke ara...')" 
           [(ngModel)]="searchQuery" />
         <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
       </div>
@@ -51,10 +51,9 @@
       <table class="custom-table">
         <colgroup>
           <col style="width: 50px;">
-          <col style="width: 28%;">
-          <col style="width: 120px;">
-          <col style="width: 24%;">
-          <col style="width: 24%;">
+          <col style="width: 36%;">
+          <col style="width: 140px;">
+          <col style="width: 40%;">
           <col style="width: 100px;">
           <col style="width: 80px;">
         </colgroup>
@@ -64,7 +63,6 @@
             <th>{{ tsService.translate('MARKA / KANAL ADI') }}</th>
             <th class="text-center">{{ tsService.translate('KANAL KODU') }}</th>
             <th>{{ tsService.translate('EŞLEŞEN ÜLKELER') }}</th>
-            <th>{{ tsService.translate('İLİŞKİLİ ÜRÜNLER') }}</th>
             <th>{{ tsService.translate('DURUM') }}</th>
             <th class="text-right">{{ tsService.translate('İŞLEMLER') }}</th>
           </tr>
@@ -94,13 +92,6 @@
               </div>
             </td>
             <td>
-              <div class="products-tags-wrap">
-                <span *ngFor="let p of item.products" class="product-chip">
-                  {{ p }}
-                </span>
-              </div>
-            </td>
-            <td>
               <button class="status-indicator-btn" (click)="channelService.toggleStatus(item.id)">
                 <span class="status-dot" [class.active]="item.status === 'Aktif'"></span>
                 <span class="status-text" [class.active]="item.status === 'Aktif'">
@@ -121,7 +112,7 @@
           </tr>
 
           <tr *ngIf="filteredChannels.length === 0">
-            <td colspan="7" class="empty-table-cell">
+            <td colspan="6" class="empty-table-cell">
               <div class="empty-state-box">
                 <p class="empty-state-title">{{ tsService.translate('Kayıtlı satış kanalı bulunamadı.') }}</p>
               </div>
@@ -196,46 +187,7 @@
         <span class="form-hint-subtle">{{ tsService.translate('Bu satış kanalının geçerli olacağı ülkeleri seçiniz.') }}</span>
       </div>
 
-      <!-- Row 4: Products Multi-Select (Ürün Arama & Çoklu Seçim) -->
-      <div class="form-group">
-        <div class="label-row-between">
-          <label class="form-label-bold mb-0">{{ tsService.translate('İLİŞKİLİ ÜRÜN LİSTESİ (ÇOKLU SEÇİM)') }} *</label>
-          <div class="multi-select-header-actions">
-            <button type="button" class="btn-text-action" (click)="selectAllProducts()">{{ tsService.translate('Tümünü Seç') }}</button>
-            <span class="action-divider">•</span>
-            <button type="button" class="btn-text-action" (click)="clearAllProducts()">{{ tsService.translate('Temizle') }}</button>
-            <span class="multi-select-badge">{{ selectedProducts.length }} / {{ channelService.availableProducts.length }} {{ tsService.translate('Ürün Seçili') }}</span>
-          </div>
-        </div>
-
-        <!-- Ürün Arama Çubuğu -->
-        <div class="modal-inner-search-box">
-          <svg viewBox="0 0 192 192" class="modal-search-icon" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
-          <input 
-            type="text" 
-            class="modal-search-input" 
-            [placeholder]="tsService.translate('Ürün adı, kod veya model ara (Örn: AF4300, AF5300, MDCI)...')" 
-            [(ngModel)]="productSearchQuery" />
-          <button *ngIf="productSearchQuery" class="modal-search-clear" (click)="productSearchQuery = ''">✕</button>
-        </div>
-
-        <div class="selection-checkbox-grid">
-          <div 
-            *ngFor="let p of filteredAvailableProducts" 
-            class="checkbox-chip-item"
-            [class.checked]="isProductSelected(p)"
-            (click)="toggleProductSelection(p)">
-            <input type="checkbox" [checked]="isProductSelected(p)" (click)="$event.stopPropagation(); toggleProductSelection(p)" />
-            <span class="product-chip-name">{{ p }}</span>
-          </div>
-          <div *ngIf="filteredAvailableProducts.length === 0" class="no-filter-results">
-            <span>{{ tsService.translate('"{query}" kriterine uygun ürün bulunamadı.').replace('{query}', productSearchQuery) }}</span>
-          </div>
-        </div>
-        <span class="form-hint-subtle">{{ tsService.translate('Kanalın satış ve projelendirme yetkisine sahip olduğu ürünleri işaretleyin.') }}</span>
-      </div>
-
-      <!-- Row 5: Description -->
+      <!-- Row 4: Description -->
       <div class="form-group">
         <label class="form-label-bold">{{ tsService.translate('AÇIKLAMA / NOT') }}</label>
         <textarea class="form-control-subtle" rows="2" [placeholder]="tsService.translate('Kanal hakkında detaylı bilgi...')" [(ngModel)]="formDescription"></textarea>

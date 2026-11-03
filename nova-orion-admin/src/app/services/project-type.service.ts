@@ -4,19 +4,20 @@ export interface ProjectTypeItem {
   id: number;
   code: string;
   value: string;
+  brandId: number | null;
 }
 
 const STORAGE_KEY = 'nova_orion_project_types';
 
 const INITIAL_PROJECT_TYPES: ProjectTypeItem[] = [
-  { id: 1, code: 'KONUT', value: 'Konut' },
-  { id: 2, code: 'TICARI', value: 'Ticari' },
-  { id: 3, code: 'HASTANE', value: 'Hastane & Sağlık' },
-  { id: 4, code: 'OTEL', value: 'Otel & Konaklama' },
-  { id: 5, code: 'ENDUSTRIYEL', value: 'Endüstriyel Tesis' },
-  { id: 6, code: 'OFIS', value: 'Ofis & Plaza' },
-  { id: 7, code: 'EGITIM', value: 'Eğitim Kurumu' },
-  { id: 8, code: 'AVM', value: 'Alışveriş Merkezi' }
+  { id: 1, code: 'KONUT', value: 'Konut', brandId: 1 },
+  { id: 2, code: 'TICARI', value: 'Ticari', brandId: 2 },
+  { id: 3, code: 'HASTANE', value: 'Hastane & Sağlık', brandId: 1 },
+  { id: 4, code: 'OTEL', value: 'Otel & Konaklama', brandId: 2 },
+  { id: 5, code: 'ENDUSTRIYEL', value: 'Endüstriyel Tesis', brandId: 1 },
+  { id: 6, code: 'OFIS', value: 'Ofis & Plaza', brandId: 2 },
+  { id: 7, code: 'EGITIM', value: 'Eğitim Kurumu', brandId: 1 },
+  { id: 8, code: 'AVM', value: 'Alışveriş Merkezi', brandId: 2 }
 ];
 
 @Injectable({

@@ -41,12 +41,18 @@
         <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
       </div>
 
-      <div class="filter-dropdowns-group" *ngIf="!authService.isCountryAdmin()">
-        <div class="filter-select-wrapper">
+      <div class="filter-dropdowns-group">
+        <div class="filter-select-wrapper" *ngIf="!authService.isCountryAdmin()">
           <select class="filter-select" [(ngModel)]="filterRegion">
             <option value="ALL">{{ tsService.translate('Tüm Bölgeler') }}</option>
             <option value="Global">Global</option>
             <option *ngFor="let r of regionService.regions()" [value]="r.name">{{ tsService.translate(r.name) }}</option>
+          </select>
+        </div>
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="filterBrand">
+            <option [ngValue]="'ALL'">{{ tsService.translate('Tüm Markalar') }}</option>
+            <option *ngFor="let b of brandService.brands()" [ngValue]="b.id">{{ b.name }}</option>
           </select>
         </div>
       </div>
@@ -57,17 +63,19 @@
       <table class="custom-table">
         <colgroup>
           <col style="width: 50px;">
-          <col style="width: 30%;">
+          <col style="width: 28%;">
+          <col style="width: 100px;">
           <col style="width: 120px;">
           <col style="width: 140px;">
           <col style="width: 90px;">
-          <col style="width: 22%;">
-          <col style="width: 100px;">
+          <col style="width: 20%;">
+          <col style="width: 130px;">
         </colgroup>
         <thead>
           <tr>
             <th class="text-center">#</th>
             <th>{{ tsService.translate('DOSYA BAŞLIĞI') }}</th>
+            <th class="text-center">{{ tsService.translate('MARKA') }}</th>
             <th class="text-center">{{ tsService.translate('HEDEF BÖLGE') }}</th>
             <th>{{ tsService.translate('ERİŞİM İZNİ') }}</th>
             <th>{{ tsService.translate('BOYUT') }}</th>
@@ -88,6 +96,10 @@
                   <span class="file-sub-meta">{{ item.filename }} • {{ item.uploader }}</span>
                 </div>
               </div>
+            </td>
+            <td class="text-center">
+              <span class="brand-pill-badge" *ngIf="brandService.brandName(item.brandId); else noBrand">{{ brandService.brandName(item.brandId) }}</span>
+              <ng-template #noBrand><span class="file-size-text">—</span></ng-template>
             </td>
             <td class="text-center">
               <span class="region-pill-badge" [class.global]="item.region === 'Global'">
@@ -122,6 +134,9 @@
                 <button class="action-btn download-btn" (click)="downloadFile(item)" [title]="tsService.translate('İndir')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#download"></use></svg>
                 </button>
+                <button class="action-btn edit-btn" (click)="openEditModal(item)" [title]="tsService.translate('Düzenle')" *ngIf="authService.isSuperAdmin()">
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#edit"></use></svg>
+                </button>
                 <button class="action-btn delete-btn" (click)="deleteFile(item.id)" [title]="tsService.translate('Sil')" *ngIf="authService.isSuperAdmin()">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                 </button>
@@ -130,7 +145,7 @@
           </tr>
 
           <tr *ngIf="visibleDownloads.length === 0">
-            <td colspan="7" class="empty-state-cell">
+            <td colspan="8" class="empty-state-cell">
               <div class="empty-state-box">
                 <p class="empty-state-title">{{ tsService.translate('Erişilebilir doküman bulunamadı.') }}</p>
               </div>
@@ -146,7 +161,7 @@
 <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
   <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3 class="modal-title">{{ tsService.translate('Dosya Yükle') }} ({{ tsService.translate('Süper Admin') }})</h3>
+      <h3 class="modal-title">{{ editingId ? tsService.translate('Dosyayı Düzenle') : tsService.translate('Dosya Yükle') }} ({{ tsService.translate('Süper Admin') }})</h3>
       <button class="modal-close-btn" (click)="closeModal()">✕</button>
     </div>
 
@@ -166,7 +181,18 @@
           style="display: none" 
           (change)="onFileSelected($event)" />
 
-        <div class="dropzone-content" *ngIf="!selectedFile">
+        <div class="file-preview-card" *ngIf="!selectedFile && editingId">
+          <div class="file-preview-icon">
+            <svg viewBox="0 0 192 192" style="width: 18px; height: 18px;" fill="currentColor"><use href="icons/bosch-icons.svg#document-plain"></use></svg>
+          </div>
+          <div class="file-preview-info">
+            <span class="file-preview-name">{{ editingFilename }}</span>
+            <span class="file-preview-size">{{ formSize }} • {{ tsService.translate('Değiştirmek için yeni dosya sürükleyin veya tıklayın (opsiyonel)') }}</span>
+          </div>
+          <span class="file-preview-check">{{ tsService.translate('Mevcut Dosya') }}</span>
+        </div>
+
+        <div class="dropzone-content" *ngIf="!selectedFile && !editingId">
           <div class="upload-icon-wrapper">
             <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
           </div>
@@ -189,6 +215,14 @@
       <div class="form-group" style="margin-top: 16px;">
         <label class="form-label-bold">{{ tsService.translate('DOSYA BAŞLIĞI *') }}</label>
         <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: Nova 2026 Teknik Montaj Kılavuzu')" [(ngModel)]="formTitle" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('MARKA') }} *</label>
+        <select class="form-control-subtle" [(ngModel)]="formBrandId">
+          <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
+          <option *ngFor="let b of brandService.selectableBrands(formBrandId !== null ? [formBrandId] : [])" [ngValue]="b.id">{{ b.name }}</option>
+        </select>
       </div>
 
       <div class="form-row">

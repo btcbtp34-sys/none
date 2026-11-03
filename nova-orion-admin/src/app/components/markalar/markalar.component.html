@@ -1,0 +1,123 @@
+<main class="page-content">
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Markalar') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('İndirilenler, proje tipleri, kategoriler ve kullanıcıların bağlandığı markalar') }}</p>
+      </div>
+      <button class="primary-btn" (click)="openModal()">
+        <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
+        <span>{{ tsService.translate('Yeni Marka Ekle') }}</span>
+      </button>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
+        <input
+          type="text"
+          class="filter-search-input"
+          [placeholder]="tsService.translate('Kod, marka adı veya açıklama ara...')"
+          [(ngModel)]="searchQuery" />
+        <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 50px;">#</th>
+            <th style="width: 160px;">{{ tsService.translate('KOD') }}</th>
+            <th>{{ tsService.translate('MARKA ADI') }}</th>
+            <th>{{ tsService.translate('AÇIKLAMA') }}</th>
+            <th style="width: 110px;">{{ tsService.translate('DURUM') }}</th>
+            <th class="text-right" style="width: 100px;">{{ tsService.translate('İŞLEMLER') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredBrands; let i = index">
+            <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
+            <td><span class="code-badge">{{ item.code }}</span></td>
+            <td><span class="brand-name-bold">{{ item.name }}</span></td>
+            <td><span class="brand-desc-sm">{{ item.description ? tsService.translate(item.description) : '—' }}</span></td>
+            <td>
+              <button class="status-indicator-btn" (click)="brandService.toggleStatus(item.id)">
+                <span class="status-dot" [class.active]="item.status === 'Aktif'"></span>
+                <span class="status-text" [class.active]="item.status === 'Aktif'">
+                  {{ tsService.translate(item.status) }}
+                </span>
+              </button>
+            </td>
+            <td class="text-right">
+              <div class="actions-group">
+                <button class="action-btn edit-btn" (click)="openModal(item)" [title]="tsService.translate('Düzenle')">
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#edit"></use></svg>
+                </button>
+                <button class="action-btn delete-btn" (click)="deleteBrand(item.id)" [title]="tsService.translate('Sil')">
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredBrands.length === 0">
+            <td colspan="6" class="empty-table-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">{{ tsService.translate('Kayıt bulunamadı.') }}</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Add / Edit Modal -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        {{ tsService.translate(editingId ? 'Marka Düzenle' : 'Yeni Marka Ekle') }}
+      </h3>
+      <button class="modal-close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div *ngIf="formError" class="alert-box-error">{{ formError }}</div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('KOD') }} *</label>
+          <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: NOVA')" [(ngModel)]="formCode" autofocus />
+        </div>
+        <div class="form-group flex-2">
+          <label class="form-label-bold">{{ tsService.translate('MARKA ADI') }} *</label>
+          <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: Nova')" [(ngModel)]="formName" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label class="form-label-bold">{{ tsService.translate('AÇIKLAMA') }}</label>
+          <textarea class="form-control-subtle" rows="2" [(ngModel)]="formDescription"></textarea>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('DURUM') }}</label>
+          <select class="form-control-subtle" [(ngModel)]="formStatus">
+            <option value="Aktif">{{ tsService.translate('Aktif') }}</option>
+            <option value="Pasif">{{ tsService.translate('Pasif') }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">{{ tsService.translate('Cancel') }}</button>
+      <button class="btn-save" (click)="saveBrand()">{{ tsService.translate('Save') }}</button>
+    </div>
+  </div>
+</div>

@@ -23,8 +23,15 @@
         <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
       </div>
 
-      <div class="stats-counter-tag">
-        <span>{{ tsService.translate('Toplam') }}: <strong>{{ filteredProjectTypes().length }}</strong></span>
+      <div class="filter-right-group">
+        <select class="filter-select" [(ngModel)]="filterBrand">
+          <option value="ALL">{{ tsService.translate('Tüm Markalar') }}</option>
+          <option *ngFor="let b of brandService.brands()" [ngValue]="b.id">{{ b.name }}</option>
+        </select>
+
+        <div class="stats-counter-tag">
+          <span>{{ tsService.translate('Toplam') }}: <strong>{{ filteredProjectTypes().length }}</strong></span>
+        </div>
       </div>
     </div>
 
@@ -36,6 +43,7 @@
             <th style="width: 50px;">#</th>
             <th style="width: 250px;">{{ tsService.translate('KOD') }}</th>
             <th>{{ tsService.translate('DEĞER') }}</th>
+            <th style="width: 160px;">{{ tsService.translate('MARKA') }}</th>
             <th class="text-right" style="width: 120px;">{{ tsService.translate('İŞLEMLER') }}</th>
           </tr>
         </thead>
@@ -50,6 +58,10 @@
             <td>
               <span class="val-text">{{ tsService.translate(item.value) }}</span>
             </td>
+            <td>
+              <span *ngIf="brandService.brandName(item.brandId) as brand; else noBrand" class="brand-badge">{{ brand }}</span>
+              <ng-template #noBrand><span class="muted-dash">—</span></ng-template>
+            </td>
             <td class="text-right">
               <div class="actions-group">
                 <button class="action-btn edit-btn" (click)="openModal(item)" [title]="tsService.translate('Düzenle')">
@@ -63,10 +75,10 @@
           </tr>
 
           <tr *ngIf="filteredProjectTypes().length === 0">
-            <td colspan="4" class="empty-table-cell">
+            <td colspan="5" class="empty-table-cell">
               <div class="empty-state-box">
                 <p class="empty-state-title">{{ tsService.translate('Arama kriterine uygun proje tipi bulunamadı.') }}</p>
-                <button *ngIf="searchQuery" class="filter-reset-btn" (click)="searchQuery = ''">
+                <button *ngIf="searchQuery || filterBrand !== 'ALL'" class="filter-reset-btn" (click)="searchQuery = ''; filterBrand = 'ALL'">
                   {{ tsService.translate('Filtreyi Temizle') }}
                 </button>
               </div>
@@ -91,6 +103,15 @@
     <div class="modal-body">
       <div *ngIf="formError" class="alert-box-error">
         {{ formError }}
+      </div>
+
+      <!-- MARKA -->
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('MARKA') }} *</label>
+        <select class="form-control-subtle" [(ngModel)]="formBrandId">
+          <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
+          <option *ngFor="let b of brandService.selectableBrands(formBrandId ? [formBrandId] : [])" [ngValue]="b.id">{{ b.name }}</option>
+        </select>
       </div>
 
       <!-- KOD -->
