@@ -9,11 +9,7 @@
 
       <!-- Sadece Super Admin Yükleme Yapabilir -->
       <button class="primary-btn" (click)="openUploadModal()" *ngIf="authService.isSuperAdmin()">
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="17 8 12 3 7 8"></polyline>
-          <line x1="12" y1="3" x2="12" y2="15"></line>
-        </svg>
+        <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
         <span>{{ tsService.translate('Dosya Yükle') }}</span>
       </button>
     </div>
@@ -21,20 +17,14 @@
     <!-- Role Scope Banner -->
     <div class="role-scope-banner" *ngIf="authService.isCountryAdmin()">
       <div class="scope-icon-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="16" x2="12" y2="12"></line>
-          <line x1="12" y1="8" x2="12.01" y2="8"></line>
-        </svg>
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#alert-info"></use></svg>
       </div>
       <span>{{ tsService.translate('Ülke Yöneticisi olarak yalnızca') }} <strong>{{ tsService.translate(authService.currentUser().assignedCountry || '') }}</strong> {{ tsService.translate('ülkenize tahsis edilmiş aktif dokümanları görüntüleyebilir ve indirebilirsiniz.') }}</span>
     </div>
 
     <div class="role-scope-banner region-theme" *ngIf="authService.isRegionAdmin()">
       <div class="scope-icon-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        </svg>
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#security"></use></svg>
       </div>
       <span>{{ tsService.translate('Bölge Yöneticisi') }} (<strong>{{ tsService.translate(authService.currentUser().assignedRegion || '') }}</strong>): {{ tsService.translate('Bölgenizdeki dosyaların ülke bazında aktif/pasif durumlarını yönetebilirsiniz. Dosya yükleme yetkisi Süper Admin\'dedir.') }}</span>
     </div>
@@ -42,10 +32,7 @@
     <!-- Filter Toolbar -->
     <div class="filter-toolbar">
       <div class="filter-search-box">
-        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
+        <svg class="filter-search-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
         <input 
           type="text" 
           class="filter-search-input" 
@@ -94,10 +81,7 @@
             <td>
               <div class="file-name-box">
                 <div class="file-icon-badge" [class.zip]="item.iconType === 'zip'">
-                  <svg class="file-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                  </svg>
+                  <svg class="file-svg-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#document-plain"></use></svg>
                 </div>
                 <div class="file-info-stack">
                   <span class="file-name-text">{{ tsService.translate(item.title) }}</span>
@@ -124,11 +108,7 @@
                   class="manage-country-btn" 
                   (click)="openCountryStatusModal(item)"
                   [title]="tsService.translate('Ülke bazında aktif/pasif durumunu yönet')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M2 12h20"></path>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                  </svg>
+                  <svg viewBox="0 0 192 192" class="btn-svg-sm" fill="currentColor"><use href="icons/bosch-icons.svg#globe"></use></svg>
                   <span>{{ tsService.translate('Ülke Durumları') }}</span>
                 </button>
 
@@ -140,17 +120,10 @@
             <td class="text-right">
               <div class="actions-group">
                 <button class="action-btn download-btn" (click)="downloadFile(item)" [title]="tsService.translate('İndir')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#download"></use></svg>
                 </button>
                 <button class="action-btn delete-btn" (click)="deleteFile(item.id)" [title]="tsService.translate('Sil')" *ngIf="authService.isSuperAdmin()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                 </button>
               </div>
             </td>
@@ -195,11 +168,7 @@
 
         <div class="dropzone-content" *ngIf="!selectedFile">
           <div class="upload-icon-wrapper">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
           </div>
           <p class="dropzone-text"><strong>{{ tsService.translate('Dosyayı buraya sürükleyin') }}</strong> {{ tsService.translate('veya tıklayarak seçin') }}</p>
           <span class="dropzone-sub">{{ tsService.translate('PDF, ZIP, DWG veya Doküman (Maks. 50MB)') }}</span>
@@ -207,10 +176,7 @@
 
         <div class="file-preview-card" *ngIf="selectedFile">
           <div class="file-preview-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-            </svg>
+            <svg viewBox="0 0 192 192" style="width: 18px; height: 18px;" fill="currentColor"><use href="icons/bosch-icons.svg#document-plain"></use></svg>
           </div>
           <div class="file-preview-info">
             <span class="file-preview-name">{{ selectedFile.name }}</span>

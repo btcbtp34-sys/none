@@ -13,11 +13,7 @@
           <h2 class="card-title">{{ familyId !== null ? formName || tsService.translate('Ürün Ailesi') : tsService.translate('Yeni Ürün Ailesi') }}</h2>
         </div>
         <button class="primary-btn" (click)="saveFamily()">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-            <polyline points="7 3 7 8 15 8"></polyline>
-          </svg>
+          <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#save"></use></svg>
           <span>{{ tsService.translate('Save') }}</span>
         </button>
       </div>

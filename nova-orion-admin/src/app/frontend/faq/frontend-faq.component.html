@@ -9,10 +9,7 @@
 
     <!-- Search Input -->
     <div class="faq-search-wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-svg">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
+      <svg viewBox="0 0 192 192" class="search-svg" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
       <input 
         type="text" 
         class="faq-search-input" 
@@ -44,9 +41,7 @@
           <h3 class="faq-q-text">{{ tsService.translate(item.question) }}</h3>
         </div>
         <div class="faq-toggle-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron-svg" [class.rotated]="item.isOpen">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" class="chevron-svg" [class.rotated]="item.isOpen" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
         </div>
       </div>
 

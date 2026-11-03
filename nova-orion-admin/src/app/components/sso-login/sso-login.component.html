@@ -3,11 +3,7 @@
   <div class="sso-top-bar">
     <div class="sso-brand-group">
       <div class="sso-brand-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="brand-icon">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-          <path d="M2 17l10 5 10-5"></path>
-          <path d="M2 12l10 5 10-5"></path>
-        </svg>
+        <svg viewBox="0 0 192 192" class="brand-icon" fill="currentColor"><use href="icons/bosch-icons.svg#layers-stack"></use></svg>
       </div>
       <div class="sso-brand-text">
         <span class="sso-brand-name">Nova & Orion</span>
@@ -62,12 +58,7 @@
         <!-- 1. İş Ortakları Girişi -->
         <div class="choice-card partner-card" (click)="selectLoginType('PARTNER')">
           <div class="choice-icon-wrap icon-partner">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#people"></use></svg>
           </div>
           <div class="choice-meta">
             <div class="choice-title-row">
@@ -77,22 +68,14 @@
             <p class="choice-desc">{{ tsService.translate('Distribütör, Bayi ve Servis Ağı') }}</p>
           </div>
           <div class="choice-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-svg">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
+            <svg viewBox="0 0 192 192" class="arrow-svg" fill="currentColor"><use href="icons/bosch-icons.svg#forward-right-small"></use></svg>
           </div>
         </div>
 
         <!-- 2. Çalışan Girişi -->
         <div class="choice-card employee-card" (click)="selectLoginType('EMPLOYEE')">
           <div class="choice-icon-wrap icon-employee">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="16" rx="3"></rect>
-              <circle cx="9" cy="10" r="2"></circle>
-              <line x1="15" y1="9" x2="19" y2="9"></line>
-              <line x1="15" y1="13" x2="18" y2="13"></line>
-              <path d="M5 18c0-2 2-3 4-3s4 1 4 3"></path>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#user-tie"></use></svg>
           </div>
           <div class="choice-meta">
             <div class="choice-title-row">
@@ -102,9 +85,7 @@
             <p class="choice-desc">{{ tsService.translate('Kurumsal Personel ve Sistem Yöneticisi') }}</p>
           </div>
           <div class="choice-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-svg">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
+            <svg viewBox="0 0 192 192" class="arrow-svg" fill="currentColor"><use href="icons/bosch-icons.svg#forward-right-small"></use></svg>
           </div>
         </div>
       </div>
@@ -115,10 +96,7 @@
       <!-- Corporate Brand Header -->
       <div class="corp-header">
         <div class="corp-logo-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#lock-closed"></use></svg>
         </div>
         <div class="corp-branding">
           <span class="corp-brand-name">Nova & Orion</span>
@@ -137,10 +115,7 @@
           <div class="sso-outlined-field" [class.is-focused]="isFocused" [class.has-value]="email">
             <label class="sso-floating-label">{{ tsService.translate('E-posta Adresi') }}</label>
             <div class="input-inner-wrapper">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="input-icon">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
+              <svg viewBox="0 0 192 192" class="input-icon" fill="currentColor"><use href="icons/bosch-icons.svg#mail"></use></svg>
               <input 
                 type="email" 
                 class="sso-input" 
@@ -157,20 +132,13 @@
         </div>
 
         <div *ngIf="errorMessage" class="sso-alert-error">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#alert-error"></use></svg>
           <span>{{ errorMessage }}</span>
         </div>
 
         <button type="submit" class="sso-submit-btn" [disabled]="isProcessing">
           <span>{{ isProcessing ? tsService.translate('İşleniyor...') : tsService.translate('İleri') }}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="sso-btn-arrow">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" class="sso-btn-arrow" fill="currentColor"><use href="icons/bosch-icons.svg#arrow-right"></use></svg>
         </button>
 
         <div class="sso-back-container">
@@ -186,10 +154,7 @@
       <!-- Corporate Brand Header -->
       <div class="corp-header">
         <div class="corp-logo-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#lock-closed"></use></svg>
         </div>
         <div class="corp-branding">
           <span class="corp-brand-name">Nova & Orion</span>
@@ -216,10 +181,7 @@
           <div class="sso-outlined-field" [class.has-value]="password">
             <label class="sso-floating-label">{{ tsService.translate('Şifre') }}</label>
             <div class="input-inner-wrapper">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="input-icon">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
+              <svg viewBox="0 0 192 192" class="input-icon" fill="currentColor"><use href="icons/bosch-icons.svg#lock-closed"></use></svg>
               <input 
                 [type]="showPassword ? 'text' : 'password'" 
                 class="sso-input font-mono" 
@@ -247,20 +209,13 @@
         </div>
 
         <div *ngIf="errorMessage" class="sso-alert-error">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#alert-error"></use></svg>
           <span>{{ errorMessage }}</span>
         </div>
 
         <button type="submit" class="sso-submit-btn" [disabled]="isProcessing">
           <span>{{ isProcessing ? tsService.translate('İşleniyor...') : tsService.translate('İleri') }}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="sso-btn-arrow">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" class="sso-btn-arrow" fill="currentColor"><use href="icons/bosch-icons.svg#arrow-right"></use></svg>
         </button>
 
         <div class="sso-back-container">
@@ -332,10 +287,7 @@
         (click)="completeLogin()">
         <span *ngIf="selectedProject === 'nova'">{{ tsService.translate('Project Nova\'ya Giriş Yap') }}</span>
         <span *ngIf="selectedProject === 'orion'">{{ tsService.translate('Project Orion\'a Giriş Yap') }}</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="sso-btn-arrow">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
+        <svg viewBox="0 0 192 192" class="sso-btn-arrow" fill="currentColor"><use href="icons/bosch-icons.svg#arrow-right"></use></svg>
       </button>
 
       <div class="sso-back-container">
@@ -350,10 +302,7 @@
   <!-- Corporate Security Footer -->
   <div class="sso-footer-security">
     <div class="sec-row">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sec-icon">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-      </svg>
+      <svg viewBox="0 0 192 192" class="sec-icon" fill="currentColor"><use href="icons/bosch-icons.svg#lock-closed"></use></svg>
       <span>{{ tsService.translate('Güvenli Kurumsal Giriş') }} &bull; TLS 256-bit &bull; OAuth 2.0 / OpenID Connect</span>
     </div>
     <div class="corp-copyright">

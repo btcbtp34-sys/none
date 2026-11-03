@@ -7,7 +7,7 @@
   <div *ngFor="let region of regionService.regions()">
     <div class="tree-row tree-level-1">
       <button type="button" class="tree-toggle" (click)="toggleRegionExpanded(region)" [class.expanded]="expandedRegionIds.has(region.id)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"></polyline></svg>
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#forward-right-small"></use></svg>
       </button>
       <label class="tree-check">
         <input type="checkbox" [checked]="regionState(region) === 'all'" [indeterminate]="regionState(region) === 'some'" (change)="toggleRegion(region)" />

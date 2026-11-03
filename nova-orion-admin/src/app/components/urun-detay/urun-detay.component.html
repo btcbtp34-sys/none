@@ -13,11 +13,7 @@
           <h2 class="card-title">{{ productId !== null ? formName || tsService.translate('Ürün') : tsService.translate('Yeni Ürün') }}</h2>
         </div>
         <button class="primary-btn" (click)="saveProduct()">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-            <polyline points="7 3 7 8 15 8"></polyline>
-          </svg>
+          <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#save"></use></svg>
           <span>{{ tsService.translate('Save') }}</span>
         </button>
       </div>
@@ -137,11 +133,7 @@
 
           <label class="image-group-upload-btn">
             <input type="file" accept="image/*" multiple (change)="onImagesSelected($event, group.key)" hidden />
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
             <span>{{ tsService.translate('Görsel Yükle') }}</span>
           </label>
         </section>
@@ -177,10 +169,7 @@
             <span class="tab-count">{{ capacityTypeCount(t.value) }}</span>
           </label>
           <button type="button" class="capacity-add-btn" (click)="addCapacityRow()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
             <span>{{ tsService.translate('Satır Ekle') }}</span>
           </button>
         </div>
@@ -215,10 +204,7 @@
                 </td>
                 <td class="col-actions">
                   <button class="action-btn delete-btn" (click)="removeCapacityRow(i)" [title]="tsService.translate('Sil')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
+                    <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                   </button>
                 </td>
               </tr>

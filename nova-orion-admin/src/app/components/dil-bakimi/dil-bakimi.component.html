@@ -1,10 +1,7 @@
 <main class="page-content">
   <!-- Success Notification Alert -->
   <div *ngIf="successMessage" class="success-banner">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="success-icon">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
+    <svg viewBox="0 0 192 192" class="success-icon" fill="currentColor"><use href="icons/bosch-icons.svg#alert-success"></use></svg>
     <span>{{ successMessage }}</span>
   </div>
 
@@ -14,11 +11,7 @@
     <div class="card-container action-panel">
       <div class="panel-header">
         <div class="panel-icon-box blue">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#download"></use></svg>
         </div>
         <div>
           <h3 class="panel-title">{{ tsService.translate('Çeviri Şablonu İndir (Temp İndir)') }}</h3>
@@ -41,10 +34,7 @@
           <div class="label-row-between">
             <label class="form-label-bold mb-0">{{ tsService.translate('HEDEF DİL *') }}</label>
             <span *ngIf="isLanguageLockedForUser" class="role-locked-pill">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pill-icon">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
+              <svg viewBox="0 0 192 192" class="pill-icon" fill="currentColor"><use href="icons/bosch-icons.svg#lock-closed"></use></svg>
               <span>{{ tsService.translate('Ülke Yetkinize Göre Kilitli') }} ({{ tsService.translate(userLanguageName) }})</span>
             </span>
           </div>
@@ -66,39 +56,22 @@
           <label class="form-label-bold">{{ tsService.translate('DOSYA FORMATI') }}</label>
           <div class="format-chips-row">
             <button type="button" class="format-chip" [class.active]="downloadFormat === 'xlsx'" (click)="downloadFormat = 'xlsx'">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chip-svg-icon">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="3" y1="9" x2="21" y2="9"></line>
-                <line x1="3" y1="15" x2="21" y2="15"></line>
-                <line x1="9" y1="3" x2="9" y2="21"></line>
-              </svg>
+              <svg viewBox="0 0 192 192" class="chip-svg-icon" fill="currentColor"><use href="icons/bosch-icons.svg#document-xls"></use></svg>
               <span>Excel (.xlsx)</span>
             </button>
             <button type="button" class="format-chip" [class.active]="downloadFormat === 'csv'" (click)="downloadFormat = 'csv'">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chip-svg-icon">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-              </svg>
+              <svg viewBox="0 0 192 192" class="chip-svg-icon" fill="currentColor"><use href="icons/bosch-icons.svg#document-text"></use></svg>
               <span>CSV (.csv)</span>
             </button>
             <button type="button" class="format-chip" [class.active]="downloadFormat === 'json'" (click)="downloadFormat = 'json'">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chip-svg-icon">
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
-              </svg>
+              <svg viewBox="0 0 192 192" class="chip-svg-icon" fill="currentColor"><use href="icons/bosch-icons.svg#document-json"></use></svg>
               <span>JSON (.json)</span>
             </button>
           </div>
         </div>
 
         <button class="primary-download-btn" (click)="downloadTemplate()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" class="btn-icon" fill="currentColor"><use href="icons/bosch-icons.svg#download"></use></svg>
           <span>{{ tsService.translate('Şablonu İndir (Temp İndir)') }}</span>
         </button>
       </div>
@@ -108,11 +81,7 @@
     <div class="card-container action-panel">
       <div class="panel-header">
         <div class="panel-icon-box green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
         </div>
         <div>
           <h3 class="panel-title">{{ tsService.translate('Çeviri Dosyası Yükle (Dosya Yükle)') }}</h3>
@@ -123,13 +92,7 @@
       <div class="panel-body">
         <div class="dropzone-area" (click)="fileInput.click()">
           <input #fileInput type="file" (change)="onFileSelected($event)" accept=".xlsx,.xls,.csv,.json" style="display: none;" />
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="dropzone-icon">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="12" y1="18" x2="12" y2="12"></line>
-            <line x1="9" y1="15" x2="12" y2="12"></line>
-            <line x1="15" y1="15" x2="12" y2="12"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" class="dropzone-icon" fill="currentColor"><use href="icons/bosch-icons.svg#document-arrow-up"></use></svg>
           <div class="dropzone-text" *ngIf="!selectedFile">
             <span class="main-drop-text">{{ tsService.translate('AirSelect_Ceviri_Kategorili.xlsx veya dosya seçin') }}</span>
             <span class="sub-drop-text">{{ tsService.translate('Desteklenen: .xlsx, .csv, .json (Maks. 20MB)') }}</span>
@@ -145,10 +108,7 @@
         </div>
 
         <button class="primary-upload-btn" [disabled]="!selectedFile || isUploading" (click)="uploadAndImportFile()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" class="btn-icon" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
           <span *ngIf="!isUploading">{{ tsService.translate('Dosyayı Yükle ve Canlı Listeye Aktar') }}</span>
           <span *ngIf="isUploading">{{ tsService.translate('Ayrıştırılıyor (%{p})...').replace('{p}', '' + uploadProgress) }}</span>
         </button>
@@ -170,27 +130,17 @@
 
       <div class="header-action-buttons">
         <button class="btn-add-record" (click)="openAddModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" class="btn-svg-sm" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
           <span>{{ tsService.translate('Yeni Çeviri Kaydı Ekle') }}</span>
         </button>
 
         <button class="btn-reset-subtle" (click)="resetToDefault()" [title]="tsService.translate('Orijinal şablon verilerine dön')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-            <path d="M3 3v5h5"></path>
-          </svg>
+          <svg viewBox="0 0 192 192" class="btn-svg-sm" fill="currentColor"><use href="icons/bosch-icons.svg#reset"></use></svg>
           <span>{{ tsService.translate('Orijinale Sıfırla') }}</span>
         </button>
 
         <button class="btn-save-master" (click)="saveAllChanges()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-sm">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-            <polyline points="7 3 7 8 15 8"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" class="btn-svg-sm" fill="currentColor"><use href="icons/bosch-icons.svg#save"></use></svg>
           <span>{{ tsService.translate('Değişiklikleri Sisteme Kaydet') }}</span>
         </button>
       </div>
@@ -200,10 +150,7 @@
     <div class="filter-toolbar live-filters">
       <!-- Search Input -->
       <div class="filter-search-box flex-2">
-        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
+        <svg class="filter-search-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
         <input 
           type="text" 
           class="filter-search-input" 
@@ -318,23 +265,13 @@
             <td class="text-center">
               <div class="row-actions-group">
                 <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" [title]="tsService.translate('HTML & Zengin Metin Canlı Editörü')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="16 18 22 12 16 6"></polyline>
-                    <polyline points="8 6 2 12 8 18"></polyline>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#document-json"></use></svg>
                 </button>
                 <button class="btn-action-icon" (click)="openDetailModal(item)" [title]="tsService.translate('Tüm Dilleri Görüntüle ve Düzenle (11 Dil)')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#globe-language"></use></svg>
                 </button>
                 <button class="btn-action-icon danger" (click)="deleteItem(item)" [title]="tsService.translate('Kaydı Sil')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                 </button>
               </div>
             </td>
@@ -421,23 +358,13 @@
             <td class="text-center">
               <div class="row-actions-group">
                 <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" [title]="tsService.translate('HTML & Zengin Metin Canlı Editörü')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="16 18 22 12 16 6"></polyline>
-                    <polyline points="8 6 2 12 8 18"></polyline>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#document-json"></use></svg>
                 </button>
                 <button class="btn-action-icon" (click)="openDetailModal(item)" [title]="tsService.translate('Tüm Dilleri Gör & Düzenle')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#globe-language"></use></svg>
                 </button>
                 <button class="btn-action-icon danger" (click)="deleteItem(item)" [title]="tsService.translate('Kaydı Sil')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                 </button>
               </div>
             </td>
@@ -480,10 +407,7 @@
       <div class="modal-header">
         <div class="modal-title-box">
           <div class="modal-icon-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
           </div>
           <div>
             <h3 class="modal-title">{{ tsService.translate('Yeni Çeviri Anahtarı (Key) Ekle') }}</h3>
@@ -495,11 +419,7 @@
 
       <div class="modal-body">
         <div *ngIf="errorMessage" class="error-banner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="error-icon">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" class="error-icon" fill="currentColor"><use href="icons/bosch-icons.svg#alert-error"></use></svg>
           <span>{{ errorMessage }}</span>
         </div>
 
@@ -558,9 +478,7 @@
       <div class="modal-footer">
         <button class="btn-cancel" (click)="closeAddModal()">{{ tsService.translate('İptal') }}</button>
         <button class="btn-primary-confirm" (click)="saveNewItem()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" class="btn-icon" fill="currentColor"><use href="icons/bosch-icons.svg#checkmark"></use></svg>
           <span>{{ tsService.translate('Kaydı Listeye Ekle') }}</span>
         </button>
       </div>
@@ -573,11 +491,7 @@
       <div class="modal-header">
         <div class="modal-title-box">
           <div class="modal-icon-badge blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#globe-language"></use></svg>
           </div>
           <div>
             <h3 class="modal-title">{{ tsService.translate('Çeviri Detayı') }}: {{ selectedDetailItem.code }}</h3>
@@ -660,10 +574,7 @@
       <div class="modal-header">
         <div class="modal-title-box">
           <div class="modal-icon-badge purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="16 18 22 12 16 6"></polyline>
-              <polyline points="8 6 2 12 8 18"></polyline>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#document-json"></use></svg>
           </div>
           <div>
             <div class="modal-title-row">
@@ -769,9 +680,7 @@
       <div class="modal-footer">
         <button class="btn-cancel" (click)="closeHtmlEditor()">{{ tsService.translate('Kapat') }}</button>
         <button class="btn-primary-confirm" (click)="closeHtmlEditor()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" class="btn-icon" fill="currentColor"><use href="icons/bosch-icons.svg#checkmark"></use></svg>
           <span>{{ tsService.translate('Kaydet ve Kapat') }}</span>
         </button>
       </div>

@@ -15,11 +15,7 @@
         (click)="navigateToFrontend('nova', $event)"
         [title]="tsService.translate('Nova Ön Yüz')">
         <span class="fe-btn-dot dot-nova"></span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="fe-btn-svg">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
+        <svg viewBox="0 0 192 192" class="fe-btn-svg" fill="currentColor"><use href="icons/bosch-icons.svg#externallink"></use></svg>
         <span>{{ tsService.translate('Nova Ön Yüz') }}</span>
       </a>
 
@@ -30,11 +26,7 @@
         (click)="navigateToFrontend('orion', $event)"
         [title]="tsService.translate('Orion Ön Yüz')">
         <span class="fe-btn-dot dot-orion"></span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="fe-btn-svg">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
+        <svg viewBox="0 0 192 192" class="fe-btn-svg" fill="currentColor"><use href="icons/bosch-icons.svg#externallink"></use></svg>
         <span>{{ tsService.translate('Orion Ön Yüz') }}</span>
       </a>
     </div>
@@ -45,9 +37,7 @@
         <img [src]="currentLangObj.flagUrl" [alt]="currentLangObj.name" class="lang-flag-img" />
         <span class="lang-code-pill">{{ currentLangObj.codeBadge }}</span>
         <span class="lang-btn-name">{{ currentLangObj.name }}</span>
-        <svg class="chevron-icon" [class.rotated]="showLangDropdown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
+        <svg class="chevron-icon" [class.rotated]="showLangDropdown" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
       </button>
 
       <div class="lang-menu" *ngIf="showLangDropdown">
@@ -59,9 +49,7 @@
           <img [src]="lang.flagUrl" [alt]="lang.name" class="lang-flag-img" />
           <span class="lang-code-pill">{{ lang.codeBadge }}</span>
           <span class="lang-name">{{ lang.name }}</span>
-          <svg *ngIf="lang.code === tsService.currentLang()" class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
+          <svg *ngIf="lang.code === tsService.currentLang()" class="check-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#checkmark"></use></svg>
         </div>
       </div>
     </div>
@@ -76,9 +64,7 @@
           <span class="user-name">{{ authService.currentUser().name }}</span>
           <div class="role-badge-row">
             <span class="user-role">{{ roleTitle(authService.currentUser().roleTitle) }}</span>
-            <svg class="role-chevron-icon" [class.rotated]="showUserRoleDropdown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+            <svg class="role-chevron-icon" [class.rotated]="showUserRoleDropdown" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
           </div>
         </div>
       </div>
@@ -107,11 +93,7 @@
 
     <!-- Logout / Exit Button -->
     <button class="logout-btn" (click)="logout()" [title]="tsService.translate('Oturumu Kapat')">
-      <svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-        <polyline points="16 17 21 12 16 7"></polyline>
-        <line x1="21" y1="12" x2="9" y2="12"></line>
-      </svg>
+      <svg class="logout-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#logout"></use></svg>
       <span>{{ tsService.translate('Exit') }}</span>
     </button>
   </div>

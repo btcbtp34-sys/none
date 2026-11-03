@@ -2,10 +2,7 @@
   
   <!-- Toast Notification -->
   <div class="toast-popup" *ngIf="notificationMessage()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
+    <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#alert-success"></use></svg>
     <span>{{ notificationMessage() }}</span>
   </div>
 
@@ -13,9 +10,7 @@
   <header class="drawing-header">
     <div class="header-left">
       <button type="button" class="btn-nav-back" (click)="returnToHome()" [title]="tsService.translate('Ana Sayfa')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#back-left-small"></use></svg>
         <span>{{ tsService.translate('Ana Sayfa') }}</span>
       </button>
 
@@ -43,10 +38,7 @@
           [class.active]="activeMode() === 'SELECT'"
           (click)="setMode('SELECT')"
           [title]="tsService.translate('Seçim Modu')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
-            <path d="M13 13l6 6"></path>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#cursor"></use></svg>
           <span>{{ tsService.translate('Seçim') }}</span>
         </button>
 
@@ -56,9 +48,7 @@
           [class.active]="activeMode() === 'PIPING'"
           (click)="setMode('PIPING')"
           [title]="tsService.translate('Borulama (Piping) Modu')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 12h18M3 6h18M3 18h18"></path>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#pipe-water"></use></svg>
           <span>{{ tsService.translate('Borulama') }}</span>
         </button>
 
@@ -68,9 +58,7 @@
           [class.active]="activeMode() === 'WIRING'"
           (click)="setMode('WIRING')"
           [title]="tsService.translate('Kablolama (Wiring) Modu')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#flash"></use></svg>
           <span>{{ tsService.translate('Kablolama') }}</span>
         </button>
       </div>
@@ -80,34 +68,26 @@
     <div class="header-right">
       <div class="icon-actions-group">
         <button type="button" class="btn-tool-icon" (click)="undo()" [title]="tsService.translate('Geri Al')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#undo"></use></svg>
         </button>
         <button type="button" class="btn-tool-icon" (click)="redo()" [title]="tsService.translate('İleri Al')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#redo"></use></svg>
         </button>
         <button type="button" class="btn-tool-icon" (click)="zoomFit()" [title]="tsService.translate('Sığdır')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#fullscreen"></use></svg>
         </button>
         <button type="button" class="btn-tool-icon text-danger" (click)="deleteSelected()" [title]="tsService.translate('Sil')" [disabled]="!selectedElement()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
         </button>
       </div>
 
       <button type="button" class="btn-reports" (click)="openReports()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="20" x2="18" y2="10"></line>
-          <line x1="12" y1="20" x2="12" y2="4"></line>
-          <line x1="6" y1="20" x2="6" y2="14"></line>
-        </svg>
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#chart-bar"></use></svg>
         <span>{{ tsService.translate('Raporlar') }}</span>
       </button>
 
       <button type="button" class="btn-save-project" (click)="saveDrawing()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#save"></use></svg>
         <span>{{ tsService.translate('Kaydet') }}</span>
       </button>
     </div>
@@ -122,10 +102,7 @@
         class="r-cat-btn" 
         [class.active]="activePaletteTab() === 'INDOOR'" 
         (click)="activePaletteTab.set('INDOOR')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cat-svg">
-          <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-          <line x1="3" y1="9" x2="21" y2="9"></line>
-        </svg>
+        <svg viewBox="0 0 192 192" class="cat-svg" fill="currentColor"><use href="icons/bosch-icons.svg#air-condition-cassette"></use></svg>
         <span>{{ tsService.translate('İç Üniteler') }}</span>
       </button>
 
@@ -134,11 +111,7 @@
         class="r-cat-btn" 
         [class.active]="activePaletteTab() === 'OUTDOOR'" 
         (click)="activePaletteTab.set('OUTDOOR')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cat-svg">
-          <rect x="2" y="2" width="20" height="20" rx="3"></rect>
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="2" x2="12" y2="5"></line>
-        </svg>
+        <svg viewBox="0 0 192 192" class="cat-svg" fill="currentColor"><use href="icons/bosch-icons.svg#air-condition-outdoor"></use></svg>
         <span>{{ tsService.translate('Dış Üniteler') }}</span>
       </button>
 
@@ -147,10 +120,7 @@
         class="r-cat-btn" 
         [class.active]="activePaletteTab() === 'JOINT'" 
         (click)="activePaletteTab.set('JOINT')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cat-svg">
-          <path d="M6 3v6l6 6v6"></path>
-          <path d="M18 3v6l-6 6"></path>
-        </svg>
+        <svg viewBox="0 0 192 192" class="cat-svg" fill="currentColor"><use href="icons/bosch-icons.svg#hierarchy"></use></svg>
         <span>{{ tsService.translate('Branşman / Refnet') }}</span>
       </button>
 
@@ -159,10 +129,7 @@
         class="r-cat-btn" 
         [class.active]="activePaletteTab() === 'CONTROLLER'" 
         (click)="activePaletteTab.set('CONTROLLER')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="cat-svg">
-          <rect x="4" y="4" width="16" height="16" rx="2"></rect>
-          <circle cx="12" cy="12" r="3"></circle>
-        </svg>
+        <svg viewBox="0 0 192 192" class="cat-svg" fill="currentColor"><use href="icons/bosch-icons.svg#remote"></use></svg>
         <span>{{ tsService.translate('Kumandalar') }}</span>
       </button>
     </div>
@@ -181,9 +148,7 @@
         <div class="rpc-image-wrap">
           <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="tsService.translate(item.name)" class="rpc-img" />
           <div *ngIf="!item.imageUrl" class="rpc-fallback-badge" [style.background]="item.color">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M6 3v6l6 6v6M18 3v6l-6 6"></path>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#hierarchy"></use></svg>
           </div>
         </div>
 
@@ -196,10 +161,7 @@
         </div>
 
         <button type="button" class="rpc-add-btn" [title]="tsService.translate('Ekle')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
         </button>
       </div>
     </div>
@@ -214,11 +176,7 @@
       <!-- Empty Canvas Guidance State (Shown when 0 elements on canvas) -->
       <div class="empty-canvas-watermark" *ngIf="canvasNodeCount() === 0">
         <div class="empty-guide-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="16"></line>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add-frame"></use></svg>
         </div>
         <h3 class="empty-guide-title">{{ tsService.translate('Çizim Alanı Boş') }}</h3>
         <p class="empty-guide-desc">{{ tsService.translate('Üst ekipman paletinden iç veya dış ünite seçerek çizime başlayın.') }}</p>
@@ -229,10 +187,7 @@
         <button type="button" class="ctrl-btn" (click)="zoomIn()" [title]="tsService.translate('Yakınlaştır')">+</button>
         <button type="button" class="ctrl-btn" (click)="zoomOut()" [title]="tsService.translate('Uzaklaştır')">-</button>
         <button type="button" class="ctrl-btn" (click)="zoomFit()" [title]="tsService.translate('Tam Sığdır')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <polyline points="9 21 3 21 3 15"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#arrows-expand-object"></use></svg>
         </button>
       </div>
     </main>
@@ -277,10 +232,7 @@
 
         <div class="prop-group mt-auto">
           <button type="button" class="btn-delete-prop" (click)="deleteSelected()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
             <span>{{ tsService.translate('Elemanı Sil') }}</span>
           </button>
         </div>
@@ -288,11 +240,7 @@
 
       <ng-template #noSelection>
         <div class="inspector-empty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-svg">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
+          <svg viewBox="0 0 192 192" class="empty-svg" fill="currentColor"><use href="icons/bosch-icons.svg#alert-error"></use></svg>
           <p>{{ tsService.translate('Seçili Eleman Yok') }}</p>
           <span>{{ tsService.translate('Çizim alanındaki bir üniteye tıklayarak parametrelerini inceleyebilirsiniz.') }}</span>
         </div>
@@ -307,11 +255,7 @@
       <div class="report-modal-header">
         <div class="header-title-box">
           <div class="report-icon-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="20" x2="18" y2="10"></line>
-              <line x1="12" y1="20" x2="12" y2="4"></line>
-              <line x1="6" y1="20" x2="6" y2="14"></line>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#chart-bar"></use></svg>
           </div>
           <div>
             <h2 class="report-modal-title">{{ tsService.translate('Sistem Özeti & Raporu') }}</h2>

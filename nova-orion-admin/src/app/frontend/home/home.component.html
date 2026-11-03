@@ -2,10 +2,7 @@
   
   <!-- Success Notification Toast -->
   <div class="fe-toast" *ngIf="notificationMessage">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="toast-icon">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-      <polyline points="22 4 12 14.01 9 11.01"></polyline>
-    </svg>
+    <svg viewBox="0 0 192 192" class="toast-icon" fill="currentColor"><use href="icons/bosch-icons.svg#alert-success"></use></svg>
     <span>{{ notificationMessage }}</span>
   </div>
 
@@ -19,11 +16,7 @@
     <div class="banner-overlay"></div>
     <div class="banner-content">
       <div class="banner-brand-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="banner-badge-icon">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-          <path d="M2 17l10 5 10-5"></path>
-          <path d="M2 12l10 5 10-5"></path>
-        </svg>
+        <svg viewBox="0 0 192 192" class="banner-badge-icon" fill="currentColor"><use href="icons/bosch-icons.svg#layers-stack"></use></svg>
         <span>{{ tsService.translate(projectService.currentProject().id === 'nova' ? 'Proje Nova' : 'Proje Orion') }}</span>
       </div>
 
@@ -47,10 +40,7 @@
       <div class="clean-card card-create" (click)="openCreateModal()">
         <div class="card-head">
           <div class="card-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="card-svg">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <svg viewBox="0 0 192 192" class="card-svg" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
           </div>
           <span class="card-pill">{{ tsService.translate('Yeni Proje') }}</span>
         </div>
@@ -62,10 +52,7 @@
 
         <div class="card-foot">
           <span class="card-action-text">{{ tsService.translate('Projeyi Başlat') }}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-svg">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" class="arrow-svg" fill="currentColor"><use href="icons/bosch-icons.svg#arrow-right"></use></svg>
         </div>
       </div>
 
@@ -73,9 +60,7 @@
       <div class="clean-card card-open" (click)="openOpenModal()">
         <div class="card-head">
           <div class="card-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="card-svg">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
+            <svg viewBox="0 0 192 192" class="card-svg" fill="currentColor"><use href="icons/bosch-icons.svg#folder"></use></svg>
           </div>
           <span class="card-pill">{{ currentPlatformProjects.length }} {{ tsService.translate('Kayıtlı Projeler') }}</span>
         </div>
@@ -87,10 +72,7 @@
 
         <div class="card-foot">
           <span class="card-action-text">{{ tsService.translate('Projeyi Seç ve Aç') }}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-svg">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
+          <svg viewBox="0 0 192 192" class="arrow-svg" fill="currentColor"><use href="icons/bosch-icons.svg#arrow-right"></use></svg>
         </div>
       </div>
 
@@ -103,10 +85,7 @@
       <div class="modal-header">
         <div class="modal-title-wrap">
           <div class="modal-icon-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
           </div>
           <div>
             <h2 class="modal-title">{{ tsService.translate('Yeni Proje') }}</h2>
@@ -261,9 +240,7 @@
       <div class="modal-header">
         <div class="modal-title-wrap">
           <div class="modal-icon-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#folder"></use></svg>
           </div>
           <div>
             <h2 class="modal-title">{{ tsService.translate('Proje Aç') }}</h2>
@@ -274,10 +251,7 @@
       </div>
 
       <div class="modal-search-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-search-icon">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
+        <svg viewBox="0 0 192 192" class="modal-search-icon" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
         <input 
           type="text" 
           class="modal-search-input" 
@@ -291,9 +265,7 @@
           class="modal-project-item"
           (click)="selectProject(prj)">
           <div class="prj-icon-cube">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-            </svg>
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#box"></use></svg>
           </div>
           <div class="prj-info-meta">
             <div class="prj-title-row">

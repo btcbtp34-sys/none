@@ -6,10 +6,7 @@
         <p class="card-subtitle">{{ tsService.translate('Şehir ve bölge bazlı hava durumu yapılandırması (Yaz & Kış)') }}</p>
       </div>
       <button class="primary-btn" (click)="openModal()">
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
+        <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
         <span>{{ tsService.translate('Add City') }}</span>
       </button>
     </div>
@@ -17,11 +14,7 @@
     <!-- Country Admin Banner -->
     <div class="country-admin-scope-banner" *ngIf="authService.isCountryAdmin()">
       <div class="scope-icon-side">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-        </svg>
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#globe-language"></use></svg>
       </div>
       <span>{{ countryAdminNoteParts()[0] }}<strong>{{ tsService.translate(authService.currentUser().assignedCountry || '') }}</strong>{{ countryAdminNoteParts()[1] }}</span>
     </div>
@@ -29,10 +22,7 @@
     <!-- Filter Toolbar -->
     <div class="filter-toolbar">
       <div class="filter-search-box">
-        <svg class="filter-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
+        <svg class="filter-search-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
         <input 
           type="text" 
           class="filter-search-input" 
@@ -60,10 +50,7 @@
         </div>
 
         <button *ngIf="isFilterActive()" class="filter-reset-btn" (click)="clearFilters()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="reset-icon">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-            <path d="M3 3v5h5"></path>
-          </svg>
+          <svg viewBox="0 0 192 192" class="reset-icon" fill="currentColor"><use href="icons/bosch-icons.svg#reset"></use></svg>
           <span>{{ tsService.translate('Filtreleri Temizle') }}</span>
         </button>
       </div>
@@ -96,9 +83,7 @@
             </td>
             <td>
               <span class="altitude-pill">
-                <svg class="alt-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
-                </svg>
+                <svg class="alt-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#mountain"></use></svg>
                 <span>{{ item.altitude }} m</span>
               </span>
             </td>
@@ -123,16 +108,10 @@
             <td class="text-right">
               <div class="actions-group">
                 <button class="action-btn edit-btn" (click)="openModal(item)" [title]="tsService.translate('Düzenle')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#edit"></use></svg>
                 </button>
                 <button class="action-btn delete-btn" (click)="deleteCity(item.id)" [title]="tsService.translate('Sil')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                 </button>
               </div>
             </td>
