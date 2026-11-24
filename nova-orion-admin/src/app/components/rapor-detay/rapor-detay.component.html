@@ -6,6 +6,10 @@
         <h2 class="card-title">{{ tsService.translate('Detay') }}</h2>
         <p class="card-subtitle">{{ tsService.translate('Yönetici Özeti sayılarının proje ve ürün bazında dökümü') }}</p>
       </div>
+      <button class="secondary-btn" (click)="exportCsv()">
+        <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#download"></use></svg>
+        <span>{{ tsService.translate('Listeyi dışa aktar (CSV)') }}</span>
+      </button>
     </div>
 
     <!-- Filtreler -->
@@ -14,9 +18,27 @@
         <span class="detail-filter-label">{{ tsService.translate(reportService.dimensionTitle(dim)) }}</span>
         <select class="filter-select" [ngModel]="filterValue(dim)" (ngModelChange)="setFilter(dim, $event)">
           <option value="ALL">{{ tsService.translate('Tümü') }}</option>
-          <option *ngFor="let o of reportService.optionsFor(dim)" [value]="o.key">{{ o.label }}</option>
+          <option *ngFor="let o of reportService.optionsFor(dim); trackBy: trackKey" [value]="o.key">{{ o.label }}</option>
         </select>
       </label>
+      <label class="detail-filter">
+        <span class="detail-filter-label">{{ tsService.translate('Durum') }}</span>
+        <select class="filter-select" [ngModel]="status" (ngModelChange)="setStatus($event)">
+          <option value="ALL">{{ tsService.translate('Tümü') }}</option>
+          <option *ngFor="let s of statuses" [value]="s">{{ statusLabel(s) }}</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="flag-row" *ngIf="period || flag">
+      <button *ngIf="period" class="flag-chip" (click)="clearPeriod()" [title]="tsService.translate('Filtreyi kaldır')">
+        {{ tsService.translate('Dönem') }}: {{ periodLabel }}
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#close"></use></svg>
+      </button>
+      <button *ngIf="flag" class="flag-chip" (click)="clearFlag()" [title]="tsService.translate('Filtreyi kaldır')">
+        {{ flagLabel }}
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#close"></use></svg>
+      </button>
     </div>
 
     <div class="filter-toolbar">
@@ -71,7 +93,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of pagedRows; let i = index">
+          <tr *ngFor="let row of pagedRows; let i = index; trackBy: trackRow">
             <td><span class="index-text">{{ pageStart + i + 1 }}</span></td>
             <td class="mono-cell">{{ row.project.projectNumber }}</td>
             <td class="mono-cell">{{ row.project.userCode }}</td>
@@ -84,10 +106,10 @@
             <td class="mono-cell">{{ row.project.projectCode }}</td>
             <td><span class="val-text">{{ row.project.name }}</span></td>
             <td>{{ row.project.createdBy }}</td>
-            <td>{{ reportService.labelOf('projectType', '' + row.project.projectTypeId) }}</td>
+            <td>{{ reportService.labelOf('buildingType', '' + row.project.projectTypeId) }}</td>
             <td>{{ reportService.labelOf('system', '' + row.project.systemId) }}</td>
-            <td>{{ tsService.translate(row.line.productGroup) }}</td>
-            <td>{{ reportService.labelOf('productType', '' + row.line.productTypeId) }}</td>
+            <td>{{ reportService.groupName(row.line.productGroupId) }}</td>
+            <td>{{ productTypeName(row.line) }}</td>
             <td>{{ row.line.productFamily }}</td>
             <td>{{ row.line.productName }}</td>
             <td class="text-right qty-cell">{{ row.line.quantity }}</td>

@@ -86,6 +86,7 @@ export const routes: Routes = [
       { path: 'markalar', component: MarkalarComponent },
       { path: 'raporlar/yonetici-ozeti', component: YoneticiOzetiComponent },
       { path: 'raporlar/detay', component: RaporDetayComponent },
+      { path: 'raporlar/projeler', redirectTo: 'raporlar/detay', pathMatch: 'full' },
       { path: 'raporlar', redirectTo: 'raporlar/yonetici-ozeti', pathMatch: 'full' },
       { path: 'katalog', redirectTo: 'katalog/sistem', pathMatch: 'full' },
       { path: 'katalog/sistem', component: KatalogComponent, data: { entity: 'sistem' } },

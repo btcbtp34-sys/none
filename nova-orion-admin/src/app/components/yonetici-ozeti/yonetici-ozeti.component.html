@@ -1,98 +1,194 @@
 <main class="page-content">
   <div class="card-container">
-    <div class="card-header">
+    <!-- Başlık: marka, dönem, dışa aktarım -->
+    <div class="card-header dash-header">
       <div class="card-header-titles">
         <h2 class="card-title">{{ tsService.translate('Yönetici Özeti') }}</h2>
-        <p class="card-subtitle">{{ tsService.translate('Projelerin proje tipi, ürün tipi, sistem, ülke ve bölge dağılımı') }}</p>
+        <p class="card-subtitle">{{ subtitle }}</p>
       </div>
-      <button class="primary-btn" (click)="openDetail()">
-        <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#list-view"></use></svg>
-        <span>{{ tsService.translate('Detayda Gör') }}</span>
-      </button>
+      <div class="dash-header-actions">
+        <div class="segmented" role="group" [attr.aria-label]="tsService.translate('Dönem')">
+          <button [class.active]="periodMode === 'monthly'" (click)="setPeriodMode('monthly')">{{ tsService.translate('Aylık') }}</button>
+          <button [class.active]="periodMode === 'yearly'" (click)="setPeriodMode('yearly')">{{ tsService.translate('Yıllık') }}</button>
+        </div>
+        <select class="filter-select period-select" [(ngModel)]="period">
+          <option *ngFor="let p of periodOptions" [value]="p">{{ periodLabel(p) }}</option>
+        </select>
+        <a class="secondary-btn" [routerLink]="['/raporlar/detay']" [queryParams]="detailParams">
+          <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#list-view"></use></svg>
+          <span>{{ tsService.translate('Detayda Gör') }}</span>
+        </a>
+        <button class="primary-btn" (click)="exportExcel()">
+          <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#document-xls"></use></svg>
+          <span>{{ tsService.translate('Dışa aktar (Excel)') }}</span>
+        </button>
+      </div>
     </div>
 
-    <!-- KPI -->
+    <!-- Marka -->
+    <div class="brand-row">
+      <span class="brand-row-label">{{ tsService.translate('Marka') }}</span>
+      <div class="segmented">
+        <button *ngFor="let b of brandOptions; trackBy: trackKey" [class.active]="brand === b.key" [disabled]="brandLocked" (click)="brand = b.key">{{ b.label }}</button>
+      </div>
+    </div>
+
+    <!-- Filtreler -->
+    <div class="dash-filter-grid">
+      <label class="dash-filter" *ngFor="let dim of dimensions">
+        <span class="dash-filter-label">{{ tsService.translate(reportService.dimensionTitle(dim)) }}</span>
+        <select class="filter-select" [ngModel]="filters[dim] ?? 'ALL'" (ngModelChange)="setFilter(dim, $event)">
+          <option value="ALL">{{ tsService.translate(allLabel(dim)) }}</option>
+          <option *ngFor="let o of optionsFor(dim); trackBy: trackKey" [value]="o.key">{{ o.label }}</option>
+        </select>
+      </label>
+    </div>
+    <div class="dash-filter-footer" *ngIf="hasFilters">
+      <button class="filter-reset-btn" (click)="clearFilters()">{{ tsService.translate('Filtreyi Temizle') }}</button>
+    </div>
+
+    <!-- KPI'lar -->
     <div class="kpi-row">
-      <div class="kpi-tile" *ngFor="let k of kpis">
+      <div class="kpi-tile" *ngFor="let k of kpis; trackBy: trackLabel">
         <span class="kpi-label">{{ tsService.translate(k.label) }}</span>
         <span class="kpi-value">{{ k.value }}</span>
+        <span class="kpi-note" [class.good]="k.tone === 'good'" [class.bad]="k.tone === 'bad'">{{ k.note }}</span>
       </div>
     </div>
 
-    <!-- Aktif filtreler -->
-    <div class="report-filter-bar">
-      <span class="report-filter-hint" *ngIf="!activeFilters.length">
-        {{ tsService.translate('Grafikteki bir dilime tıklayarak diğer grafikleri filtreleyebilirsiniz.') }}
-      </span>
-      <ng-container *ngIf="activeFilters.length">
-        <span class="report-filter-label">{{ tsService.translate('Filtreler') }}:</span>
-        <button class="report-filter-chip" *ngFor="let f of activeFilters" (click)="removeFilter(f.dim)" [title]="tsService.translate('Filtreyi kaldır')">
-          <span class="chip-dim">{{ tsService.translate(reportService.dimensionTitle(f.dim)) }}:</span> {{ f.label }}
-          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#close"></use></svg>
-        </button>
-        <button class="filter-reset-btn" (click)="clearFilters()">{{ tsService.translate('Filtreyi Temizle') }}</button>
-      </ng-container>
-    </div>
-
-    <!-- Pasta grafikler -->
-    <div class="pie-grid">
-      <section class="pie-card" *ngFor="let chart of charts">
-        <header class="pie-card-header">
-          <h3 class="pie-card-title">{{ tsService.translate(chart.title) }}</h3>
-          <span class="pie-card-subtitle">{{ tsService.translate(chart.subtitle) }}</span>
+    <div class="dash-grid">
+      <!-- Aylık projeler -->
+      <section class="dash-card">
+        <header class="dash-card-header">
+          <h3 class="dash-card-title">{{ tsService.translate('Aylık projeler') }} · {{ chartYear }}</h3>
         </header>
-
-        <div class="pie-body" *ngIf="chart.total > 0; else emptyChart">
-          <div class="pie-figure">
-            <svg viewBox="0 0 200 200" class="pie-svg" role="img" [attr.aria-label]="tsService.translate(chart.title)">
-              <path
-                *ngFor="let s of chart.slices"
-                [attr.d]="s.path"
-                [attr.fill]="s.color"
-                class="pie-slice"
-                [class.dimmed]="isDimmed(chart.dim, s)"
-                [class.clickable]="!s.isOther"
-                (mouseenter)="hovered = { dim: chart.dim, key: s.key }"
-                (mouseleave)="hovered = null"
-                (click)="toggleFilter(chart.dim, s)">
-                <title>{{ s.label }}: {{ s.count }} ({{ formatPercent(s.percent) }})</title>
-              </path>
-            </svg>
-            <div class="pie-center">
-              <ng-container *ngIf="centerSlice(chart) as c; else totalCenter">
-                <span class="pie-center-value">{{ c.count }}</span>
-                <span class="pie-center-label">{{ c.label }}</span>
-                <span class="pie-center-percent">{{ formatPercent(c.percent) }}</span>
-              </ng-container>
-              <ng-template #totalCenter>
-                <span class="pie-center-value">{{ chart.total }}</span>
-                <span class="pie-center-label">{{ tsService.translate('Toplam') }}</span>
-              </ng-template>
+        <div class="month-chart" *ngIf="monthlyMax > 0; else emptyChart">
+          <div
+            class="month-col"
+            *ngFor="let b of monthlyBars; trackBy: trackMonth"
+            [class.selected]="b.month === selectedMonth"
+            [class.dim]="selectedMonth !== null && b.month !== selectedMonth"
+            [title]="monthTooltip(b)"
+            (mouseenter)="hoveredMonth = b.month"
+            (mouseleave)="hoveredMonth = null">
+            <span class="month-value" [class.visible]="b.month === selectedMonth || b.month === hoveredMonth || (selectedMonth === null && b.value === monthlyMax)">
+              {{ reportService.formatNumber(b.value) }}
+            </span>
+            <div class="month-track">
+              <div class="month-bar" [style.height.%]="b.height" [style.background]="barColor"></div>
             </div>
+            <span class="month-label" [class.future]="b.future">{{ b.label }}</span>
           </div>
-
-          <ul class="pie-legend">
-            <li
-              *ngFor="let s of chart.slices"
-              class="pie-legend-row"
-              [class.dimmed]="isDimmed(chart.dim, s)"
-              [class.selected]="filters[chart.dim] === s.key"
-              [class.clickable]="!s.isOther && s.count > 0"
-              (mouseenter)="hovered = { dim: chart.dim, key: s.key }"
-              (mouseleave)="hovered = null"
-              (click)="toggleFilter(chart.dim, s)">
-              <span class="legend-swatch" [style.background]="s.color"></span>
-              <span class="legend-name">{{ s.label }}</span>
-              <span class="legend-count">{{ s.count }}</span>
-              <span class="legend-percent">{{ formatPercent(s.percent) }}</span>
-            </li>
-          </ul>
         </div>
-        <ng-template #emptyChart>
-          <div class="pie-empty">{{ tsService.translate('Seçili filtrelere uygun veri yok.') }}</div>
-        </ng-template>
+      </section>
+
+      <!-- Bina tipine göre projeler -->
+      <section class="dash-card">
+        <header class="dash-card-header">
+          <h3 class="dash-card-title">{{ tsService.translate('Bina tipine göre projeler') }}</h3>
+        </header>
+        <ul class="hbar-list" *ngIf="buildingTypeRows.length; else emptyChart">
+          <li class="hbar-row" *ngFor="let r of buildingTypeRows; trackBy: trackKey" [title]="r.label + ': ' + r.display">
+            <span class="hbar-label">{{ r.label }}</span>
+            <span class="hbar-track"><span class="hbar-fill" [style.width.%]="r.share * 100" [style.background]="barColor"></span></span>
+            <span class="hbar-value">{{ r.display }}</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Ürün kategorisine göre üniteler -->
+      <section class="dash-card">
+        <header class="dash-card-header">
+          <h3 class="dash-card-title">{{ tsService.translate('Ürün kategorisine göre tasarlanan üniteler') }}</h3>
+        </header>
+        <ul class="hbar-list" *ngIf="categoryRows.length; else emptyChart">
+          <li class="hbar-row" *ngFor="let r of categoryRows; trackBy: trackKey" [title]="r.label + ': ' + reportService.formatNumber(r.value)">
+            <span class="hbar-label">{{ r.label }}</span>
+            <span class="hbar-track"><span class="hbar-fill" [style.width.%]="r.share * 100" [style.background]="barColor"></span></span>
+            <span class="hbar-value">{{ r.display }}</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Sistem ve tasarım modu -->
+      <section class="dash-card">
+        <header class="dash-card-header">
+          <h3 class="dash-card-title">{{ tsService.translate('Sistem ve tasarım modu') }}</h3>
+        </header>
+        <div class="split-block" *ngFor="let s of splitBars; trackBy: trackTitle">
+          <span class="split-title">{{ tsService.translate(s.title) }}</span>
+          <ng-container *ngIf="s.parts.length; else noSplit">
+            <div class="split-bar">
+              <span *ngFor="let part of s.parts; trackBy: trackLabel" class="split-seg" [style.width.%]="part.percent" [style.background]="part.color" [title]="part.label + ' ' + part.percent + '%'"></span>
+            </div>
+            <div class="split-legend">
+              <span class="split-legend-item" *ngFor="let part of s.parts; trackBy: trackLabel">
+                <span class="legend-swatch" [style.background]="part.color"></span>
+                {{ part.label }} <strong>{{ part.percent }}%</strong>
+              </span>
+            </div>
+          </ng-container>
+          <ng-template #noSplit><span class="split-empty">—</span></ng-template>
+        </div>
+        <p class="dash-note">{{ tsService.translate('Alt sistem oranı yalnızca VRF projelerinden hesaplanır.') }}</p>
+      </section>
+
+      <!-- Bölgeler ve business admin'ler -->
+      <section class="dash-card">
+        <header class="dash-card-header">
+          <h3 class="dash-card-title">{{ tsService.translate("Bölgeler ve business admin'ler") }}</h3>
+          <a routerLink="/bolgeler" class="dash-link">{{ tsService.translate('Bölgeleri yönet') }}</a>
+        </header>
+        <table class="mini-table" *ngIf="regionRows.length; else emptyChart">
+          <thead>
+            <tr>
+              <th>{{ tsService.translate('Bölge') }}</th>
+              <th>{{ tsService.translate('Marka') }}</th>
+              <th>{{ tsService.translate('Business admin') }}</th>
+              <th class="num">{{ tsService.translate('Projeler') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of regionRows; trackBy: trackRegion">
+              <td class="strong">{{ r.region }}</td>
+              <td>{{ r.brand }}</td>
+              <td>
+                <span *ngIf="r.admin; else tbd">{{ r.admin }}</span>
+                <ng-template #tbd><span class="tbd">{{ tsService.translate('Tanımlanacak') }}</span></ng-template>
+              </td>
+              <td class="num">{{ reportService.formatNumber(r.projects) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Aksiyon gerektirenler -->
+      <section class="dash-card">
+        <header class="dash-card-header">
+          <h3 class="dash-card-title">{{ tsService.translate('Aksiyon gerektirenler') }}</h3>
+          <a [routerLink]="['/raporlar/detay']" [queryParams]="detailParams" class="dash-link">{{ tsService.translate('Detayda Gör') }}</a>
+        </header>
+        <ul class="action-list" *ngIf="actions.length; else noActions">
+          <li
+            *ngFor="let a of actions; trackBy: trackTitle"
+            class="action-item"
+            [class.warning]="a.tone === 'warning'"
+            [class.clickable]="!!a.link"
+            (click)="openAction(a)">
+            <span class="action-value">{{ a.value }}</span>
+            <span class="action-text">
+              <span class="action-title">{{ a.title }}</span>
+              <span class="action-detail">{{ a.detail }}</span>
+            </span>
+            <svg *ngIf="a.link" class="action-arrow" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#forward-right-small"></use></svg>
+          </li>
+        </ul>
+        <ng-template #noActions><div class="chart-empty">{{ tsService.translate('Bekleyen aksiyon yok.') }}</div></ng-template>
       </section>
     </div>
 
+    <ng-template #emptyChart>
+      <div class="chart-empty">{{ tsService.translate('Seçili filtrelere uygun veri yok.') }}</div>
+    </ng-template>
   </div>
 </main>
