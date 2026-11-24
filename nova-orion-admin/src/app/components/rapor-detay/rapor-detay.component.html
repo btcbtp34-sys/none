@@ -1,0 +1,114 @@
+<main class="page-content">
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <a routerLink="/raporlar/yonetici-ozeti" class="back-link">← {{ tsService.translate('Yönetici Özeti') }}</a>
+        <h2 class="card-title">{{ tsService.translate('Detay') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Yönetici Özeti sayılarının proje ve ürün bazında dökümü') }}</p>
+      </div>
+    </div>
+
+    <!-- Filtreler -->
+    <div class="detail-filter-grid">
+      <label class="detail-filter" *ngFor="let dim of dimensions">
+        <span class="detail-filter-label">{{ tsService.translate(reportService.dimensionTitle(dim)) }}</span>
+        <select class="filter-select" [ngModel]="filterValue(dim)" (ngModelChange)="setFilter(dim, $event)">
+          <option value="ALL">{{ tsService.translate('Tümü') }}</option>
+          <option *ngFor="let o of reportService.optionsFor(dim)" [value]="o.key">{{ o.label }}</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
+        <input
+          type="text"
+          class="filter-search-input"
+          [placeholder]="tsService.translate('Proje, ürün, kullanıcı ara...')"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="page = 1" />
+        <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''; page = 1">✕</button>
+      </div>
+
+      <div class="filter-right-group">
+        <button *ngIf="hasFilters" class="filter-reset-btn" (click)="clearFilters()">{{ tsService.translate('Filtreyi Temizle') }}</button>
+        <div class="stats-counter-tag">
+          <span>{{ tsService.translate('Proje') }}: <strong>{{ totals.projects }}</strong></span>
+        </div>
+        <div class="stats-counter-tag">
+          <span>{{ tsService.translate('Satır') }}: <strong>{{ totals.lines }}</strong></span>
+        </div>
+        <div class="stats-counter-tag">
+          <span>{{ tsService.translate('Toplam Adet') }}: <strong>{{ totals.quantity }}</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive detail-table-wrap">
+      <table class="custom-table detail-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>{{ tsService.translate('PROJE NUMARASI') }}</th>
+            <th>{{ tsService.translate('KULLANICI KODU') }}</th>
+            <th>{{ tsService.translate('OLUŞTURMA TARİHİ') }}</th>
+            <th>{{ tsService.translate('KULLANICI ADI') }}</th>
+            <th>{{ tsService.translate('MARKA') }}</th>
+            <th>{{ tsService.translate('BÖLGE') }}</th>
+            <th>{{ tsService.translate('ÜLKE KODU') }}</th>
+            <th>{{ tsService.translate('SATIŞ KANALI') }}</th>
+            <th>{{ tsService.translate('PROJE KODU') }}</th>
+            <th>{{ tsService.translate('PROJE ADI') }}</th>
+            <th>{{ tsService.translate('PROJEYİ OLUŞTURAN') }}</th>
+            <th>{{ tsService.translate('PROJE TİPİ') }}</th>
+            <th>{{ tsService.translate('SİSTEM') }}</th>
+            <th>{{ tsService.translate('ÜRÜN GRUBU') }}</th>
+            <th>{{ tsService.translate('ÜRÜN TİPİ') }}</th>
+            <th>{{ tsService.translate('ÜRÜN AİLESİ') }}</th>
+            <th>{{ tsService.translate('ÜRÜN ADI') }}</th>
+            <th class="text-right">{{ tsService.translate('ADET') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of pagedRows; let i = index">
+            <td><span class="index-text">{{ pageStart + i + 1 }}</span></td>
+            <td class="mono-cell">{{ row.project.projectNumber }}</td>
+            <td class="mono-cell">{{ row.project.userCode }}</td>
+            <td class="date-cell">{{ formatDate(row.project.createdAt) }}</td>
+            <td>{{ row.project.userName }}</td>
+            <td>{{ reportService.brandName(row.project) }}</td>
+            <td>{{ reportService.labelOf('region', row.project.region) }}</td>
+            <td>{{ row.project.countryCode }}</td>
+            <td>{{ row.project.salesChannel || '-' }}</td>
+            <td class="mono-cell">{{ row.project.projectCode }}</td>
+            <td><span class="val-text">{{ row.project.name }}</span></td>
+            <td>{{ row.project.createdBy }}</td>
+            <td>{{ reportService.labelOf('projectType', '' + row.project.projectTypeId) }}</td>
+            <td>{{ reportService.labelOf('system', '' + row.project.systemId) }}</td>
+            <td>{{ tsService.translate(row.line.productGroup) }}</td>
+            <td>{{ reportService.labelOf('productType', '' + row.line.productTypeId) }}</td>
+            <td>{{ row.line.productFamily }}</td>
+            <td>{{ row.line.productName }}</td>
+            <td class="text-right qty-cell">{{ row.line.quantity }}</td>
+          </tr>
+
+          <tr *ngIf="rows.length === 0">
+            <td colspan="19" class="empty-table-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">{{ tsService.translate('Seçili filtrelere uygun proje bulunamadı.') }}</p>
+                <button class="filter-reset-btn" (click)="clearFilters()">{{ tsService.translate('Filtreyi Temizle') }}</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="report-pagination" *ngIf="pageCount > 1">
+      <button class="page-btn" [disabled]="page <= 1" (click)="page = page - 1">‹</button>
+      <span class="page-info">{{ page }} / {{ pageCount }}</span>
+      <button class="page-btn" [disabled]="page >= pageCount" (click)="page = page + 1">›</button>
+    </div>
+  </div>
+</main>

@@ -31,6 +31,13 @@
           </select>
         </div>
 
+        <div class="filter-select-wrapper" *ngIf="config.hasBrand">
+          <select class="filter-select" [(ngModel)]="filterBrand">
+            <option value="ALL">{{ tsService.translate('Tüm Markalar') }}</option>
+            <option *ngFor="let b of brandService.brands()" [ngValue]="b.id">{{ b.name }}</option>
+          </select>
+        </div>
+
         <div class="filter-select-wrapper">
           <select class="filter-select" [(ngModel)]="filterStatus">
             <option value="ALL">{{ tsService.translate('Tüm Durumlar') }}</option>
@@ -54,6 +61,7 @@
             <th class="text-center" style="width: 50px;">#</th>
             <th>{{ tsService.translate('ADI') }}</th>
             <th>{{ tsService.translate('AÇIKLAMA') }}</th>
+            <th *ngIf="config.hasBrand" style="width: 140px;">{{ tsService.translate('MARKA') }}</th>
             <th *ngIf="config.hasVersionsAndCountries">{{ tsService.translate('VERSİYON') }}</th>
             <th *ngIf="config.parent">{{ tsService.translate(config.parentLabel) }}</th>
             <th *ngIf="config.hasProductType">{{ tsService.translate('ÜRÜN TİPİ') }}</th>
@@ -67,6 +75,10 @@
             <td class="text-center"><span class="index-text">{{ i + 1 }}</span></td>
             <td><span class="brand-name-bold">{{ tsService.translate(item.name) }}</span></td>
             <td><span class="brand-desc-sm">{{ tsService.translate(item.description) || '—' }}</span></td>
+            <td *ngIf="config.hasBrand">
+              <span *ngIf="brandService.brandName(item.brandId) as brand; else noBrand" class="brand-badge">{{ brand }}</span>
+              <ng-template #noBrand><span class="brand-desc-sm">—</span></ng-template>
+            </td>
             <td *ngIf="config.hasVersionsAndCountries">
               <span *ngIf="item.ownVersionId; else noVersion" class="code-badge">{{ versionName(item.ownVersionId) }}</span>
               <ng-template #noVersion><span class="brand-desc-sm">—</span></ng-template>
@@ -141,6 +153,13 @@
         <div class="form-group flex-2">
           <label class="form-label-bold">{{ tsService.translate('ADI') }} *</label>
           <input type="text" class="form-control-subtle" [(ngModel)]="formName" autofocus />
+        </div>
+        <div class="form-group flex-1" *ngIf="config.hasBrand">
+          <label class="form-label-bold">{{ tsService.translate('MARKA') }} *</label>
+          <select class="form-control-subtle" [(ngModel)]="formBrandId">
+            <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
+            <option *ngFor="let b of brandService.selectableBrands(formBrandId !== null ? [formBrandId] : [])" [ngValue]="b.id">{{ b.name }}</option>
+          </select>
         </div>
         <div class="form-group flex-1">
           <label class="form-label-bold">{{ tsService.translate('DURUM') }}</label>

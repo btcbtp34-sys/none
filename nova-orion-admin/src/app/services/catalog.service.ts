@@ -19,6 +19,8 @@ export interface CatalogItem {
   // İlişkiler: uyumlu/bağlı versiyonlar ve geçerli olduğu ülkeler (Ürün ve Ürün Ailesi)
   versionIds?: number[];
   countryIds?: number[];
+  // Sadece hasBrand olan kataloglarda (Versiyon): kaydın atandığı marka
+  brandId?: number | null;
   // Sadece Ürün Ailesi: kaydın kendi versiyonu (tek seçim)
   ownVersionId?: number | null;
   unbrandedName?: string;
@@ -97,6 +99,8 @@ export interface CatalogEntityConfig {
   hasVersionsAndCountries?: boolean;
   // Tanımlıysa ekleme/düzenleme modal yerine bu adresteki detay sayfasında yapılır
   detailRoute?: string;
+  // true: kayıt bir markaya atanır (Sistem Yönetimi > Markalar)
+  hasBrand?: boolean;
 }
 
 export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
@@ -106,7 +110,8 @@ export const CATALOG_ENTITIES: Record<CatalogEntity, CatalogEntityConfig> = {
     singular: 'Versiyon',
     parent: null,
     parentLabel: '',
-    multiParent: false
+    multiParent: false,
+    hasBrand: true
   },
   'sistem': {
     title: 'Sistem',
@@ -194,11 +199,13 @@ const SAMPLE_AF5301A_IMAGES: ProductImageGroups = {
 };
 
 const INITIAL_CATALOG: Record<CatalogEntity, CatalogItem[]> = {
+  // İlk dört versiyon Nova (1), diğerleri Orion (2) markasına atanır
   'versiyon': ['V4', 'V6', 'V6+', 'V8', 'UNI', 'RAC', 'SCAC', 'MULTI'].map((name, i) => ({
     id: i + 1,
     name,
     description: '',
     parentIds: [],
+    brandId: i < 4 ? 1 : 2,
     status: 'Aktif' as CatalogStatus
   })),
   'sistem': [
@@ -305,6 +312,12 @@ export class CatalogService {
           data['urun-ailesi'] = data['urun-ailesi'].map((f: CatalogItem) => {
             const seed = INITIAL_CATALOG['urun-ailesi'].find(s => s.id === f.id && s.name === f.name);
             return f.imageGroups === undefined && seed?.imageGroups ? { ...f, imageGroups: seed.imageGroups } : f;
+          });
+          // Marka alanı eklenmeden önce kaydedilmiş versiyonlar örnek verideki markayı alır
+          data['versiyon'] = data['versiyon'].map((v: CatalogItem) => {
+            if (v.brandId !== undefined) return v;
+            const seed = INITIAL_CATALOG['versiyon'].find(s => s.id === v.id && s.name === v.name);
+            return { ...v, brandId: seed?.brandId ?? null };
           });
           return data;
         }

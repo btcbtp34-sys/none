@@ -20,6 +20,8 @@ import { BizeUlasinComponent } from './components/bize-ulasin/bize-ulasin.compon
 import { ModullerComponent } from './components/moduller/moduller.component';
 import { KatalogComponent } from './components/katalog/katalog.component';
 import { MarkalarComponent } from './components/markalar/markalar.component';
+import { YoneticiOzetiComponent } from './components/yonetici-ozeti/yonetici-ozeti.component';
+import { RaporDetayComponent } from './components/rapor-detay/rapor-detay.component';
 import { UrunListesiComponent } from './components/urun-listesi/urun-listesi.component';
 import { UrunDetayComponent } from './components/urun-detay/urun-detay.component';
 import { UrunAilesiDetayComponent } from './components/urun-ailesi-detay/urun-ailesi-detay.component';
@@ -82,6 +84,9 @@ export const routes: Routes = [
       { path: 'proje-tipleri', component: ProjeTipleriComponent },
       { path: 'proje-tipi', redirectTo: 'proje-tipleri', pathMatch: 'full' },
       { path: 'markalar', component: MarkalarComponent },
+      { path: 'raporlar/yonetici-ozeti', component: YoneticiOzetiComponent },
+      { path: 'raporlar/detay', component: RaporDetayComponent },
+      { path: 'raporlar', redirectTo: 'raporlar/yonetici-ozeti', pathMatch: 'full' },
       { path: 'katalog', redirectTo: 'katalog/sistem', pathMatch: 'full' },
       { path: 'katalog/sistem', component: KatalogComponent, data: { entity: 'sistem' } },
       { path: 'katalog/urun-grubu', component: KatalogComponent, data: { entity: 'urun-grubu' } },

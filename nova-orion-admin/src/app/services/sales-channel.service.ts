@@ -2,7 +2,10 @@ import { Injectable, signal } from '@angular/core';
 
 export interface SalesChannelItem {
   id: number;
+  // Kanalın görünen adı (alan adı geçmişten kalma)
   brandName: string;
+  // Kanalın atandığı marka (Sistem Yönetimi > Markalar)
+  brandId: number | null;
   code: string;
   countries: string[];
   region?: string;
@@ -18,6 +21,7 @@ export class SalesChannelService {
     {
       id: 1,
       brandName: 'Nova Climate Solutions',
+      brandId: 1,
       code: 'SC-NOVA-EU',
       countries: ['Türkiye', 'Almanya', 'Birleşik Krallık', 'Fransa'],
       region: 'Avrupa',
@@ -27,6 +31,7 @@ export class SalesChannelService {
     {
       id: 2,
       brandName: 'Orion Air Systems',
+      brandId: 2,
       code: 'SC-ORION-CE',
       countries: ['Almanya', 'Avusturya', 'İsviçre'],
       region: 'Avrupa',
@@ -36,6 +41,7 @@ export class SalesChannelService {
     {
       id: 3,
       brandName: 'Nova HVAC Americas Network',
+      brandId: 1,
       code: 'SC-NOVA-AMER',
       countries: ['Amerika Birleşik Devletleri', 'Kanada'],
       region: 'Amerika',
@@ -45,6 +51,7 @@ export class SalesChannelService {
     {
       id: 4,
       brandName: 'Orion APAC Commercial',
+      brandId: 2,
       code: 'SC-APAC-04',
       countries: ['Japonya', 'Avustralya', 'Singapur'],
       region: 'Asya Pasifik',

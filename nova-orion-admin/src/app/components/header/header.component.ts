@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService, SupportedLang } from '../../services/translation.service';
-import { AuthService, UserProfile } from '../../services/auth.service';
+import { AuthService, UserProfile, UserRole } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -36,6 +36,16 @@ export class HeaderComponent {
   get currentLangObj(): { name: string; codeBadge: string; code: SupportedLang; flagUrl: string } {
     const found = this.languages.find(l => l.code === this.tsService.currentLang());
     return found || this.languages[0];
+  }
+
+  roleBadgeClass(role: UserRole): string {
+    return {
+      SOFTWARE_ADMIN: 'badge-software',
+      SUPER_ADMIN: 'badge-super',
+      BUSINESS_ADMIN: 'badge-business',
+      REGION_ADMIN: 'badge-region',
+      COUNTRY_ADMIN: 'badge-country'
+    }[role];
   }
 
   // "Bölge Yöneticisi (Avrupa)" gibi unvanlarda rol ve parantez içi bölge/ülke ayrı çevrilir

@@ -274,8 +274,16 @@
   font-weight: 800;
 }
 
+.badge-software {
+  background: #7c3aed;
+}
+
 .badge-super {
   background: #ef4444;
+}
+
+.badge-business {
+  background: #f59e0b;
 }
 
 .badge-region {
@@ -331,7 +339,8 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
   width: 280px;
   z-index: 100;
-  overflow: hidden;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
   padding: 6px;
   animation: dropdownFadeIn 0.15s ease;
 }

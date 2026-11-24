@@ -18,12 +18,19 @@
         <input 
           type="text" 
           class="filter-search-input" 
-          [placeholder]="tsService.translate('Marka, kanal kodu veya ülke ara...')" 
+          [placeholder]="tsService.translate('Kanal, marka, kanal kodu veya ülke ara...')" 
           [(ngModel)]="searchQuery" />
         <button *ngIf="searchQuery" class="filter-clear-icon-btn" (click)="searchQuery = ''">✕</button>
       </div>
 
       <div class="filter-dropdowns-group">
+        <div class="filter-select-wrapper">
+          <select class="filter-select" [(ngModel)]="filterBrand">
+            <option value="ALL">{{ tsService.translate('Tüm Markalar') }}</option>
+            <option *ngFor="let b of brandService.brands()" [ngValue]="b.id">{{ b.name }}</option>
+          </select>
+        </div>
+
         <div class="filter-select-wrapper">
           <select class="filter-select" [(ngModel)]="filterCountry">
             <option value="ALL">{{ tsService.translate('Tüm Ülkeler') }}</option>
@@ -39,7 +46,7 @@
           </select>
         </div>
 
-        <button *ngIf="searchQuery || filterCountry !== 'ALL' || filterStatus !== 'ALL'" class="filter-reset-btn" (click)="searchQuery = ''; filterCountry = 'ALL'; filterStatus = 'ALL'">
+        <button *ngIf="hasActiveFilters" class="filter-reset-btn" (click)="clearFilters()">
           <svg viewBox="0 0 192 192" class="reset-icon" fill="currentColor"><use href="icons/bosch-icons.svg#reset"></use></svg>
           <span>{{ tsService.translate('Filtreleri Temizle') }}</span>
         </button>
@@ -51,16 +58,18 @@
       <table class="custom-table">
         <colgroup>
           <col style="width: 50px;">
-          <col style="width: 36%;">
+          <col style="width: 32%;">
+          <col style="width: 110px;">
           <col style="width: 140px;">
-          <col style="width: 40%;">
+          <col style="width: 34%;">
           <col style="width: 100px;">
           <col style="width: 80px;">
         </colgroup>
         <thead>
           <tr>
             <th class="text-center">#</th>
-            <th>{{ tsService.translate('MARKA / KANAL ADI') }}</th>
+            <th>{{ tsService.translate('KANAL ADI') }}</th>
+            <th>{{ tsService.translate('MARKA') }}</th>
             <th class="text-center">{{ tsService.translate('KANAL KODU') }}</th>
             <th>{{ tsService.translate('EŞLEŞEN ÜLKELER') }}</th>
             <th>{{ tsService.translate('DURUM') }}</th>
@@ -80,6 +89,10 @@
                   <span class="brand-desc-sm" *ngIf="item.description">{{ tsService.translate(item.description) }}</span>
                 </div>
               </div>
+            </td>
+            <td>
+              <span *ngIf="brandService.brandName(item.brandId) as brand; else noBrand" class="brand-badge">{{ brand }}</span>
+              <ng-template #noBrand><span class="brand-desc-sm">—</span></ng-template>
             </td>
             <td class="text-center">
               <span class="code-badge">{{ item.code }}</span>
@@ -112,7 +125,7 @@
           </tr>
 
           <tr *ngIf="filteredChannels.length === 0">
-            <td colspan="6" class="empty-table-cell">
+            <td colspan="7" class="empty-table-cell">
               <div class="empty-state-box">
                 <p class="empty-state-title">{{ tsService.translate('Kayıtlı satış kanalı bulunamadı.') }}</p>
               </div>
@@ -133,10 +146,12 @@
     </div>
 
     <div class="modal-body">
-      <!-- Row 1: Brand & Code -->
+      <div *ngIf="formError" class="alert-box-error">{{ formError }}</div>
+
+      <!-- Row 1: Channel name & Code -->
       <div class="form-row">
         <div class="form-group flex-2">
-          <label class="form-label-bold">{{ tsService.translate('MARKA / KANAL ADI') }} *</label>
+          <label class="form-label-bold">{{ tsService.translate('KANAL ADI') }} *</label>
           <input type="text" class="form-control-subtle" [placeholder]="tsService.translate('Örn: Nova Climate Solutions')" [(ngModel)]="formBrandName" />
         </div>
         <div class="form-group flex-1">
@@ -145,8 +160,15 @@
         </div>
       </div>
 
-      <!-- Row 2: Region & Status -->
+      <!-- Row 2: Brand, Region & Status -->
       <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label-bold">{{ tsService.translate('MARKA') }} *</label>
+          <select class="form-control-subtle" [(ngModel)]="formBrandId">
+            <option [ngValue]="null" disabled>{{ tsService.translate('Seçiniz') }}</option>
+            <option *ngFor="let b of brandService.selectableBrands(formBrandId !== null ? [formBrandId] : [])" [ngValue]="b.id">{{ b.name }}</option>
+          </select>
+        </div>
         <div class="form-group flex-1">
           <label class="form-label-bold">{{ tsService.translate('BÖLGE') }}</label>
           <select class="form-control-subtle" [(ngModel)]="formRegion">

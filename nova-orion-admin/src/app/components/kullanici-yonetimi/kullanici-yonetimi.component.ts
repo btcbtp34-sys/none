@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { UserManagementService, UserManagementItem } from '../../services/user-management.service';
 import { UserRoleService } from '../../services/user-role.service';
 import { BrandService } from '../../services/brand.service';
+import { AuthService } from '../../services/auth.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 
@@ -18,6 +19,7 @@ export class KullaniciYonetimiComponent implements OnInit {
   userService = inject(UserManagementService);
   roleService = inject(UserRoleService);
   brandService = inject(BrandService);
+  authService = inject(AuthService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
 
@@ -37,7 +39,9 @@ export class KullaniciYonetimiComponent implements OnInit {
   formError = '';
 
   availableRoles = [
+    { code: 'SOFTWARE_ADMIN', title: 'Software Admin (Global)' },
     { code: 'SUPER_ADMIN', title: 'Süper Admin (Global)' },
+    { code: 'BUSINESS_ADMIN', title: 'Business Admin' },
     { code: 'REGION_ADMIN', title: 'Bölge Yöneticisi' },
     { code: 'COUNTRY_ADMIN', title: 'Ülke Yöneticisi' },
     { code: 'SALES_REP', title: 'Satış Temsilcisi' },
@@ -62,7 +66,10 @@ export class KullaniciYonetimiComponent implements OnInit {
       const matchesRole = this.filterRole === 'ALL' || u.roleCode === this.filterRole;
       const matchesBrand = this.filterBrand === 'ALL' || (u.brandIds || []).includes(this.filterBrand);
 
-      return matchesSearch && matchesRole && matchesBrand;
+      // Business Admin yalnızca kendi markasına atanmış kullanıcıları görür
+      const inScope = !this.authService.brandScope() || (u.brandIds || []).some(id => this.authService.canSeeBrand(id));
+
+      return matchesSearch && matchesRole && matchesBrand && inScope;
     });
   }
 

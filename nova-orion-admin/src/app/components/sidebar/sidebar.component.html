@@ -266,6 +266,39 @@
       </nav>
     </div>
 
+    <!-- Category: Raporlar -->
+    <div class="nav-category" *ngIf="categoryHasMatches('reports')">
+      <div
+        class="nav-category-header accordion-toggle"
+        (click)="toggleCategory('reports')"
+        [class.active-cat]="isCategoryOpen('reports')">
+        <span class="category-header-title">{{ tsService.translate('Raporlar') }}</span>
+        <svg class="accordion-chevron" [class.rotated]="isCategoryOpen('reports')" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+      </div>
+
+      <nav class="nav-menu" *ngIf="isCategoryOpen('reports')">
+        <!-- Yönetici Özeti -->
+        <a
+          routerLink="/raporlar/yonetici-ozeti"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Yönetici Özeti')">
+          <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#chart-pie"></use></svg>
+          <span class="nav-link-text">{{ tsService.translate('Yönetici Özeti') }}</span>
+        </a>
+
+        <!-- Detay -->
+        <a
+          routerLink="/raporlar/detay"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Detay')">
+          <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#list-view"></use></svg>
+          <span class="nav-link-text">{{ tsService.translate('Detay') }}</span>
+        </a>
+      </nav>
+    </div>
+
     <!-- Category 3: Kullanıcı ve Yetkiler -->
     <div class="nav-category" *ngIf="categoryHasMatches('users')">
       <div 

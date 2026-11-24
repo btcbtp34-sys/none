@@ -6,6 +6,7 @@ import { DIL_TRANSLATIONS } from '../i18n/dil.i18n';
 import { SSS_DESTEK_TRANSLATIONS } from '../i18n/sss-destek.i18n';
 import { SISTEM_TRANSLATIONS } from '../i18n/sistem.i18n';
 import { FRONTEND_TRANSLATIONS } from '../i18n/frontend.i18n';
+import { RAPOR_TRANSLATIONS } from '../i18n/rapor.i18n';
 
 export type { SupportedLang } from '../i18n/types';
 
@@ -429,7 +430,8 @@ export class TranslationService {
     ...DIL_TRANSLATIONS,
     ...SSS_DESTEK_TRANSLATIONS,
     ...SISTEM_TRANSLATIONS,
-    ...FRONTEND_TRANSLATIONS
+    ...FRONTEND_TRANSLATIONS,
+    ...RAPOR_TRANSLATIONS
   };
 
   constructor() {

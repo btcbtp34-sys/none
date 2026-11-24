@@ -1,0 +1,98 @@
+<main class="page-content">
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">{{ tsService.translate('Yönetici Özeti') }}</h2>
+        <p class="card-subtitle">{{ tsService.translate('Projelerin proje tipi, ürün tipi, sistem, ülke ve bölge dağılımı') }}</p>
+      </div>
+      <button class="primary-btn" (click)="openDetail()">
+        <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#list-view"></use></svg>
+        <span>{{ tsService.translate('Detayda Gör') }}</span>
+      </button>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi-row">
+      <div class="kpi-tile" *ngFor="let k of kpis">
+        <span class="kpi-label">{{ tsService.translate(k.label) }}</span>
+        <span class="kpi-value">{{ k.value }}</span>
+      </div>
+    </div>
+
+    <!-- Aktif filtreler -->
+    <div class="report-filter-bar">
+      <span class="report-filter-hint" *ngIf="!activeFilters.length">
+        {{ tsService.translate('Grafikteki bir dilime tıklayarak diğer grafikleri filtreleyebilirsiniz.') }}
+      </span>
+      <ng-container *ngIf="activeFilters.length">
+        <span class="report-filter-label">{{ tsService.translate('Filtreler') }}:</span>
+        <button class="report-filter-chip" *ngFor="let f of activeFilters" (click)="removeFilter(f.dim)" [title]="tsService.translate('Filtreyi kaldır')">
+          <span class="chip-dim">{{ tsService.translate(reportService.dimensionTitle(f.dim)) }}:</span> {{ f.label }}
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#close"></use></svg>
+        </button>
+        <button class="filter-reset-btn" (click)="clearFilters()">{{ tsService.translate('Filtreyi Temizle') }}</button>
+      </ng-container>
+    </div>
+
+    <!-- Pasta grafikler -->
+    <div class="pie-grid">
+      <section class="pie-card" *ngFor="let chart of charts">
+        <header class="pie-card-header">
+          <h3 class="pie-card-title">{{ tsService.translate(chart.title) }}</h3>
+          <span class="pie-card-subtitle">{{ tsService.translate(chart.subtitle) }}</span>
+        </header>
+
+        <div class="pie-body" *ngIf="chart.total > 0; else emptyChart">
+          <div class="pie-figure">
+            <svg viewBox="0 0 200 200" class="pie-svg" role="img" [attr.aria-label]="tsService.translate(chart.title)">
+              <path
+                *ngFor="let s of chart.slices"
+                [attr.d]="s.path"
+                [attr.fill]="s.color"
+                class="pie-slice"
+                [class.dimmed]="isDimmed(chart.dim, s)"
+                [class.clickable]="!s.isOther"
+                (mouseenter)="hovered = { dim: chart.dim, key: s.key }"
+                (mouseleave)="hovered = null"
+                (click)="toggleFilter(chart.dim, s)">
+                <title>{{ s.label }}: {{ s.count }} ({{ formatPercent(s.percent) }})</title>
+              </path>
+            </svg>
+            <div class="pie-center">
+              <ng-container *ngIf="centerSlice(chart) as c; else totalCenter">
+                <span class="pie-center-value">{{ c.count }}</span>
+                <span class="pie-center-label">{{ c.label }}</span>
+                <span class="pie-center-percent">{{ formatPercent(c.percent) }}</span>
+              </ng-container>
+              <ng-template #totalCenter>
+                <span class="pie-center-value">{{ chart.total }}</span>
+                <span class="pie-center-label">{{ tsService.translate('Toplam') }}</span>
+              </ng-template>
+            </div>
+          </div>
+
+          <ul class="pie-legend">
+            <li
+              *ngFor="let s of chart.slices"
+              class="pie-legend-row"
+              [class.dimmed]="isDimmed(chart.dim, s)"
+              [class.selected]="filters[chart.dim] === s.key"
+              [class.clickable]="!s.isOther && s.count > 0"
+              (mouseenter)="hovered = { dim: chart.dim, key: s.key }"
+              (mouseleave)="hovered = null"
+              (click)="toggleFilter(chart.dim, s)">
+              <span class="legend-swatch" [style.background]="s.color"></span>
+              <span class="legend-name">{{ s.label }}</span>
+              <span class="legend-count">{{ s.count }}</span>
+              <span class="legend-percent">{{ formatPercent(s.percent) }}</span>
+            </li>
+          </ul>
+        </div>
+        <ng-template #emptyChart>
+          <div class="pie-empty">{{ tsService.translate('Seçili filtrelere uygun veri yok.') }}</div>
+        </ng-template>
+      </section>
+    </div>
+
+  </div>
+</main>

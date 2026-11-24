@@ -11,6 +11,8 @@ import {
 } from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
+import { BrandService } from '../../services/brand.service';
+import { AuthService } from '../../services/auth.service';
 import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
 
@@ -27,6 +29,8 @@ export class KatalogComponent implements OnInit {
   catalogService = inject(CatalogService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
+  brandService = inject(BrandService);
+  authService = inject(AuthService);
 
   entity: CatalogEntity = 'sistem';
   config = CATALOG_ENTITIES['sistem'];
@@ -38,6 +42,7 @@ export class KatalogComponent implements OnInit {
   searchQuery = '';
   filterParent = 'ALL';
   filterStatus = 'ALL';
+  filterBrand: number | 'ALL' = 'ALL';
 
   // Form Fields
   formName = '';
@@ -49,6 +54,7 @@ export class KatalogComponent implements OnInit {
   formVersionIds: number[] = [];
   formCountryIds: number[] = [];
   formStatus: CatalogStatus = 'Aktif';
+  formBrandId: number | null = null;
   formError = '';
 
   ngOnInit() {
@@ -59,6 +65,7 @@ export class KatalogComponent implements OnInit {
       this.searchQuery = '';
       this.filterParent = 'ALL';
       this.filterStatus = 'ALL';
+      this.filterBrand = 'ALL';
       this.closeModal();
       this.pageTitleService.setPage(this.config.title, this.config.subtitle);
     });
@@ -78,19 +85,27 @@ export class KatalogComponent implements OnInit {
     return this.catalogService.items(this.entity).filter(item => {
       if (this.filterStatus !== 'ALL' && item.status !== this.filterStatus) return false;
       if (this.filterParent !== 'ALL' && !item.parentIds.includes(Number(this.filterParent))) return false;
+      if (this.config.hasBrand) {
+        // Business Admin yalnızca kendi markasının kayıtlarını görür
+        if (!this.authService.canSeeBrand(item.brandId)) return false;
+        if (this.filterBrand !== 'ALL' && item.brandId !== this.filterBrand) return false;
+      }
       if (!query) return true;
-      return item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query);
+      return item.name.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query) ||
+        (this.config.hasBrand && this.brandService.brandName(item.brandId).toLowerCase().includes(query));
     });
   }
 
   get hasActiveFilters(): boolean {
-    return !!this.searchQuery || this.filterParent !== 'ALL' || this.filterStatus !== 'ALL';
+    return !!this.searchQuery || this.filterParent !== 'ALL' || this.filterStatus !== 'ALL' || this.filterBrand !== 'ALL';
   }
 
   clearFilters() {
     this.searchQuery = '';
     this.filterParent = 'ALL';
     this.filterStatus = 'ALL';
+    this.filterBrand = 'ALL';
   }
 
   openModal(item?: CatalogItem) {
@@ -109,6 +124,7 @@ export class KatalogComponent implements OnInit {
     this.formVersionIds = [...(item?.versionIds ?? [])];
     this.formCountryIds = [...(item?.countryIds ?? [])];
     this.formStatus = item?.status ?? 'Aktif';
+    this.formBrandId = item?.brandId ?? null;
     this.formError = '';
     this.showModal = true;
   }
@@ -181,7 +197,7 @@ export class KatalogComponent implements OnInit {
 
   get columnCount(): number {
     return 5 + (this.config.parent ? 1 : 0) + (this.config.hasProductType ? 1 : 0) + (this.config.hasSystem ? 1 : 0)
-      + (this.config.hasVersionsAndCountries ? 1 : 0);
+      + (this.config.hasVersionsAndCountries ? 1 : 0) + (this.config.hasBrand ? 1 : 0);
   }
 
   isParentSelected(id: number): boolean {
@@ -199,6 +215,11 @@ export class KatalogComponent implements OnInit {
 
     if (!name) {
       this.formError = this.tsService.translate('Lütfen ad alanını doldurunuz.');
+      return;
+    }
+
+    if (this.config.hasBrand && this.formBrandId === null) {
+      this.formError = this.tsService.translate('Lütfen bir marka seçiniz.');
       return;
     }
 
@@ -222,6 +243,7 @@ export class KatalogComponent implements OnInit {
       description: this.formDescription.trim(),
       parentIds: this.config.parent ? this.formParentIds : [],
       ...(this.config.hasProductType ? { productTypeId: this.formProductTypeId } : {}),
+      ...(this.config.hasBrand ? { brandId: this.formBrandId } : {}),
       ...(this.config.hasSystem ? { systemIds: this.formSystemIds } : {}),
       ...(this.config.hasVersionsAndCountries
         ? { ownVersionId: this.formOwnVersionId, versionIds: this.formVersionIds, countryIds: this.formCountryIds }

@@ -19,7 +19,7 @@ import { TranslationService } from '../../services/translation.service';
 import { CatalogService } from '../../services/catalog.service';
 import { BrandService } from '../../services/brand.service';
 
-export type CategoryId = 'system' | 'catalog' | 'support' | 'users' | 'settings';
+export type CategoryId = 'reports' | 'system' | 'catalog' | 'support' | 'users' | 'settings';
 
 @Component({
   selector: 'app-sidebar',
@@ -53,6 +53,10 @@ export class SidebarComponent implements OnInit {
   openCategory = signal<CategoryId | null>('system');
 
   categoryItemsMap: Record<CategoryId, string[]> = {
+    reports: [
+      'Yönetici Özeti',
+      'Detay'
+    ],
     system: [
       'Markalar',
       'Dil Yönetimi',
@@ -101,7 +105,9 @@ export class SidebarComponent implements OnInit {
   }
 
   private syncCategoryWithRoute(url: string) {
-    if (url.includes('/katalog')) {
+    if (url.includes('/raporlar')) {
+      this.openCategory.set('reports');
+    } else if (url.includes('/katalog')) {
       this.openCategory.set('catalog');
     } else if (url.includes('roller') || url.includes('kullanici')) {
       this.openCategory.set('users');
@@ -148,7 +154,7 @@ export class SidebarComponent implements OnInit {
 
   hasAnyMatches(): boolean {
     if (!this.searchQuery().trim()) return true;
-    const cats: CategoryId[] = ['system', 'catalog', 'support', 'users', 'settings'];
+    const cats: CategoryId[] = ['reports', 'system', 'catalog', 'support', 'users', 'settings'];
     return cats.some(c => this.categoryHasMatches(c));
   }
 

@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 
-export type UserRole = 'SUPER_ADMIN' | 'REGION_ADMIN' | 'COUNTRY_ADMIN';
+export type UserRole = 'SOFTWARE_ADMIN' | 'SUPER_ADMIN' | 'BUSINESS_ADMIN' | 'REGION_ADMIN' | 'COUNTRY_ADMIN';
 
 export interface UserProfile {
   id: string;
@@ -12,6 +12,8 @@ export interface UserProfile {
   assignedCountry?: string;
   country?: string;
   assignedLang?: string;
+  // Business Admin yalnızca bu markaların verisini görür; boşsa marka kısıtı yok
+  brandIds?: number[];
   token?: string;
   avatarInitials: string;
 }
@@ -23,6 +25,15 @@ export class AuthService {
   // Pre-configured role profiles for quick SSO testing
   public readonly demoUsers: UserProfile[] = [
     {
+      id: 'software-1',
+      email: 'softwareadmin@nova.com',
+      name: 'Software Admin',
+      role: 'SOFTWARE_ADMIN',
+      roleTitle: 'Software Admin (Global)',
+      avatarInitials: 'SW',
+      token: 'sso-jwt-softwareadmin-token-2026'
+    },
+    {
       id: 'super-1',
       email: 'superadmin@nova.com',
       name: 'Super Admin',
@@ -30,6 +41,26 @@ export class AuthService {
       roleTitle: 'Super Admin (Global)',
       avatarInitials: 'SA',
       token: 'sso-jwt-superadmin-token-2026'
+    },
+    {
+      id: 'business-nova',
+      email: 'business.nova@nova.com',
+      name: 'Business Admin (Nova)',
+      role: 'BUSINESS_ADMIN',
+      roleTitle: 'Business Admin (Nova)',
+      brandIds: [1],
+      avatarInitials: 'BN',
+      token: 'sso-jwt-business-nova-token-2026'
+    },
+    {
+      id: 'business-orion',
+      email: 'business.orion@nova.com',
+      name: 'Business Admin (Orion)',
+      role: 'BUSINESS_ADMIN',
+      roleTitle: 'Business Admin (Orion)',
+      brandIds: [2],
+      avatarInitials: 'BO',
+      token: 'sso-jwt-business-orion-token-2026'
     },
     {
       id: 'region-1',
@@ -40,6 +71,16 @@ export class AuthService {
       assignedRegion: 'Avrupa',
       avatarInitials: 'RA',
       token: 'sso-jwt-region-eu-token-2026'
+    },
+    {
+      id: 'region-na',
+      email: 'region.na@nova.com',
+      name: 'Region Admin (North America)',
+      role: 'REGION_ADMIN',
+      roleTitle: 'Region Admin (Kuzey Amerika)',
+      assignedRegion: 'Amerika',
+      avatarInitials: 'NA',
+      token: 'sso-jwt-region-na-token-2026'
     },
     {
       id: 'country-tr',
@@ -64,6 +105,18 @@ export class AuthService {
       assignedLang: 'Deutsch',
       avatarInitials: 'DE',
       token: 'sso-jwt-country-de-token-2026'
+    },
+    {
+      id: 'country-ca',
+      email: 'country.ca@nova.com',
+      name: 'Country Admin (CA)',
+      role: 'COUNTRY_ADMIN',
+      roleTitle: 'Country Admin (Kanada)',
+      assignedRegion: 'Amerika',
+      assignedCountry: 'Kanada',
+      assignedLang: 'English',
+      avatarInitials: 'CA',
+      token: 'sso-jwt-country-ca-token-2026'
     }
   ];
 
@@ -144,9 +197,23 @@ export class AuthService {
   }
 
   // Computed helper permissions
-  isSuperAdmin = computed(() => this.currentUser().role === 'SUPER_ADMIN');
+  // Software Admin ve Business Admin ekran yetkileri Super Admin ile aynıdır (kısıt yok);
+  // Business Admin yalnızca marka bazında sınırlanır (bkz. brandScope)
+  isSuperAdmin = computed(() => ['SOFTWARE_ADMIN', 'SUPER_ADMIN', 'BUSINESS_ADMIN'].includes(this.currentUser().role));
+  isSoftwareAdmin = computed(() => this.currentUser().role === 'SOFTWARE_ADMIN');
+  isBusinessAdmin = computed(() => this.currentUser().role === 'BUSINESS_ADMIN');
   isRegionAdmin = computed(() => this.currentUser().role === 'REGION_ADMIN');
   isCountryAdmin = computed(() => this.currentUser().role === 'COUNTRY_ADMIN');
+
+  // Kullanıcının görebileceği markalar; null = tüm markalar
+  brandScope = computed<number[] | null>(() =>
+    this.isBusinessAdmin() && this.currentUser().brandIds?.length ? this.currentUser().brandIds! : null
+  );
+
+  canSeeBrand(brandId: number | null | undefined): boolean {
+    const scope = this.brandScope();
+    return !scope || (brandId != null && scope.includes(brandId));
+  }
 
   // Login via SSO Email
   loginWithEmail(email: string): boolean {

@@ -5,6 +5,7 @@ import { SalesChannelService, SalesChannelItem } from '../../services/sales-chan
 import { CountryService } from '../../services/country.service';
 import { RegionService } from '../../services/region.service';
 import { AuthService } from '../../services/auth.service';
+import { BrandService } from '../../services/brand.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 
@@ -20,6 +21,7 @@ export class SatisKanallariComponent implements OnInit {
   countryService = inject(CountryService);
   regionService = inject(RegionService);
   authService = inject(AuthService);
+  brandService = inject(BrandService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
 
@@ -28,9 +30,12 @@ export class SatisKanallariComponent implements OnInit {
   searchQuery = '';
   filterCountry = 'ALL';
   filterStatus = 'ALL';
+  filterBrand: number | 'ALL' = 'ALL';
 
   // Form Fields
   formBrandName = '';
+  formBrandId: number | null = null;
+  formError = '';
   formCode = '';
   formRegion = 'Avrupa';
   selectedCountries: string[] = [];
@@ -65,6 +70,9 @@ export class SatisKanallariComponent implements OnInit {
     const user = this.authService.currentUser();
 
     return this.channelService.channels().filter(item => {
+      // Business Admin yalnızca kendi markasının kanallarını görür
+      if (!this.authService.canSeeBrand(item.brandId)) return false;
+
       // Role-based visibility
       if (this.authService.isCountryAdmin() && user.assignedCountry) {
         if (!item.countries.includes(user.assignedCountry)) return false;
@@ -76,14 +84,27 @@ export class SatisKanallariComponent implements OnInit {
       const matchesSearch = !query || 
         item.brandName.toLowerCase().includes(query) ||
         item.code.toLowerCase().includes(query) ||
+        this.brandService.brandName(item.brandId).toLowerCase().includes(query) ||
         item.countries.some(c => c.toLowerCase().includes(query) || this.tsService.translate(c).toLowerCase().includes(query));
 
       // Country & Status filters
       const matchesCountry = this.filterCountry === 'ALL' || item.countries.includes(this.filterCountry);
       const matchesStatus = this.filterStatus === 'ALL' || item.status === this.filterStatus;
+      const matchesBrand = this.filterBrand === 'ALL' || item.brandId === this.filterBrand;
 
-      return matchesSearch && matchesCountry && matchesStatus;
+      return matchesSearch && matchesCountry && matchesStatus && matchesBrand;
     });
+  }
+
+  get hasActiveFilters(): boolean {
+    return !!this.searchQuery || this.filterCountry !== 'ALL' || this.filterStatus !== 'ALL' || this.filterBrand !== 'ALL';
+  }
+
+  clearFilters() {
+    this.searchQuery = '';
+    this.filterCountry = 'ALL';
+    this.filterStatus = 'ALL';
+    this.filterBrand = 'ALL';
   }
 
   get availableCountriesList(): string[] {
@@ -100,6 +121,8 @@ export class SatisKanallariComponent implements OnInit {
   openEditModal(item: SalesChannelItem) {
     this.editingId = item.id;
     this.formBrandName = item.brandName;
+    this.formBrandId = item.brandId ?? null;
+    this.formError = '';
     this.formCode = item.code;
     this.formRegion = item.region || 'Avrupa';
     this.selectedCountries = [...item.countries];
@@ -116,6 +139,9 @@ export class SatisKanallariComponent implements OnInit {
 
   resetForm() {
     this.formBrandName = '';
+    // Business Admin yeni kanalı kendi markasıyla başlatır
+    this.formBrandId = this.authService.brandScope()?.[0] ?? null;
+    this.formError = '';
     this.formCode = 'SC-' + Math.floor(100 + Math.random() * 900);
     this.formRegion = 'Avrupa';
     this.selectedCountries = this.authService.isCountryAdmin() && this.authService.currentUser().assignedCountry ? [this.authService.currentUser().assignedCountry!] : ['Türkiye'];
@@ -138,11 +164,19 @@ export class SatisKanallariComponent implements OnInit {
   }
 
   saveChannel() {
-    if (!this.formBrandName.trim() || !this.formCode.trim()) return;
+    if (!this.formBrandName.trim() || !this.formCode.trim()) {
+      this.formError = this.tsService.translate('Lütfen kanal adı ve kanal kodu alanlarını doldurunuz.');
+      return;
+    }
+    if (this.formBrandId === null) {
+      this.formError = this.tsService.translate('Lütfen bir marka seçiniz.');
+      return;
+    }
 
     if (this.editingId) {
       this.channelService.updateChannel(this.editingId, {
         brandName: this.formBrandName.trim(),
+        brandId: this.formBrandId,
         code: this.formCode.trim(),
         region: this.formRegion,
         countries: this.selectedCountries,
@@ -152,6 +186,7 @@ export class SatisKanallariComponent implements OnInit {
     } else {
       this.channelService.addChannel({
         brandName: this.formBrandName.trim(),
+        brandId: this.formBrandId,
         code: this.formCode.trim(),
         region: this.formRegion,
         countries: this.selectedCountries,

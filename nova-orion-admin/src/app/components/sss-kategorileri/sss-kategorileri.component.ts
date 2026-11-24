@@ -5,6 +5,7 @@ import { FaqCategoryService, FaqCategoryItem, CategoryModuleType } from '../../s
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 import { BrandService } from '../../services/brand.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sss-kategorileri',
@@ -18,6 +19,7 @@ export class SssKategorileriComponent implements OnInit {
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
   brandService = inject(BrandService);
+  authService = inject(AuthService);
 
   showModal = false;
   editingId: number | null = null;
@@ -33,10 +35,12 @@ export class SssKategorileriComponent implements OnInit {
   }
 
   get categoryList(): FaqCategoryItem[] {
+    // Business Admin yalnızca kendi markasının kategorilerini görür
+    const list = this.catService.categories().filter(c => this.authService.canSeeBrand(c.brandId));
     if (this.selectedModuleFilter === 'ALL') {
-      return this.catService.categories();
+      return list;
     }
-    return this.catService.categories().filter(c => c.module === this.selectedModuleFilter);
+    return list.filter(c => c.module === this.selectedModuleFilter);
   }
 
   openAddModal() {

@@ -75,6 +75,9 @@ export class IndirilenlerComponent implements OnInit {
         return false;
       }
 
+      // Business Admin yalnızca kendi markasının dosyalarını görür
+      if (!this.authService.canSeeBrand(item.brandId)) return false;
+
       // Marka filtresi
       if (this.filterBrand !== 'ALL' && item.brandId !== this.filterBrand) {
         return false;

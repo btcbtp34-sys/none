@@ -41,7 +41,6 @@
         <thead>
           <tr>
             <th style="width: 50px;">#</th>
-            <th style="width: 250px;">{{ tsService.translate('KOD') }}</th>
             <th>{{ tsService.translate('DEĞER') }}</th>
             <th style="width: 160px;">{{ tsService.translate('MARKA') }}</th>
             <th class="text-right" style="width: 120px;">{{ tsService.translate('İŞLEMLER') }}</th>
@@ -50,11 +49,6 @@
         <tbody>
           <tr *ngFor="let item of filteredProjectTypes(); let i = index">
             <td><span class="index-text">{{ i + 1 }}</span></td>
-            <td>
-              <div class="code-wrapper">
-                <span class="code-badge">{{ item.code }}</span>
-              </div>
-            </td>
             <td>
               <span class="val-text">{{ tsService.translate(item.value) }}</span>
             </td>
@@ -75,7 +69,7 @@
           </tr>
 
           <tr *ngIf="filteredProjectTypes().length === 0">
-            <td colspan="5" class="empty-table-cell">
+            <td colspan="4" class="empty-table-cell">
               <div class="empty-state-box">
                 <p class="empty-state-title">{{ tsService.translate('Arama kriterine uygun proje tipi bulunamadı.') }}</p>
                 <button *ngIf="searchQuery || filterBrand !== 'ALL'" class="filter-reset-btn" (click)="searchQuery = ''; filterBrand = 'ALL'">

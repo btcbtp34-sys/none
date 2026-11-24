@@ -187,6 +187,9 @@ export const SISTEM_TRANSLATIONS: TranslationEntries = {
 
   // Satış Kanalları / Kullanıcı Yönetimi — marka entegrasyonu
   'Marka ve ülke eşleştirmeleri yönetimi': { tr: 'Marka ve ülke eşleştirmeleri yönetimi', en: 'Brand and country mapping management' },
+  'KANAL ADI': { tr: 'KANAL ADI', en: 'CHANNEL NAME', de: 'KANALNAME', fr: 'NOM DU CANAL' },
+  'Kanal, marka, kanal kodu veya ülke ara...': { tr: 'Kanal, marka, kanal kodu veya ülke ara...', en: 'Search channel, brand, channel code or country...' },
+  'Lütfen kanal adı ve kanal kodu alanlarını doldurunuz.': { tr: 'Lütfen kanal adı ve kanal kodu alanlarını doldurunuz.', en: 'Please fill in the channel name and channel code.' },
   'Marka, kanal kodu veya ülke ara...': { tr: 'Marka, kanal kodu veya ülke ara...', en: 'Search brand, channel code or country...' },
   'Kullanıcının erişebileceği markaları seçiniz.': { tr: 'Kullanıcının erişebileceği markaları seçiniz.', en: 'Select the brands this user can access.' },
 

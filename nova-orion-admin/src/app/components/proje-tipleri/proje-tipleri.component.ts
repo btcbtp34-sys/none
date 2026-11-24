@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectTypeService, ProjectTypeItem } from '../../services/project-type.service';
 import { BrandService } from '../../services/brand.service';
+import { AuthService } from '../../services/auth.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 
@@ -16,6 +17,7 @@ import { TranslationService } from '../../services/translation.service';
 export class ProjeTipleriComponent implements OnInit {
   projectTypeService = inject(ProjectTypeService);
   brandService = inject(BrandService);
+  authService = inject(AuthService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
 
@@ -39,6 +41,7 @@ export class ProjeTipleriComponent implements OnInit {
   filteredProjectTypes(): ProjectTypeItem[] {
     const query = this.searchQuery.trim().toLowerCase();
     const list = this.projectTypeService.projectTypes()
+      .filter(item => this.authService.canSeeBrand(item.brandId))
       .filter(item => this.filterBrand === 'ALL' || item.brandId === this.filterBrand);
     if (!query) return list;
 

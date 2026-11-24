@@ -57,7 +57,7 @@
     <!-- User Profile Chip with SSO Role Switcher -->
     <div class="user-profile-wrapper">
       <div class="user-profile" (click)="toggleUserRoleDropdown($event)" [title]="tsService.translate('Rol ve Kullanıcı Değiştir')">
-        <div class="avatar-badge" [class.badge-super]="authService.isSuperAdmin()" [class.badge-region]="authService.isRegionAdmin()" [class.badge-country]="authService.isCountryAdmin()">
+        <div class="avatar-badge" [ngClass]="roleBadgeClass(authService.currentUser().role)">
           {{ authService.currentUser().avatarInitials }}
         </div>
         <div class="user-info">
@@ -79,7 +79,7 @@
           class="role-menu-option" 
           [class.active-user]="user.id === authService.currentUser().id"
           (click)="switchRole(user, $event)">
-          <div class="role-opt-avatar" [class.badge-super]="user.role === 'SUPER_ADMIN'" [class.badge-region]="user.role === 'REGION_ADMIN'" [class.badge-country]="user.role === 'COUNTRY_ADMIN'">
+          <div class="role-opt-avatar" [ngClass]="roleBadgeClass(user.role)">
             {{ user.avatarInitials }}
           </div>
           <div class="role-opt-meta">
