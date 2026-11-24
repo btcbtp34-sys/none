@@ -20,6 +20,7 @@ import { BizeUlasinComponent } from './components/bize-ulasin/bize-ulasin.compon
 import { ModullerComponent } from './components/moduller/moduller.component';
 import { KatalogComponent } from './components/katalog/katalog.component';
 import { MarkalarComponent } from './components/markalar/markalar.component';
+import { softwareAdminGuard } from './guards/software-admin.guard';
 import { YoneticiOzetiComponent } from './components/yonetici-ozeti/yonetici-ozeti.component';
 import { RaporDetayComponent } from './components/rapor-detay/rapor-detay.component';
 import { UrunListesiComponent } from './components/urun-listesi/urun-listesi.component';
@@ -83,7 +84,7 @@ export const routes: Routes = [
       { path: 'hava-kosullari', component: HavaKosullariComponent },
       { path: 'proje-tipleri', component: ProjeTipleriComponent },
       { path: 'proje-tipi', redirectTo: 'proje-tipleri', pathMatch: 'full' },
-      { path: 'markalar', component: MarkalarComponent },
+      { path: 'markalar', component: MarkalarComponent, canActivate: [softwareAdminGuard] },
       { path: 'raporlar/yonetici-ozeti', component: YoneticiOzetiComponent },
       { path: 'raporlar/detay', component: RaporDetayComponent },
       { path: 'raporlar/projeler', redirectTo: 'raporlar/detay', pathMatch: 'full' },
@@ -109,8 +110,8 @@ export const routes: Routes = [
       { path: 'roller', redirectTo: 'organizasyonel-roller', pathMatch: 'full' },
       { path: 'kullanici-yonetimi', component: KullaniciYonetimiComponent },
       { path: 'kullanicilar', redirectTo: 'kullanici-yonetimi', pathMatch: 'full' },
-      { path: 'parametreler', component: ParametrelerComponent },
-      { path: 'sistem-yedekleme', component: SistemYedeklemeComponent },
+      { path: 'parametreler', component: ParametrelerComponent, canActivate: [softwareAdminGuard] },
+      { path: 'sistem-yedekleme', component: SistemYedeklemeComponent, canActivate: [softwareAdminGuard] },
       { path: 'yedek-ve-geri-yukle', redirectTo: 'sistem-yedekleme', pathMatch: 'full' }
     ]
   },

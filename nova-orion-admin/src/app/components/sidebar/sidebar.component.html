@@ -40,7 +40,7 @@
           routerLink="/markalar"
           routerLinkActive="active"
           class="nav-link"
-          *ngIf="matchesSearch('Markalar')">
+          *ngIf="isItemVisible('Markalar') && matchesSearch('Markalar')">
           <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#certificate"></use></svg>
           <span class="nav-link-text">{{ tsService.translate('Markalar') }}</span>
           <span class="count-badge">{{ brandService.brands().length }}</span>
@@ -335,7 +335,7 @@
     </div>
 
     <!-- Category 4: Ayarlar -->
-    <div class="nav-category" *ngIf="categoryHasMatches('settings')">
+    <div class="nav-category" *ngIf="isCategoryVisible('settings') && categoryHasMatches('settings')">
       <div 
         class="nav-category-header accordion-toggle" 
         (click)="toggleCategory('settings')"

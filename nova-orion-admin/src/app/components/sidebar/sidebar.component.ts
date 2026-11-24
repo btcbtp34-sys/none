@@ -144,11 +144,21 @@ export class SidebarComponent implements OnInit {
     return directMatch || translatedMatch;
   }
 
+  // Markalar ve Ayarlar menüsü yalnızca Software Admin'e görünür
+  isCategoryVisible(cat: CategoryId): boolean {
+    return cat !== 'settings' || this.authService.isSoftwareAdmin();
+  }
+
+  isItemVisible(titleKey: string): boolean {
+    return titleKey !== 'Markalar' || this.authService.isSoftwareAdmin();
+  }
+
   categoryHasMatches(cat: CategoryId): boolean {
+    if (!this.isCategoryVisible(cat)) return false;
     const q = this.searchQuery().trim().toLowerCase();
     if (!q) return true;
 
-    const items = this.categoryItemsMap[cat] || [];
+    const items = (this.categoryItemsMap[cat] || []).filter(item => this.isItemVisible(item));
     return items.some(item => this.matchesSearch(item));
   }
 

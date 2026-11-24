@@ -5,6 +5,7 @@ import { ProjectService } from '../../services/project.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService, SupportedLang } from '../../services/translation.service';
 import { AuthService, UserProfile, UserRole } from '../../services/auth.service';
+import { SOFTWARE_ADMIN_PATHS } from '../../guards/software-admin.guard';
 
 @Component({
   selector: 'app-header',
@@ -78,6 +79,10 @@ export class HeaderComponent {
     event.stopPropagation();
     this.authService.switchUser(user);
     this.showUserRoleDropdown = false;
+    // Yeni rolün göremeyeceği bir sayfadaysa ana sayfaya dönülür
+    if (!this.authService.isSoftwareAdmin() && SOFTWARE_ADMIN_PATHS.some(path => this.router.url.startsWith(path))) {
+      this.router.navigate(['/']);
+    }
   }
 
   navigateToFrontend(project: 'nova' | 'orion', event?: MouseEvent) {
