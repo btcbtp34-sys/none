@@ -61,7 +61,6 @@ export class KuralEditorComponent implements OnInit {
   rule = computed(() => this.ruleService.getRule(this.ruleId()));
 
   tab: EditorTab = 'conditions';
-  simOpen = true;
   showJson = false;
   jsonDraft = '';
   jsonError = '';

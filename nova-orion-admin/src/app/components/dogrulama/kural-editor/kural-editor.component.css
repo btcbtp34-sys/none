@@ -117,9 +117,6 @@
   align-items: start;
 }
 
-.workspace.with-sim {
-  grid-template-columns: 290px minmax(0, 1fr) 340px;
-}
 
 .builder {
   min-width: 0;
@@ -368,19 +365,8 @@
   line-height: 1.5;
 }
 
-@media (max-width: 1400px) {
-  .workspace.with-sim {
-    grid-template-columns: 270px minmax(0, 1fr);
-  }
-
-  .workspace.with-sim app-simulation-panel {
-    grid-column: 1 / -1;
-  }
-}
-
 @media (max-width: 1100px) {
   .workspace,
-  .workspace.with-sim,
   .scope-layout,
   .mgmt-layout,
   .form-grid {

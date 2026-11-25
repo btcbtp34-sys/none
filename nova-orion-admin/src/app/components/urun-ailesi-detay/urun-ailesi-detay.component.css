@@ -30,3 +30,183 @@
   color: #94a3b8;
   font-weight: 500;
 }
+
+/* Kombinasyon sekmesi */
+.combo-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.combo-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.combo-search {
+  position: relative;
+  flex: 0 1 340px;
+}
+
+.combo-search svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.combo-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px 8px 30px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 12.5px;
+}
+
+.combo-hint {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.combo-table-wrap {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.combo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.combo-table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.combo-table th .col-unit {
+  display: block;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.combo-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.combo-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.combo-table td.model {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.col-toggle {
+  width: 28px;
+}
+
+.combo-row {
+  cursor: pointer;
+}
+
+.combo-row:hover td {
+  background: #f8fafc;
+}
+
+.combo-row.open td {
+  background: #fff1f2;
+}
+
+.combo-chevron {
+  width: 14px;
+  height: 14px;
+  color: #94a3b8;
+  transform: rotate(-90deg);
+  transition: transform 0.15s ease;
+}
+
+.combo-row.open .combo-chevron {
+  transform: none;
+  color: #e11d48;
+}
+
+.combo-detail-row td {
+  padding: 0;
+  background: #fffbfb;
+  white-space: normal;
+}
+
+.combo-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  padding: 14px;
+}
+
+.combo-group {
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.combo-group h4 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #e11d48;
+}
+
+.combo-group dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 12px;
+  margin: 0;
+  font-size: 12px;
+}
+
+.combo-group dt {
+  color: #64748b;
+}
+
+.combo-group dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.dd-unit {
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.combo-empty {
+  padding: 24px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  text-align: center;
+}

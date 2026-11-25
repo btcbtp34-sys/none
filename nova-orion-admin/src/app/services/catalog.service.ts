@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { AF5301A_COMBINATIONS, CombinationRow } from '../data/af5301a-combinations';
 
 export type CatalogEntity = 'sistem' | 'urun-grubu' | 'urun-tipi' | 'urun-ailesi' | 'urun' | 'versiyon';
 
@@ -29,6 +30,8 @@ export interface CatalogItem {
   dimensions?: ProductDimensions;
   capacity?: ProductCapacity;
   capacityRows?: CapacityRow[];
+  // Sadece Ürün Ailesi: dış ünite kombinasyonları (Excel sütun anahtarı → değer)
+  combinations?: CombinationRow[];
   status: CatalogStatus;
 }
 
@@ -234,7 +237,7 @@ const INITIAL_CATALOG: Record<CatalogEntity, CatalogItem[]> = {
   ],
   'urun-ailesi': [
     // AF5301 ailesi, ilk ürünü AF5301A 25-3 ile aynı örnek görsellerle gelir
-    { id: 1, name: 'AF5301', description: '', parentIds: [2], systemIds: [1, 3, 4], imageGroups: SAMPLE_AF5301A_IMAGES, capacityRows: SAMPLE_AF5301A_CAPACITY_ROWS, status: 'Aktif' },
+    { id: 1, name: 'AF5301', description: '', parentIds: [2], systemIds: [1, 3, 4], imageGroups: SAMPLE_AF5301A_IMAGES, capacityRows: SAMPLE_AF5301A_CAPACITY_ROWS, combinations: AF5301A_COMBINATIONS, status: 'Aktif' },
     { id: 2, name: 'AF4300', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
     { id: 3, name: 'AF2', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' },
     { id: 4, name: 'AF', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' }
@@ -311,6 +314,12 @@ export class CatalogService {
           data['urun-ailesi'] = data['urun-ailesi'].map((f: CatalogItem) => {
             const seed = INITIAL_CATALOG['urun-ailesi'].find(s => s.id === f.id && s.name === f.name);
             return f.imageGroups === undefined && seed?.imageGroups ? { ...f, imageGroups: seed.imageGroups } : f;
+          });
+          // Kombinasyonu hiç kaydedilmemiş aile, örnek verideki kombinasyonları alır
+          data['urun-ailesi'] = data['urun-ailesi'].map((f: CatalogItem) => {
+            if (f.combinations !== undefined) return f;
+            const seed = INITIAL_CATALOG['urun-ailesi'].find(s => s.id === f.id && s.name === f.name);
+            return seed?.combinations ? { ...f, combinations: seed.combinations } : f;
           });
           // Kapasite tablosu ürün ailesine taşındı: hiç kapasitesi olmayan aile, ürünlerindeki satırları
           // (yoksa örnek verideki satırları) alır

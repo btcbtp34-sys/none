@@ -186,8 +186,61 @@
       </div>
 
       <!-- Tab: Kombinasyon -->
-      <div *ngIf="activeTab === 'kombinasyon'" class="tab-panel">
-        <p class="placeholder-text">{{ tsService.translate('Kombinasyon alanları tanımlandığında burada yer alacak.') }}</p>
+      <div *ngIf="activeTab === 'kombinasyon'" class="combo-panel">
+        <div class="combo-toolbar">
+          <div class="combo-search">
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
+            <input type="text" [(ngModel)]="combinationSearch" [placeholder]="tsService.translate('Model, markasız ad veya HP ara...')" />
+          </div>
+          <span class="combo-hint">{{ tsService.translate('Tüm teknik değerler için satıra tıklayın.') }}</span>
+        </div>
+
+        <div *ngIf="!formCombinations.length" class="capacity-empty combo-empty">
+          {{ tsService.translate('Bu ürün ailesi için kombinasyon tanımlı değil.') }}
+        </div>
+
+        <div *ngIf="formCombinations.length" class="table-responsive combo-table-wrap">
+          <table class="combo-table">
+            <thead>
+              <tr>
+                <th class="col-toggle"></th>
+                <th *ngFor="let col of combinationSummary" [class.num]="col.key !== 'ModelName' && col.key !== 'WithoutBrand' && col.key !== 'LiquidType'">
+                  {{ tsService.translate(col.label) }}<span *ngIf="col.unit" class="col-unit">{{ col.unit }}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let row of filteredCombinations">
+                <tr class="combo-row" [class.open]="expandedCombination === row['ModelName']" (click)="toggleCombination(row)">
+                  <td class="col-toggle">
+                    <svg class="combo-chevron" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+                  </td>
+                  <td *ngFor="let col of combinationSummary" [class.num]="col.key !== 'ModelName' && col.key !== 'WithoutBrand' && col.key !== 'LiquidType'" [class.model]="col.key === 'ModelName'">
+                    {{ combinationValue(row[col.key]) }}
+                  </td>
+                </tr>
+                <tr *ngIf="expandedCombination === row['ModelName']" class="combo-detail-row">
+                  <td [attr.colspan]="combinationSummary.length + 1">
+                    <div class="combo-detail">
+                      <section *ngFor="let group of combinationGroups" class="combo-group">
+                        <h4>{{ tsService.translate(group.title) }}</h4>
+                        <dl>
+                          <ng-container *ngFor="let col of group.columns">
+                            <dt>{{ tsService.translate(col.label) }}</dt>
+                            <dd>{{ combinationValue(row[col.key]) }}<span *ngIf="col.unit && combinationValue(row[col.key]) !== '—'" class="dd-unit"> {{ col.unit }}</span></dd>
+                          </ng-container>
+                        </dl>
+                      </section>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+              <tr *ngIf="!filteredCombinations.length">
+                <td [attr.colspan]="combinationSummary.length + 1" class="capacity-empty">{{ tsService.translate('Aramaya uygun kombinasyon bulunamadı.') }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </ng-container>
   </div>

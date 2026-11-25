@@ -34,10 +34,6 @@
             <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#copy"></use></svg>
             {{ tsService.translate('Kopyala') }}
           </button>
-          <button *ngIf="tab === 'conditions'" type="button" class="ve-btn" [class.active]="simOpen" (click)="simOpen = !simOpen">
-            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#forward-right-small"></use></svg>
-            {{ tsService.translate(simOpen ? 'Test panelini kapat' : 'Kuralı test et') }}
-          </button>
           <button type="button" class="ve-btn primary" (click)="save()">
             <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#save"></use></svg>
             {{ tsService.translate('Kaydet') }}
@@ -51,7 +47,7 @@
     </header>
 
     <!-- 2. Koşullar & Aksiyonlar -->
-    <div *ngIf="tab === 'conditions'" class="workspace" [class.with-sim]="simOpen">
+    <div *ngIf="tab === 'conditions'" class="workspace">
       <app-condition-library [rule]="rule"></app-condition-library>
 
       <div class="builder">
@@ -84,8 +80,6 @@
 
         <app-action-builder [rule]="rule"></app-action-builder>
       </div>
-
-      <app-simulation-panel *ngIf="simOpen" [rule]="rule" (closed)="simOpen = false" (ruleRequested)="openRule($event)"></app-simulation-panel>
     </div>
 
     <!-- 1. Genel Bilgiler -->

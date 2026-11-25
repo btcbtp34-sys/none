@@ -17,6 +17,8 @@ import { AuthService } from '../../services/auth.service';
 import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
 import { ImageGroupsComponent } from '../shared/image-groups/image-groups.component';
+import { CombinationRow } from '../../data/af5301a-combinations';
+import { COMBINATION_GROUPS, COMBINATION_SUMMARY } from './combination-columns';
 
 export type FamilyTab = 'genel' | 'gorseller' | 'iliskiler' | 'kapasite' | 'kombinasyon';
 
@@ -85,6 +87,13 @@ export class UrunAilesiDetayComponent implements OnInit {
     { key: 'indoorWb', label: 'İç Ortam Yaş Termometre', unit: '°C' }
   ];
 
+  // Kombinasyonlar (Excel'den gelen dış ünite kombinasyonları)
+  formCombinations: CombinationRow[] = [];
+  readonly combinationGroups = COMBINATION_GROUPS;
+  readonly combinationSummary = COMBINATION_SUMMARY;
+  combinationSearch = '';
+  expandedCombination: string | null = null;
+
   // İlişkiler
   formVersionIds: number[] = [];
   formCountryIds: number[] = [];
@@ -116,6 +125,8 @@ export class UrunAilesiDetayComponent implements OnInit {
     this.formVersionIds = [...(family?.versionIds ?? [])];
     this.formCountryIds = [...(family?.countryIds ?? [])];
     this.formCapacityRows = (family?.capacityRows ?? []).map(r => ({ ...r }));
+    this.formCombinations = family?.combinations ?? [];
+    this.expandedCombination = null;
     this.formError = '';
     this.saveMessage = '';
     this.saveWarning = '';
@@ -197,6 +208,32 @@ export class UrunAilesiDetayComponent implements OnInit {
     this.formCapacityRows = this.formCapacityRows.filter((_, i) => i !== index);
   }
 
+  // Kombinasyon tablosu
+
+  get filteredCombinations(): CombinationRow[] {
+    const q = this.combinationSearch.trim().toLowerCase();
+    if (!q) return this.formCombinations;
+    return this.formCombinations.filter(r =>
+      [r['ModelName'], r['WithoutBrand'], r['Hp'], r['NominalCapacity']].some(v => (v ?? '').toLowerCase().includes(q))
+    );
+  }
+
+  toggleCombination(row: CombinationRow) {
+    const key = row['ModelName'];
+    this.expandedCombination = this.expandedCombination === key ? null : key;
+  }
+
+  // Sayılar seçili dilin ondalık ayracıyla gösterilir; "/" ve boş değerler tire olur
+  combinationValue(value: string | undefined): string {
+    const v = (value ?? '').trim();
+    if (!v || v === '/') return '—';
+    if (/^-?\d+(\.\d+)?$/.test(v)) {
+      const locale = { tr: 'tr-TR', en: 'en-GB', de: 'de-DE', fr: 'fr-FR' }[this.tsService.currentLang()] ?? 'en-GB';
+      return Number(v).toLocaleString(locale, { maximumFractionDigits: 3 });
+    }
+    return v;
+  }
+
   isSystemSelected(id: number): boolean {
     return this.formSystemIds.includes(id);
   }
@@ -243,6 +280,7 @@ export class UrunAilesiDetayComponent implements OnInit {
       countryIds: this.formCountryIds,
       imageGroups: this.formImageGroups,
       capacityRows: this.formCapacityRows.map(r => ({ ...r })),
+      combinations: this.formCombinations,
       status: this.formStatus
     };
 
