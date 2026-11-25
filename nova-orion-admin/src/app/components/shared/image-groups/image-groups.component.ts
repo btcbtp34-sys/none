@@ -24,6 +24,8 @@ export class ImageGroupsComponent {
   tsService = inject(TranslationService);
 
   @Input() groups: ProductImageGroups = emptyImageGroups();
+  // Salt okunur: seçim değiştirilemez
+  @Input() readOnly = false;
   @Output() groupsChange = new EventEmitter<ProductImageGroups>();
 
   imageGroups = PRODUCT_IMAGE_GROUPS;

@@ -362,3 +362,34 @@ select.info-input {
   font-weight: 500;
   padding: 28px 8px !important;
 }
+
+.readonly-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ro-fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.ro-fieldset:disabled .info-input {
+  background: transparent;
+  color: #0f172a;
+  opacity: 1;
+  cursor: default;
+}
+
+.cell-input:disabled {
+  background: transparent;
+  color: #0f172a;
+  opacity: 1;
+}

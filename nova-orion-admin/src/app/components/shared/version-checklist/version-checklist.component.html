@@ -1,6 +1,6 @@
 <div class="round-check-list" [class.inline]="inline">
   <label class="round-check-item" *ngFor="let v of catalogService.items('versiyon')" [class.inactive]="v.status === 'Pasif'">
-    <input type="checkbox" [checked]="isSelected(v.id)" (change)="toggle(v.id)" />
+    <input type="checkbox" [checked]="isSelected(v.id)" [disabled]="readOnly" (change)="toggle(v.id)" />
     <span class="round-check-box"></span>
     <span class="round-check-label">{{ v.name }}</span>
   </label>

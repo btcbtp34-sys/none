@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { CatalogService, CatalogItem } from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-urun-listesi',
@@ -18,6 +19,7 @@ export class UrunListesiComponent implements OnInit {
   catalogService = inject(CatalogService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
+  authService = inject(AuthService);
 
   // Search & Filter
   searchQuery = '';
@@ -71,11 +73,23 @@ export class UrunListesiComponent implements OnInit {
     return this.tsService.translate(this.catalogService.itemName(entity, id));
   }
 
+  // Country Admin ürünleri yalnızca görüntüler: yeni ürün, durum değişikliği ve silme kapalıdır
+  get readOnly(): boolean {
+    return this.authService.isCountryAdmin();
+  }
+
+  toggleStatus(id: number) {
+    if (this.readOnly) return;
+    this.catalogService.toggleStatus('urun', id);
+  }
+
   openDetail(id?: number) {
+    if (this.readOnly && id === undefined) return;
     this.router.navigate(['/katalog/urun', id ?? 'yeni']);
   }
 
   deleteProduct(id: number) {
+    if (this.readOnly) return;
     if (confirm(this.tsService.translate('Bu ürünü silmek istediğinizden emin misiniz?'))) {
       this.catalogService.deleteItem('urun', id);
     }

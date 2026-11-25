@@ -6,7 +6,7 @@
   </div>
 
   <!-- Top Action Cards Grid: Şablon İndir & Dosya Yükle -->
-  <div class="maintenance-grid">
+  <div class="maintenance-grid" [class.single]="readOnly">
     <!-- Card 1: Şablon İndir (Temp İndir) -->
     <div class="card-container action-panel">
       <div class="panel-header">
@@ -78,7 +78,7 @@
     </div>
 
     <!-- Card 2: Dosya Yükle / Çeviri İçe Aktar -->
-    <div class="card-container action-panel">
+    <div *ngIf="!readOnly" class="card-container action-panel">
       <div class="panel-header">
         <div class="panel-icon-box green">
           <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
@@ -125,10 +125,11 @@
           <span class="count-badge-total">{{ allItems.length }} {{ tsService.translate('Toplam Kayıt') }}</span>
           <span class="count-badge-modified" *ngIf="modifiedCount > 0">{{ modifiedCount }} {{ tsService.translate('Düzenlendi') }}</span>
         </div>
-        <p class="card-subtitle">{{ tsService.translate('Excel şablonundaki tüm kategoriler ve çeviriler. Metinleri doğrudan hücre içerisinden düzenleyebilirsiniz.') }}</p>
+        <p class="card-subtitle">{{ tsService.translate(readOnly ? 'Excel şablonundaki tüm kategoriler ve çeviriler. Yalnızca görüntüleme yetkiniz var.' : 'Excel şablonundaki tüm kategoriler ve çeviriler. Metinleri doğrudan hücre içerisinden düzenleyebilirsiniz.') }}</p>
       </div>
 
-      <div class="header-action-buttons">
+      <span *ngIf="readOnly" class="readonly-pill">{{ tsService.translate('Yalnızca görüntüleme') }}</span>
+      <div *ngIf="!readOnly" class="header-action-buttons">
         <button class="btn-add-record" (click)="openAddModal()">
           <svg viewBox="0 0 192 192" class="btn-svg-sm" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
           <span>{{ tsService.translate('Yeni Çeviri Kaydı Ekle') }}</span>
@@ -233,7 +234,7 @@
             <td>
               <input 
                 type="text" 
-                class="inline-edit-input" 
+                class="inline-edit-input" [readonly]="readOnly" 
                 [(ngModel)]="item.en"
                 (ngModelChange)="setItemTranslation(item, item.en, 'en')"
                 placeholder="EN..." />
@@ -241,7 +242,7 @@
             <td>
               <input 
                 type="text" 
-                class="inline-edit-input" 
+                class="inline-edit-input" [readonly]="readOnly" 
                 [(ngModel)]="item.tr"
                 (ngModelChange)="setItemTranslation(item, item.tr, 'tr')"
                 placeholder="TR..." />
@@ -249,7 +250,7 @@
             <td>
               <input 
                 type="text" 
-                class="inline-edit-input" 
+                class="inline-edit-input" [readonly]="readOnly" 
                 [(ngModel)]="item.de"
                 (ngModelChange)="setItemTranslation(item, item.de, 'de')"
                 placeholder="DE..." />
@@ -257,20 +258,20 @@
             <td>
               <input 
                 type="text" 
-                class="inline-edit-input" 
+                class="inline-edit-input" [readonly]="readOnly" 
                 [(ngModel)]="item.fr"
                 (ngModelChange)="setItemTranslation(item, item.fr, 'fr')"
                 placeholder="FR..." />
             </td>
             <td class="text-center">
               <div class="row-actions-group">
-                <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" [title]="tsService.translate('HTML & Zengin Metin Canlı Editörü')">
+                <button *ngIf="!readOnly" class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" [title]="tsService.translate('HTML & Zengin Metin Canlı Editörü')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#document-json"></use></svg>
                 </button>
                 <button class="btn-action-icon" (click)="openDetailModal(item)" [title]="tsService.translate('Tüm Dilleri Görüntüle ve Düzenle (11 Dil)')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#globe-language"></use></svg>
                 </button>
-                <button class="btn-action-icon danger" (click)="deleteItem(item)" [title]="tsService.translate('Kaydı Sil')">
+                <button *ngIf="!readOnly" class="btn-action-icon danger" (click)="deleteItem(item)" [title]="tsService.translate('Kaydı Sil')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                 </button>
               </div>
@@ -306,7 +307,7 @@
             <th>{{ tsService.translate('ANAHTAR KOD (KEY)') }}</th>
             <th>{{ tsService.translate('KATEGORİ') }}</th>
             <th>{{ tsService.translate('KAYNAK METİN (EN)') }}</th>
-            <th>{{ tsService.translate('ÇEVİRİ ({lang}) - CANLI DÜZENLE').replace('{lang}', downloadLanguage.toUpperCase()) }}</th>
+            <th>{{ tsService.translate(readOnly ? 'ÇEVİRİ ({lang})' : 'ÇEVİRİ ({lang}) - CANLI DÜZENLE').replace('{lang}', downloadLanguage.toUpperCase()) }}</th>
             <th class="text-center">{{ tsService.translate('DURUM') }}</th>
             <th class="text-center">{{ tsService.translate('İŞLEMLER') }}</th>
           </tr>
@@ -334,14 +335,15 @@
               <div class="cell-input-with-tools">
                 <input 
                   type="text" 
-                  class="inline-edit-input" 
+                  class="inline-edit-input" [readonly]="readOnly" 
                   [class.has-html-tag]="isHtmlContent(getItemTranslation(item))"
                   [ngModel]="getItemTranslation(item)"
                   (ngModelChange)="setItemTranslation(item, $event)"
                   [placeholder]="tsService.translate('Çeviri metni giriniz...')" />
-                <button 
-                  type="button" 
-                  class="cell-expand-btn" 
+                <button
+                  *ngIf="!readOnly"
+                  type="button"
+                  class="cell-expand-btn"
                   [class.badge-html]="isHtmlContent(getItemTranslation(item))"
                   (click)="openHtmlEditor(item)"
                   [title]="tsService.translate(isHtmlContent(getItemTranslation(item)) ? 'HTML İçerik Tespit Edildi - Canlı Editörü Aç' : 'Metni Genişlet / Canlı Editör')">
@@ -357,13 +359,13 @@
             </td>
             <td class="text-center">
               <div class="row-actions-group">
-                <button class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" [title]="tsService.translate('HTML & Zengin Metin Canlı Editörü')">
+                <button *ngIf="!readOnly" class="btn-action-icon html-btn" (click)="openHtmlEditor(item)" [title]="tsService.translate('HTML & Zengin Metin Canlı Editörü')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#document-json"></use></svg>
                 </button>
                 <button class="btn-action-icon" (click)="openDetailModal(item)" [title]="tsService.translate('Tüm Dilleri Gör & Düzenle')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#globe-language"></use></svg>
                 </button>
-                <button class="btn-action-icon danger" (click)="deleteItem(item)" [title]="tsService.translate('Kaydı Sil')">
+                <button *ngIf="!readOnly" class="btn-action-icon danger" (click)="deleteItem(item)" [title]="tsService.translate('Kaydı Sil')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                 </button>
               </div>
@@ -505,57 +507,57 @@
         <div class="modal-form-grid">
           <div class="form-group col-span-2">
             <label class="form-label-bold">{{ tsService.translate('İNGİLİZCE (EN - KAYNAK)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.en" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.en" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('TÜRKÇE (TR)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.tr" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.tr" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('ALMANCA (DE)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.de" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.de" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('FRANSIZCA (FR)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.fr" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.fr" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('İSPANYOLCA (ES)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.es" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.es" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('İTALYANCA (IT)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.it" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.it" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('BULGARCA (BG)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.bg" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.bg" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('RUSÇA (RU)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.ru" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.ru" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('LEHÇE (PL)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.pl" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.pl" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('YUNANCA (EL)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.el" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.el" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
 
           <div class="form-group">
             <label class="form-label-bold">{{ tsService.translate('UKRAYNACA (UA)') }}</label>
-            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.ua" (ngModelChange)="selectedDetailItem.isModified = true" />
+            <input type="text" class="form-control-subtle" [(ngModel)]="selectedDetailItem.ua" [readonly]="readOnly" (ngModelChange)="selectedDetailItem.isModified = true" />
           </div>
         </div>
       </div>

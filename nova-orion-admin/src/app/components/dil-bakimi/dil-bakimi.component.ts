@@ -172,6 +172,7 @@ export class DilBakimiComponent implements OnInit {
   }
 
   insertTag(tag: 'b' | 'i' | 'p' | 'br' | 'li' | 'a') {
+    if (this.readOnly) return;
     if (!this.editingHtmlItem) return;
     const current = this.currentHtmlValue;
     const t = (k: string) => this.tsService.translate(k);
@@ -188,6 +189,7 @@ export class DilBakimiComponent implements OnInit {
   }
 
   stripHtml() {
+    if (this.readOnly) return;
     if (!this.editingHtmlItem) return;
     const tmp = document.createElement('DIV');
     tmp.innerHTML = this.currentHtmlValue;
@@ -210,7 +212,9 @@ export class DilBakimiComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.pageTitleService.setPage('Dil Bakımı', 'Kategori bazlı çeviri şablonları indirme, Excel içe aktarma, manuel ekleme ve canlı düzenleme');
+    this.pageTitleService.setPage('Dil Bakımı', this.readOnly
+      ? 'Kategori bazlı çeviri şablonları ve çeviri sözlüğü (yalnızca görüntüleme)'
+      : 'Kategori bazlı çeviri şablonları indirme, Excel içe aktarma, manuel ekleme ve canlı düzenleme');
     this.syncUserLanguage();
     this.loadDataset();
   }
@@ -228,6 +232,11 @@ export class DilBakimiComponent implements OnInit {
         this.downloadLanguage = 'en';
       }
     }
+  }
+
+  // Business Admin ve Country Admin listeyi yalnızca görüntüler: dosya yükleme, yeni kayıt, düzenleme, sıfırlama ve silme yapamaz
+  get readOnly(): boolean {
+    return this.authService.isBusinessAdmin() || this.authService.isCountryAdmin();
   }
 
   get isLanguageLockedForUser(): boolean {
@@ -281,6 +290,7 @@ export class DilBakimiComponent implements OnInit {
   }
 
   setItemTranslation(item: TranslationItem, val: string, langCode?: string) {
+    if (this.readOnly) return;
     const rawLang = langCode || this.downloadLanguage;
     if (rawLang === 'ALL') {
       item.tr = val;
@@ -339,6 +349,7 @@ export class DilBakimiComponent implements OnInit {
 
   // Open / Close Add Translation Modal
   openAddModal() {
+    if (this.readOnly) return;
     this.newItemForm = this.getEmptyNewItem();
     this.errorMessage = '';
     this.showAddModal = true;
@@ -350,6 +361,7 @@ export class DilBakimiComponent implements OnInit {
   }
 
   saveNewItem() {
+    if (this.readOnly) return;
     const code = this.newItemForm.code.trim();
     if (!code) {
       this.errorMessage = this.tsService.translate('Lütfen anahtar kodunu (Key) giriniz (örn: btn_generate_report).');
@@ -412,6 +424,7 @@ export class DilBakimiComponent implements OnInit {
   }
 
   deleteItem(item: TranslationItem) {
+    if (this.readOnly) return;
     if (confirm(this.tsService.translate('"{code}" anahtarlı çeviri kaydını silmek istediğinizden emin misiniz?').replace('{code}', item.code))) {
       this.allItems = this.allItems.filter(i => i.id !== item.id);
       this.successMessage = this.tsService.translate('"{code}" kaydı listeden silindi.').replace('{code}', item.code);
@@ -451,6 +464,7 @@ export class DilBakimiComponent implements OnInit {
 
   // Save changes to localStorage & update active translations
   saveAllChanges() {
+    if (this.readOnly) return;
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.allItems));
     
     // Update active dictionary in TranslationService
@@ -477,6 +491,7 @@ export class DilBakimiComponent implements OnInit {
 
   // Reset to original dataset
   resetToDefault() {
+    if (this.readOnly) return;
     if (confirm(this.tsService.translate('Tüm özel düzenlemeleri sıfırlayıp orijinal AirSelect Excel şablon verilerine dönmek istediğinizden emin misiniz?'))) {
       localStorage.removeItem(this.STORAGE_KEY);
       localStorage.removeItem('nova_custom_translations_dataset');
@@ -491,6 +506,7 @@ export class DilBakimiComponent implements OnInit {
 
   // File Upload / Import Excel Handler
   onFileSelected(event: Event) {
+    if (this.readOnly) return;
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
@@ -498,6 +514,7 @@ export class DilBakimiComponent implements OnInit {
   }
 
   uploadAndImportFile() {
+    if (this.readOnly) return;
     if (!this.selectedFile) return;
 
     this.isUploading = true;

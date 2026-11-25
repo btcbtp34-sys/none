@@ -13,6 +13,7 @@ import {
 } from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
+import { AuthService } from '../../services/auth.service';
 import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
 import { ImageGroupsComponent } from '../shared/image-groups/image-groups.component';
@@ -38,6 +39,7 @@ export class UrunAilesiDetayComponent implements OnInit {
   catalogService = inject(CatalogService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
+  authService = inject(AuthService);
 
   tabs: { id: FamilyTab; label: string }[] = [
     { id: 'genel', label: 'Genel Bilgiler' },
@@ -169,6 +171,7 @@ export class UrunAilesiDetayComponent implements OnInit {
   }
 
   addCapacityRow() {
+    if (this.readOnly) return;
     // Sadece tek tip filtrelenmişse yeni satır o tipte açılır
     const type: CapacityType =
       this.capacityTypeFilter.HEATING && !this.capacityTypeFilter.COOLING ? 'HEATING' : 'COOLING';
@@ -190,6 +193,7 @@ export class UrunAilesiDetayComponent implements OnInit {
   }
 
   removeCapacityRow(index: number) {
+    if (this.readOnly) return;
     this.formCapacityRows = this.formCapacityRows.filter((_, i) => i !== index);
   }
 
@@ -198,12 +202,19 @@ export class UrunAilesiDetayComponent implements OnInit {
   }
 
   toggleSystem(id: number) {
+    if (this.readOnly) return;
     this.formSystemIds = this.isSystemSelected(id)
       ? this.formSystemIds.filter(s => s !== id)
       : [...this.formSystemIds, id];
   }
 
+  // Country Admin katalog kayıtlarını yalnızca görüntüler
+  get readOnly(): boolean {
+    return this.authService.isCountryAdmin();
+  }
+
   saveFamily() {
+    if (this.readOnly) return;
     this.saveMessage = '';
     this.saveWarning = '';
     const name = this.formName.trim();

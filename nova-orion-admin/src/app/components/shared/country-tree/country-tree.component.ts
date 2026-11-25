@@ -20,6 +20,8 @@ export class CountryTreeComponent {
   tsService = inject(TranslationService);
 
   @Input() selectedIds: number[] = [];
+  // Salt okunur: seçim değiştirilemez
+  @Input() readOnly = false;
   @Output() selectedIdsChange = new EventEmitter<number[]>();
 
   expandedRegionIds = new Set<number>();

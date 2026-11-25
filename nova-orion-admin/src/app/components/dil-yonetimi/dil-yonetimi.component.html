@@ -6,7 +6,8 @@
         <h2 class="card-title">{{ tsService.translate('Tanımlı Diller') }}</h2>
         <p class="card-subtitle">{{ tsService.translate('Aktif ve pasif sistem dillerinin listesi') }}</p>
       </div>
-      <button class="primary-btn" (click)="openAddModal()">
+      <span *ngIf="readOnly" class="readonly-pill">{{ tsService.translate('Yalnızca görüntüleme') }}</span>
+      <button *ngIf="!readOnly" class="primary-btn" (click)="openAddModal()">
         <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
         <span>{{ tsService.translate('Yeni Dil Ekle') }}</span>
       </button>
@@ -20,7 +21,7 @@
             <th>{{ tsService.translate('DİL') }}</th>
             <th>{{ tsService.translate('KOD') }}</th>
             <th>{{ tsService.translate('DURUM') }}</th>
-            <th class="text-right">{{ tsService.translate('İŞLEMLER') }}</th>
+            <th *ngIf="!readOnly" class="text-right">{{ tsService.translate('İŞLEMLER') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -35,14 +36,14 @@
             </td>
             <td><span class="code-badge">{{ item.code }}</span></td>
             <td>
-              <button class="status-indicator-btn" (click)="toggleStatus(item.id)">
+              <button class="status-indicator-btn" [disabled]="readOnly" [class.readonly]="readOnly" (click)="toggleStatus(item.id)">
                 <span class="status-dot" [class.active]="item.status === 'Aktif'"></span>
                 <span class="status-text" [class.active]="item.status === 'Aktif'">
                   {{ tsService.translate(item.status) }}
                 </span>
               </button>
             </td>
-            <td class="text-right">
+            <td *ngIf="!readOnly" class="text-right">
               <div class="actions-group">
                 <button class="action-btn edit-btn" (click)="openEditModal(item)" [title]="tsService.translate('Düzenle')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#edit"></use></svg>

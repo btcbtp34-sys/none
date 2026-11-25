@@ -18,6 +18,8 @@ export class VersionChecklistComponent {
   @Input() selectedIds: number[] = [];
   // true: seçenekler alt alta değil yan yana dizilir (dar alanlar, modal)
   @Input() inline = false;
+  // Salt okunur: seçim değiştirilemez
+  @Input() readOnly = false;
   @Output() selectedIdsChange = new EventEmitter<number[]>();
 
   isSelected(id: number): boolean {

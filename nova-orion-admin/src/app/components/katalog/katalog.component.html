@@ -5,7 +5,8 @@
         <h2 class="card-title">{{ tsService.translate(config.title) }}</h2>
         <p class="card-subtitle">{{ tsService.translate(config.subtitle) }}</p>
       </div>
-      <button class="primary-btn" (click)="openModal()">
+      <span *ngIf="readOnly" class="readonly-pill">{{ tsService.translate('Yalnızca görüntüleme') }}</span>
+      <button *ngIf="!readOnly" class="primary-btn" (click)="openModal()">
         <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
         <span>{{ tsService.translate('Yeni ' + config.singular + ' Ekle') }}</span>
       </button>
@@ -67,7 +68,7 @@
             <th *ngIf="config.hasProductType">{{ tsService.translate('ÜRÜN TİPİ') }}</th>
             <th *ngIf="config.hasSystem">{{ tsService.translate('SİSTEM') }}</th>
             <th style="width: 110px;">{{ tsService.translate('DURUM') }}</th>
-            <th class="text-right" style="width: 100px;">{{ tsService.translate('İŞLEMLER') }}</th>
+            <th *ngIf="!readOnly" class="text-right" style="width: 100px;">{{ tsService.translate('İŞLEMLER') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -101,14 +102,14 @@
               <ng-template #noSystem><span class="brand-desc-sm">—</span></ng-template>
             </td>
             <td>
-              <button class="status-indicator-btn" (click)="$event.stopPropagation(); catalogService.toggleStatus(entity, item.id)">
+              <button class="status-indicator-btn" [disabled]="readOnly" [class.readonly]="readOnly" (click)="$event.stopPropagation(); toggleStatus(item)">
                 <span class="status-dot" [class.active]="item.status === 'Aktif'"></span>
                 <span class="status-text" [class.active]="item.status === 'Aktif'">
                   {{ tsService.translate(item.status) }}
                 </span>
               </button>
             </td>
-            <td class="text-right">
+            <td *ngIf="!readOnly" class="text-right">
               <div class="actions-group" (click)="$event.stopPropagation()">
                 <button class="action-btn edit-btn" (click)="openModal(item)" [title]="tsService.translate('Düzenle')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#edit"></use></svg>

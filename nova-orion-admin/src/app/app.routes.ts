@@ -23,7 +23,7 @@ import { BizeUlasinComponent } from './components/bize-ulasin/bize-ulasin.compon
 import { ModullerComponent } from './components/moduller/moduller.component';
 import { KatalogComponent } from './components/katalog/katalog.component';
 import { MarkalarComponent } from './components/markalar/markalar.component';
-import { softwareAdminGuard } from './guards/software-admin.guard';
+import { notCountryAdminGuard, softwareAdminGuard } from './guards/software-admin.guard';
 import { YoneticiOzetiComponent } from './components/yonetici-ozeti/yonetici-ozeti.component';
 import { RaporDetayComponent } from './components/rapor-detay/rapor-detay.component';
 import { UrunListesiComponent } from './components/urun-listesi/urun-listesi.component';
@@ -84,7 +84,7 @@ export const routes: Routes = [
       { path: 'dil-yonetimi', component: DilYonetimiComponent },
       { path: 'dil-bakimi', component: DilBakimiComponent },
       { path: 'indirilenler', component: IndirilenlerComponent },
-      { path: 'bolgeler', component: BolgelerComponent },
+      { path: 'bolgeler', component: BolgelerComponent, canActivate: [notCountryAdminGuard] },
       { path: 'ulkeler', component: UlkelerComponent },
       { path: 'satis-kanallari', component: SatisKanallariComponent },
       { path: 'hava-kosullari', component: HavaKosullariComponent },

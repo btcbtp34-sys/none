@@ -1,6 +1,10 @@
 import { TranslationEntries } from './types';
 
 export const DIL_TRANSLATIONS: TranslationEntries = {
+  'Kategori bazlı çeviri şablonları ve çeviri sözlüğü (yalnızca görüntüleme)': { tr: 'Kategori bazlı çeviri şablonları ve çeviri sözlüğü (yalnızca görüntüleme)', en: 'Category-based translation templates and dictionary (view only)' },
+  'Yalnızca görüntüleme': { tr: 'Yalnızca görüntüleme', en: 'View only', de: 'Nur Ansicht', fr: 'Lecture seule' },
+  'Excel şablonundaki tüm kategoriler ve çeviriler. Yalnızca görüntüleme yetkiniz var.': { tr: 'Excel şablonundaki tüm kategoriler ve çeviriler. Yalnızca görüntüleme yetkiniz var.', en: 'All categories and translations from the Excel template. You have view-only access.' },
+  'ÇEVİRİ ({lang})': { tr: 'ÇEVİRİ ({lang})', en: 'TRANSLATION ({lang})' },
   // Dil Yönetimi
   'Sistemde kullanılan dillerin tanımlanması ve durum yönetimi': { tr: 'Sistemde kullanılan dillerin tanımlanması ve durum yönetimi', en: 'Define the languages used in the system and manage their status' },
   'Tanımlı Diller': { tr: 'Tanımlı Diller', en: 'Defined Languages' },

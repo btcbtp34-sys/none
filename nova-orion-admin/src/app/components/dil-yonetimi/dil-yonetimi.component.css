@@ -339,3 +339,17 @@
 .btn-save:hover {
   background: #1e293b;
 }
+
+.readonly-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-indicator-btn.readonly {
+  cursor: default;
+}

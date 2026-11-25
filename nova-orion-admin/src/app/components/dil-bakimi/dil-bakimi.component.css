@@ -1378,3 +1378,24 @@
   color: #ffffff;
 }
 
+
+.maintenance-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.readonly-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.inline-edit-input[readonly] {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}

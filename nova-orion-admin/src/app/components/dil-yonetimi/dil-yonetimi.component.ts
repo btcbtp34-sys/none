@@ -26,8 +26,13 @@ export class DilYonetimiComponent implements OnInit {
   formName = '';
   formIsDefault = false;
 
+  // Business Admin ve Country Admin dilleri yalnızca görüntüler; ekleme, düzenleme, durum değişikliği ve silme yapamaz
+  get readOnly(): boolean {
+    return this.authService.isBusinessAdmin() || this.authService.isCountryAdmin();
+  }
+
   get canDeleteLanguage(): boolean {
-    return this.authService.isSuperAdmin();
+    return this.authService.isSuperAdmin() && !this.readOnly;
   }
 
   ngOnInit() {
@@ -35,12 +40,14 @@ export class DilYonetimiComponent implements OnInit {
   }
 
   openAddModal() {
+    if (this.readOnly) return;
     this.editingId = null;
     this.resetForm();
     this.showModal = true;
   }
 
   openEditModal(item: LanguageItem) {
+    if (this.readOnly) return;
     this.editingId = item.id;
     this.formCode = item.code;
     this.formName = item.name;
@@ -60,6 +67,7 @@ export class DilYonetimiComponent implements OnInit {
   }
 
   saveLanguage() {
+    if (this.readOnly) return;
     if (!this.formCode.trim() || !this.formName.trim()) return;
 
     if (this.editingId) {
@@ -91,6 +99,7 @@ export class DilYonetimiComponent implements OnInit {
   }
 
   toggleStatus(id: number) {
+    if (this.readOnly) return;
     this.langService.toggleStatus(id);
   }
 }

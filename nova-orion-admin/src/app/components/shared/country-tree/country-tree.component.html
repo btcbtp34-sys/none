@@ -1,6 +1,6 @@
 <div class="tree">
   <label class="tree-row tree-level-0">
-    <input type="checkbox" [checked]="globalState === 'all'" [indeterminate]="globalState === 'some'" (change)="toggleGlobal()" />
+    <input type="checkbox" [checked]="globalState === 'all'" [indeterminate]="globalState === 'some'" [disabled]="readOnly" (change)="toggleGlobal()" />
     <span class="tree-label">Global</span>
   </label>
 
@@ -10,7 +10,7 @@
         <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#forward-right-small"></use></svg>
       </button>
       <label class="tree-check">
-        <input type="checkbox" [checked]="regionState(region) === 'all'" [indeterminate]="regionState(region) === 'some'" (change)="toggleRegion(region)" />
+        <input type="checkbox" [checked]="regionState(region) === 'all'" [indeterminate]="regionState(region) === 'some'" [disabled]="readOnly" (change)="toggleRegion(region)" />
         <span class="tree-label">{{ tsService.translate(region.name) }}</span>
         <span class="tree-count">{{ regionCountries(region).length }}</span>
       </label>
@@ -18,7 +18,7 @@
 
     <ng-container *ngIf="expandedRegionIds.has(region.id)">
       <label class="tree-row tree-level-2" *ngFor="let country of regionCountries(region)">
-        <input type="checkbox" [checked]="isCountrySelected(country.id)" (change)="toggleCountry(country.id)" />
+        <input type="checkbox" [checked]="isCountrySelected(country.id)" [disabled]="readOnly" (change)="toggleCountry(country.id)" />
         <span class="tree-label">{{ tsService.translate(country.name) }}</span>
         <span class="tree-code">{{ country.code }}</span>
       </label>

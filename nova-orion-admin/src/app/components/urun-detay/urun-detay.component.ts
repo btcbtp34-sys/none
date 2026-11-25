@@ -13,6 +13,7 @@ import {
 } from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
+import { AuthService } from '../../services/auth.service';
 import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
 import { ImageGroupsComponent } from '../shared/image-groups/image-groups.component';
@@ -32,6 +33,7 @@ export class UrunDetayComponent implements OnInit {
   catalogService = inject(CatalogService);
   pageTitleService = inject(PageTitleService);
   tsService = inject(TranslationService);
+  authService = inject(AuthService);
 
   tabs: { id: ProductTab; label: string }[] = [
     { id: 'genel', label: 'Genel Bilgiler' },
@@ -169,7 +171,13 @@ export class UrunDetayComponent implements OnInit {
 
   // Kaydet
 
+  // Country Admin katalog kayıtlarını yalnızca görüntüler
+  get readOnly(): boolean {
+    return this.authService.isCountryAdmin();
+  }
+
   saveProduct() {
+    if (this.readOnly) return;
     this.saveMessage = '';
     this.saveWarning = '';
     const name = this.formName.trim();

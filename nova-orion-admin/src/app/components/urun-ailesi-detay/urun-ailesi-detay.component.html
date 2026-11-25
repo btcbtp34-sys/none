@@ -12,7 +12,8 @@
           <a routerLink="/katalog/urun-ailesi" class="back-link">← {{ tsService.translate('Ürün ailesi listesi') }}</a>
           <h2 class="card-title">{{ familyId !== null ? formName || tsService.translate('Ürün Ailesi') : tsService.translate('Yeni Ürün Ailesi') }}</h2>
         </div>
-        <button class="primary-btn" (click)="saveFamily()">
+        <span *ngIf="readOnly" class="readonly-pill">{{ tsService.translate('Yalnızca görüntüleme') }}</span>
+        <button *ngIf="!readOnly" class="primary-btn" (click)="saveFamily()">
           <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#save"></use></svg>
           <span>{{ tsService.translate('Save') }}</span>
         </button>
@@ -35,6 +36,7 @@
       </div>
 
       <!-- Tab: Genel Bilgiler -->
+      <fieldset class="ro-fieldset" [disabled]="readOnly">
       <div *ngIf="activeTab === 'genel'" class="info-cards-grid family-cards-grid">
         <section class="info-card">
           <header class="info-card-header">{{ tsService.translate('TEMEL BİLGİLER') }}</header>
@@ -73,7 +75,7 @@
                 class="checkbox-chip-item"
                 [class.checked]="isSystemSelected(s.id)"
                 (click)="toggleSystem(s.id)">
-                <input type="checkbox" [checked]="isSystemSelected(s.id)" (click)="$event.stopPropagation(); toggleSystem(s.id)" />
+                <input type="checkbox" [disabled]="readOnly" [checked]="isSystemSelected(s.id)" (click)="$event.stopPropagation(); toggleSystem(s.id)" />
                 <span>{{ tsService.translate(s.name) }}</span>
               </div>
               <span *ngIf="!systemOptions.length" class="family-system-empty">
@@ -98,8 +100,10 @@
         </section>
       </div>
 
+      </fieldset>
+
       <!-- Tab: Görseller -->
-      <app-image-groups *ngIf="activeTab === 'gorseller'" [(groups)]="formImageGroups"></app-image-groups>
+      <app-image-groups *ngIf="activeTab === 'gorseller'" [(groups)]="formImageGroups" [readOnly]="readOnly"></app-image-groups>
 
       <!-- Tab: İlişkiler -->
       <div *ngIf="activeTab === 'iliskiler'" class="relations-grid">
@@ -109,7 +113,7 @@
             <span>{{ tsService.translate('UYUMLU VERSİYONLAR') }}</span>
             <span class="tab-count">{{ formVersionIds.length }}</span>
           </header>
-          <app-version-checklist [(selectedIds)]="formVersionIds"></app-version-checklist>
+          <app-version-checklist [(selectedIds)]="formVersionIds" [readOnly]="readOnly"></app-version-checklist>
         </section>
 
         <!-- Kart: Ülkeler (Global > Bölge > Ülke) -->
@@ -118,7 +122,7 @@
             <span>{{ tsService.translate('ÜLKELER') }}</span>
             <span class="tab-count">{{ formCountryIds.length }}</span>
           </header>
-          <app-country-tree [(selectedIds)]="formCountryIds"></app-country-tree>
+          <app-country-tree [(selectedIds)]="formCountryIds" [readOnly]="readOnly"></app-country-tree>
         </section>
       </div>
 
@@ -130,7 +134,7 @@
             <span>{{ tsService.translate(t.label) }}</span>
             <span class="tab-count">{{ capacityTypeCount(t.value) }}</span>
           </label>
-          <button type="button" class="capacity-add-btn" (click)="addCapacityRow()">
+          <button *ngIf="!readOnly" type="button" class="capacity-add-btn" (click)="addCapacityRow()">
             <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
             <span>{{ tsService.translate('Satır Ekle') }}</span>
           </button>
@@ -154,18 +158,18 @@
               <ng-container *ngFor="let row of formCapacityRows; let i = index">
               <tr *ngIf="capacityTypeFilter[row.type]">
                 <td *ngFor="let col of capacityColumnsBeforeType">
-                  <input type="number" step="any" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
+                  <input type="number" step="any" [disabled]="readOnly" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
                 </td>
                 <td>
-                  <select class="cell-input cell-select" [(ngModel)]="row.type" [class.heating]="row.type === 'HEATING'">
+                  <select [disabled]="readOnly" class="cell-input cell-select" [(ngModel)]="row.type" [class.heating]="row.type === 'HEATING'">
                     <option *ngFor="let t of capacityTypes" [value]="t.value">{{ tsService.translate(t.label) }}</option>
                   </select>
                 </td>
                 <td *ngFor="let col of capacityColumnsAfterType">
-                  <input type="number" step="any" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
+                  <input type="number" step="any" [disabled]="readOnly" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
                 </td>
                 <td class="col-actions">
-                  <button class="action-btn delete-btn" (click)="removeCapacityRow(i)" [title]="tsService.translate('Sil')">
+                  <button *ngIf="!readOnly" class="action-btn delete-btn" (click)="removeCapacityRow(i)" [title]="tsService.translate('Sil')">
                     <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
                   </button>
                 </td>

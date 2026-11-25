@@ -5,7 +5,8 @@
         <h2 class="card-title">{{ tsService.translate('Ürün') }}</h2>
         <p class="card-subtitle">{{ tsService.translate('Ürün grubu, tipi ve ailesine göre ürünlerin yönetimi') }}</p>
       </div>
-      <button class="primary-btn" (click)="openDetail()">
+      <span *ngIf="readOnly" class="readonly-pill">{{ tsService.translate('Yalnızca görüntüleme') }}</span>
+      <button *ngIf="!readOnly" class="primary-btn" (click)="openDetail()">
         <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
         <span>{{ tsService.translate('Yeni Ürün Ekle') }}</span>
       </button>
@@ -67,7 +68,7 @@
             <th>{{ tsService.translate('MARKASIZ ADI') }}</th>
             <th>{{ tsService.translate('VERSİYON') }}</th>
             <th style="width: 110px;">{{ tsService.translate('DURUM') }}</th>
-            <th class="text-right" style="width: 100px;">{{ tsService.translate('İŞLEMLER') }}</th>
+            <th *ngIf="!readOnly" class="text-right" style="width: 100px;">{{ tsService.translate('İŞLEMLER') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -84,14 +85,14 @@
             <td><span class="brand-desc-sm">{{ p.unbrandedName || '—' }}</span></td>
             <td><span class="brand-desc-sm">{{ p.version || '—' }}</span></td>
             <td>
-              <button class="status-indicator-btn" (click)="$event.stopPropagation(); catalogService.toggleStatus('urun', p.id)">
+              <button class="status-indicator-btn" [disabled]="readOnly" [class.readonly]="readOnly" (click)="$event.stopPropagation(); toggleStatus(p.id)">
                 <span class="status-dot" [class.active]="p.status === 'Aktif'"></span>
                 <span class="status-text" [class.active]="p.status === 'Aktif'">
                   {{ tsService.translate(p.status) }}
                 </span>
               </button>
             </td>
-            <td class="text-right">
+            <td *ngIf="!readOnly" class="text-right">
               <div class="actions-group">
                 <button class="action-btn edit-btn" (click)="$event.stopPropagation(); openDetail(p.id)" [title]="tsService.translate('Düzenle')">
                   <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#edit"></use></svg>
@@ -104,7 +105,7 @@
           </tr>
 
           <tr *ngIf="filteredProducts.length === 0">
-            <td colspan="10" class="empty-table-cell">
+            <td [attr.colspan]="readOnly ? 9 : 10" class="empty-table-cell">
               <div class="empty-state-box">
                 <p class="empty-state-title">{{ tsService.translate('Kayıt bulunamadı.') }}</p>
               </div>

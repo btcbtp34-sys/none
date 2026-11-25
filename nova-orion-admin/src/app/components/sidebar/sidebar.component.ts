@@ -157,7 +157,10 @@ export class SidebarComponent implements OnInit {
   }
 
   isItemVisible(titleKey: string): boolean {
-    return titleKey !== 'Markalar' || this.authService.isSoftwareAdmin();
+    if (titleKey === 'Markalar') return this.authService.isSoftwareAdmin();
+    // Bölgeler Country Admin'de görünmez
+    if (titleKey === 'Bölgeler') return !this.authService.isCountryAdmin();
+    return true;
   }
 
   categoryHasMatches(cat: CategoryId): boolean {

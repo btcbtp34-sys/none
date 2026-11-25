@@ -108,7 +108,19 @@ export class KatalogComponent implements OnInit {
     this.filterBrand = 'ALL';
   }
 
+  // Country Admin katalog kayıtlarını yalnızca görüntüler (Versiyon, Sistem Yönetimi altında olduğu için hariç)
+  get readOnly(): boolean {
+    return this.authService.isCountryAdmin() && this.entity !== 'versiyon';
+  }
+
+  toggleStatus(item: CatalogItem) {
+    if (this.readOnly) return;
+    this.catalogService.toggleStatus(this.entity, item.id);
+  }
+
   openModal(item?: CatalogItem) {
+    // Detay sayfası olan kayıtlar görüntülenmek için açılabilir; modal ile ekleme/düzenleme kapalıdır
+    if (this.readOnly && !this.config.detailRoute) return;
     if (this.config.detailRoute) {
       this.router.navigate([this.config.detailRoute, item?.id ?? 'yeni']);
       return;
@@ -196,7 +208,7 @@ export class KatalogComponent implements OnInit {
   }
 
   get columnCount(): number {
-    return 5 + (this.config.parent ? 1 : 0) + (this.config.hasProductType ? 1 : 0) + (this.config.hasSystem ? 1 : 0)
+    return (this.readOnly ? 4 : 5) + (this.config.parent ? 1 : 0) + (this.config.hasProductType ? 1 : 0) + (this.config.hasSystem ? 1 : 0)
       + (this.config.hasVersionsAndCountries ? 1 : 0) + (this.config.hasBrand ? 1 : 0);
   }
 
@@ -211,6 +223,7 @@ export class KatalogComponent implements OnInit {
   }
 
   saveItem() {
+    if (this.readOnly) return;
     const name = this.formName.trim();
 
     if (!name) {
@@ -261,6 +274,7 @@ export class KatalogComponent implements OnInit {
   }
 
   deleteItem(id: number) {
+    if (this.readOnly) return;
     if (confirm(this.tsService.translate('Bu kaydı silmek istediğinizden emin misiniz?'))) {
       this.catalogService.deleteItem(this.entity, id);
     }
