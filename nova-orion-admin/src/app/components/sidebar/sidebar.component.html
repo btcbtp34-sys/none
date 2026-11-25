@@ -49,7 +49,7 @@
           routerLink="/dil-yonetimi" 
           routerLinkActive="active" 
           class="nav-link"
-          *ngIf="!authService.isCountryAdmin() && matchesSearch('Dil Yönetimi')">
+          *ngIf="matchesSearch('Dil Yönetimi')">
           <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#globe-language"></use></svg>
           <span class="nav-link-text">{{ tsService.translate('Dil Yönetimi') }}</span>
           <span class="count-badge">5</span>
