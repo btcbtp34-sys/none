@@ -6,29 +6,27 @@
   </div>
 
   <div class="header-actions">
-    <!-- Frontend Portals Quick Switcher (Nova & Orion) - Opens in NEW TAB -->
-    <div class="fe-nav-btn-group">
-      <a 
-        class="header-fe-btn btn-fe-nova" 
-        [href]="'/frontend/home?project=nova'" 
-        target="_blank"
-        (click)="navigateToFrontend('nova', $event)"
-        [title]="tsService.translate('Nova Ön Yüz')">
+    <!-- Proje değiştirme (yalnızca Software Admin): seçilen projenin ana sayfasına gider -->
+    <div class="fe-nav-btn-group" *ngIf="authService.isSoftwareAdmin()">
+      <button
+        type="button"
+        class="header-fe-btn btn-fe-nova"
+        [class.active]="activeProject().id === 'nova'"
+        (click)="switchProject('nova')"
+        [title]="tsService.translate('Project Nova ana sayfasına geç')">
         <span class="fe-btn-dot dot-nova"></span>
-        <svg viewBox="0 0 192 192" class="fe-btn-svg" fill="currentColor"><use href="icons/bosch-icons.svg#externallink"></use></svg>
         <span>{{ tsService.translate('Nova Ön Yüz') }}</span>
-      </a>
+      </button>
 
-      <a 
-        class="header-fe-btn btn-fe-orion" 
-        [href]="'/frontend/home?project=orion'" 
-        target="_blank"
-        (click)="navigateToFrontend('orion', $event)"
-        [title]="tsService.translate('Orion Ön Yüz')">
+      <button
+        type="button"
+        class="header-fe-btn btn-fe-orion"
+        [class.active]="activeProject().id === 'orion'"
+        (click)="switchProject('orion')"
+        [title]="tsService.translate('Project Orion ana sayfasına geç')">
         <span class="fe-btn-dot dot-orion"></span>
-        <svg viewBox="0 0 192 192" class="fe-btn-svg" fill="currentColor"><use href="icons/bosch-icons.svg#externallink"></use></svg>
         <span>{{ tsService.translate('Orion Ön Yüz') }}</span>
-      </a>
+      </button>
     </div>
 
     <!-- Language Selector Dropdown -->
@@ -56,7 +54,7 @@
 
     <!-- User Profile Chip with SSO Role Switcher -->
     <div class="user-profile-wrapper">
-      <div class="user-profile" (click)="toggleUserRoleDropdown($event)" [title]="tsService.translate('Rol ve Kullanıcı Değiştir')">
+      <div class="user-profile" [class.static]="!roleSwitcherEnabled" (click)="toggleUserRoleDropdown($event)" [attr.title]="roleSwitcherEnabled ? tsService.translate('Rol ve Kullanıcı Değiştir') : null">
         <div class="avatar-badge" [ngClass]="roleBadgeClass(authService.currentUser().role)">
           {{ authService.currentUser().avatarInitials }}
         </div>
@@ -64,13 +62,13 @@
           <span class="user-name">{{ authService.currentUser().name }}</span>
           <div class="role-badge-row">
             <span class="user-role">{{ roleTitle(authService.currentUser().roleTitle) }}</span>
-            <svg class="role-chevron-icon" [class.rotated]="showUserRoleDropdown" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+            <svg *ngIf="roleSwitcherEnabled" class="role-chevron-icon" [class.rotated]="showUserRoleDropdown" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
           </div>
         </div>
       </div>
 
       <!-- Quick Role Switcher Menu -->
-      <div class="role-switch-menu" *ngIf="showUserRoleDropdown">
+      <div class="role-switch-menu" *ngIf="roleSwitcherEnabled && showUserRoleDropdown">
         <div class="role-menu-header">
           <span>{{ tsService.translate('KULLANICI ROLLERİ (HIZLI GEÇİŞ)') }}</span>
         </div>

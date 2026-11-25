@@ -1,0 +1,130 @@
+<aside class="library ve-card">
+  <div class="lib-tabs" role="tablist">
+    <button type="button" role="tab" [class.on]="tab === 'conditions'" (click)="tab = 'conditions'">{{ tsService.translate('Koşullar') }}</button>
+    <button type="button" role="tab" [class.on]="tab === 'actions'" (click)="tab = 'actions'">{{ tsService.translate('Aksiyonlar') }}</button>
+    <button type="button" role="tab" [class.on]="tab === 'messages'" (click)="tab = 'messages'">{{ tsService.translate('Mesajlar') }}</button>
+  </div>
+
+  <div class="lib-search">
+    <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
+    <input class="ve-input" [(ngModel)]="search" [placeholder]="tsService.translate('Kütüphanede ara...')" />
+  </div>
+
+  <div class="lib-scroll">
+    <!-- Koşullar -->
+    <ng-container *ngIf="tab === 'conditions'">
+      <ng-container *ngFor="let cat of ['product', 'system']">
+        <div class="section" *ngIf="fields($any(cat)).length">
+          <button type="button" class="section-head" (click)="toggle(cat)">
+            <span>{{ tsService.translate(cat === 'product' ? 'Ürün Bilgileri' : 'Sistem ve Borulama Bilgileri') }}</span>
+            <span class="count">{{ fields($any(cat)).length }}</span>
+            <svg class="chev" [class.closed]="collapsed[cat]" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+          </button>
+          <div *ngIf="!collapsed[cat]" class="items">
+            <div
+              *ngFor="let f of fields($any(cat))"
+              class="item"
+              [class.param]="f.isParameter"
+              draggable="true"
+              (dragstart)="dragStart($event, 'field', f.id)"
+              [title]="tsService.translate(f.description)">
+              <span class="grip">⋮⋮</span>
+              <div class="item-text">
+                <span class="item-name">{{ tsService.translate(f.name) }}</span>
+                <span class="item-meta">
+                  <code>{{ f.id }}</code>
+                  <span *ngIf="f.unit" class="tag">{{ tsService.translate(f.unit) }}</span>
+                  <span *ngIf="f.isParameter" class="tag param-tag">{{ tsService.translate('Dinamik parametre') }}</span>
+                </span>
+              </div>
+              <button type="button" class="add" (click)="addField(f.id)" [title]="tsService.translate('Koşul olarak ekle')">+</button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="section" *ngIf="operators.length">
+        <button type="button" class="section-head" (click)="toggle('operators')">
+          <span>{{ tsService.translate('Karşılaştırma Operatörleri') }}</span>
+          <span class="count">{{ operators.length }}</span>
+          <svg class="chev" [class.closed]="collapsed['operators']" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+        </button>
+        <div *ngIf="!collapsed['operators']" class="op-grid">
+          <div *ngFor="let op of operators" class="op" [title]="tsService.translate(op.description)">
+            <code>{{ op.symbol }}</code>
+            <span>{{ tsService.translate(op.label) }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Aksiyonlar -->
+    <ng-container *ngIf="tab === 'actions'">
+      <p class="hint">{{ tsService.translate('Aksiyon tiplerini sürükleyerek veya + düğmesiyle kuralın THEN bölümüne ekleyebilirsiniz.') }}</p>
+      <div class="items">
+        <div
+          *ngFor="let a of templates"
+          class="item action-item"
+          [ngClass]="'type-' + a.tone"
+          draggable="true"
+          (dragstart)="dragStart($event, 'action', a.type)">
+          <span class="grip">⋮⋮</span>
+          <svg class="item-icon" viewBox="0 0 192 192" fill="currentColor"><use [attr.href]="'icons/bosch-icons.svg#' + a.icon"></use></svg>
+          <div class="item-text">
+            <span class="item-name">{{ tsService.translate(a.label) }}</span>
+            <span class="item-desc">{{ tsService.translate(a.description) }}</span>
+          </div>
+          <button type="button" class="add" (click)="addAction(a)" [title]="tsService.translate('Aksiyon ekle')">+</button>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Mesajlar -->
+    <ng-container *ngIf="tab === 'messages'">
+      <div class="section">
+        <button type="button" class="section-head" (click)="toggle('params')">
+          <span>{{ tsService.translate('Dinamik Parametreler') }}</span>
+          <span class="count">{{ messageParameters.length }}</span>
+          <svg class="chev" [class.closed]="collapsed['params']" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+        </button>
+        <div *ngIf="!collapsed['params']">
+          <p class="hint">{{ tsService.translate('Mesaj kutusuna sürükleyin veya tıklayarak ilk aksiyonun mesajına ekleyin.') }}</p>
+          <div class="param-chips">
+            <button
+              *ngFor="let p of messageParameters"
+              type="button"
+              class="param-chip"
+              draggable="true"
+              (dragstart)="dragStart($event, 'param', p.key)"
+              (click)="insertParam(p.key)"
+              [title]="tsService.translate(p.label)">
+              +{{ '{' + p.key + '}' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <button type="button" class="section-head" (click)="toggle('templates')">
+          <span>{{ tsService.translate('Hazır Mesaj Şablonları') }}</span>
+          <span class="count">{{ messages.length }}</span>
+          <svg class="chev" [class.closed]="collapsed['templates']" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+        </button>
+        <div *ngIf="!collapsed['templates']" class="items">
+          <button
+            *ngFor="let m of messages"
+            type="button"
+            class="msg"
+            draggable="true"
+            (dragstart)="dragStart($event, 'message', tsService.translate(m.text))"
+            (click)="applyMessage(tsService.translate(m.text))">
+            <span class="item-name">{{ tsService.translate(m.title) }}</span>
+            <span class="item-desc">{{ tsService.translate(m.text) }}</span>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <p class="lib-foot">{{ tsService.translate('Öğeleri orta paneldeki ilgili bölüme sürükleyip bırakabilirsiniz.') }}</p>
+</aside>

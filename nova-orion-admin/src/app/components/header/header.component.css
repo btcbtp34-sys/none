@@ -130,6 +130,29 @@
   transform: translate(1px, -1px);
 }
 
+/* Seçili proje */
+.btn-fe-nova.active {
+  background: #e11d48;
+  border-color: #e11d48;
+  color: #ffffff;
+}
+
+.btn-fe-nova.active .dot-nova {
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.btn-fe-orion.active {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.btn-fe-orion.active .dot-orion {
+  background: #ffffff;
+  box-shadow: none;
+}
+
 .lang-selector-wrapper {
   position: relative;
 }
@@ -443,4 +466,11 @@
 .logout-icon {
   width: 14px;
   height: 14px;
+}
+
+.user-profile.static,
+.user-profile.static:hover {
+  cursor: default;
+  background: #ffffff;
+  border-color: #e2e8f0;
 }

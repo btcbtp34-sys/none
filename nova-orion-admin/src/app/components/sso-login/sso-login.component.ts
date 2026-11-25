@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService, UserProfile } from '../../services/auth.service';
+import { AuthService, SAMPLE_ACCOUNTS, SampleAccount } from '../../services/auth.service';
 import { ProjectService } from '../../services/project.service';
 import { TranslationService, SupportedLang } from '../../services/translation.service';
 
@@ -28,6 +28,8 @@ export class SsoLoginComponent {
     { code: 'de', label: 'DE', flag: '🇩🇪' },
     { code: 'fr', label: 'FR', flag: '🇫🇷' }
   ];
+
+  readonly sampleAccounts = SAMPLE_ACCOUNTS;
 
   // Steps
   step: LoginStep = 'PORTAL_CHOICE';
@@ -61,6 +63,14 @@ export class SsoLoginComponent {
     this.step = 'EMAIL';
   }
 
+  // Örnek hesap (Çalışan Girişi): e-posta ve şifre doldurulur, şifre adımına geçilir
+  selectSampleAccount(account: SampleAccount) {
+    this.errorMessage = '';
+    this.email = account.profile.email;
+    this.password = account.password;
+    this.step = 'PASSWORD';
+  }
+
   // Step 1 -> Step 2
   goToPassword() {
     this.errorMessage = '';
@@ -82,6 +92,12 @@ export class SsoLoginComponent {
     this.errorMessage = '';
     if (!this.password.trim()) {
       this.errorMessage = this.tsService.translate('Lütfen şifrenizi giriniz.');
+      return;
+    }
+    // Örnek hesaplarda şifre kontrol edilir
+    const sample = this.authService.sampleAccount(this.email);
+    if (sample && sample.password !== this.password) {
+      this.errorMessage = this.tsService.translate('E-posta veya şifre hatalı.');
       return;
     }
 
@@ -109,7 +125,7 @@ export class SsoLoginComponent {
       this.isProcessing = false;
 
       // 3. Navigate to application dashboard
-      this.router.navigate(['/dil-yonetimi']);
+      this.router.navigate(['/ana-sayfa']);
     }, 300);
   }
 

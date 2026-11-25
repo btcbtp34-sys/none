@@ -1,0 +1,246 @@
+<main class="page-content">
+  <!-- Kural bulunamadı -->
+  <div *ngIf="!rule()" class="ve-card not-found">
+    <p>{{ tsService.translate('Kural bulunamadı ya da bu kurala erişim yetkiniz yok.') }}</p>
+    <a routerLink="/dogrulama-motoru" class="ve-btn">← {{ tsService.translate('Kural listesine dön') }}</a>
+  </div>
+
+  <ng-container *ngIf="rule() as rule">
+    <!-- Başlık -->
+    <header class="ve-card editor-head">
+      <div class="head-top">
+        <div class="head-left">
+          <a routerLink="/dogrulama-motoru" class="ve-icon-btn back" [title]="tsService.translate('Kural listesine dön')">
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#back-left-small"></use></svg>
+          </a>
+          <div class="head-titles">
+            <div class="head-line">
+              <span class="ve-code">{{ rule.id }}</span>
+              <h2 class="rule-title">{{ tsService.translate(rule.name) }}</h2>
+              <span class="ve-badge" [ngClass]="brandClass(rule.brand)">{{ ruleService.brandLabel(rule.brand) }}</span>
+              <select class="status-select" [ngClass]="'status-' + rule.status" [ngModel]="rule.status" (ngModelChange)="update({ status: $event })">
+                <option *ngFor="let s of statuses" [value]="s">{{ tsService.translate(statusLabels[s]) }}</option>
+              </select>
+            </div>
+            <p class="rule-desc">{{ tsService.translate(rule.description) }}</p>
+          </div>
+        </div>
+        <div class="head-actions">
+          <button type="button" class="ve-btn" (click)="showJson = true">
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#document-json"></use></svg>
+            JSON
+          </button>
+          <button type="button" class="ve-btn" (click)="duplicate()">
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#copy"></use></svg>
+            {{ tsService.translate('Kopyala') }}
+          </button>
+          <button *ngIf="tab === 'conditions'" type="button" class="ve-btn" [class.active]="simOpen" (click)="simOpen = !simOpen">
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#forward-right-small"></use></svg>
+            {{ tsService.translate(simOpen ? 'Test panelini kapat' : 'Kuralı test et') }}
+          </button>
+          <button type="button" class="ve-btn primary" (click)="save()">
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#save"></use></svg>
+            {{ tsService.translate('Kaydet') }}
+          </button>
+        </div>
+      </div>
+
+      <nav class="tabs" role="tablist">
+        <button *ngFor="let t of tabs" type="button" role="tab" [class.on]="tab === t.id" (click)="setTab(t.id)">{{ tsService.translate(t.label) }}</button>
+      </nav>
+    </header>
+
+    <!-- 2. Koşullar & Aksiyonlar -->
+    <div *ngIf="tab === 'conditions'" class="workspace" [class.with-sim]="simOpen">
+      <app-condition-library [rule]="rule"></app-condition-library>
+
+      <div class="builder">
+        <section class="ve-card">
+          <div class="ve-card-header">
+            <div>
+              <span class="ve-eyebrow if">IF · {{ tsService.translate('EĞER KOŞUL BLOKLARI') }}</span>
+              <h3 class="ve-title">{{ tsService.translate('Görsel kural ve mantık yapılandırıcı') }}</h3>
+              <p class="ve-subtitle">{{ tsService.translate('İç içe VE/VEYA grupları, dinamik parametre karşılaştırmaları ve esnek limitler oluşturun.') }}</p>
+            </div>
+            <div class="builder-tools">
+              <button type="button" class="ve-icon-btn" (click)="ruleService.setAllCollapsed(rule.id, false)" [title]="tsService.translate('Tüm grupları genişlet')">
+                <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#fullscreen"></use></svg>
+              </button>
+              <button type="button" class="ve-icon-btn" (click)="ruleService.setAllCollapsed(rule.id, true)" [title]="tsService.translate('Tüm grupları daralt')">
+                <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#arrows-expand-object"></use></svg>
+              </button>
+              <button type="button" class="ve-btn" (click)="ruleService.addCondition(rule.id, rule.rootConditionGroup.id)">
+                <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
+                {{ tsService.translate('Koşul ekle') }}
+              </button>
+              <button type="button" class="ve-btn primary" (click)="ruleService.addGroup(rule.id, rule.rootConditionGroup.id)">
+                <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#layers-stack"></use></svg>
+                {{ tsService.translate('Koşul grubu ekle') }}
+              </button>
+            </div>
+          </div>
+          <app-condition-group [ruleId]="rule.id" [group]="rule.rootConditionGroup" [isRoot]="true"></app-condition-group>
+        </section>
+
+        <app-action-builder [rule]="rule"></app-action-builder>
+      </div>
+
+      <app-simulation-panel *ngIf="simOpen" [rule]="rule" (closed)="simOpen = false" (ruleRequested)="openRule($event)"></app-simulation-panel>
+    </div>
+
+    <!-- 1. Genel Bilgiler -->
+    <section *ngIf="tab === 'general'" class="ve-card form-card">
+      <h3 class="ve-title">{{ tsService.translate('Genel kural bilgileri') }}</h3>
+      <p class="ve-subtitle">{{ tsService.translate('Kuralın kimliği, kodu, kapsamı ve geçerlilik tarihleri.') }}</p>
+
+      <div class="form-grid">
+        <div class="span-2">
+          <label class="ve-label">{{ tsService.translate('Kural adı') }} *</label>
+          <input class="ve-input" [ngModel]="tsService.translate(rule.name)" (ngModelChange)="update({ name: $event })" />
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Kural kodu') }} *</label>
+          <input class="ve-input mono" [ngModel]="rule.code" (ngModelChange)="update({ code: $event })" />
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Sistem kural ID') }}</label>
+          <input class="ve-input mono" [value]="rule.id" disabled />
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Marka kapsamı') }}</label>
+          <select class="ve-select" [ngModel]="rule.brand" (ngModelChange)="update({ brand: $event })">
+            <option *ngFor="let b of brandOptions; trackBy: trackCode" [value]="b.code">{{ b.name }}</option>
+            <option *ngIf="!authService.brandScope()" value="BOTH">{{ tsService.translate('Her iki marka') }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Durum') }}</label>
+          <select class="ve-select" [ngModel]="rule.status" (ngModelChange)="update({ status: $event })">
+            <option *ngFor="let s of statuses" [value]="s">{{ tsService.translate(statusLabels[s]) }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Doğrulama kategorisi') }}</label>
+          <select class="ve-select" [ngModel]="rule.category" (ngModelChange)="update({ category: $event })">
+            <option *ngFor="let c of categories" [value]="c">{{ tsService.translate(categoryLabels[c]) }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Ciddiyet seviyesi') }}</label>
+          <select class="ve-select" [ngModel]="rule.validationType" (ngModelChange)="update({ validationType: $event })">
+            <option *ngFor="let v of validationTypes" [value]="v">{{ tsService.translate(typeLabels[v]) }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Geçerlilik başlangıcı') }}</label>
+          <input type="date" class="ve-input" [ngModel]="rule.validFrom" (ngModelChange)="update({ validFrom: $event })" />
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Geçerlilik bitişi') }}</label>
+          <input type="date" class="ve-input" [ngModel]="rule.validTo" (ngModelChange)="update({ validTo: $event })" />
+        </div>
+        <div class="span-2">
+          <label class="ve-label">{{ tsService.translate('Kural açıklaması ve iş gerekçesi') }}</label>
+          <textarea class="ve-textarea" rows="3" [ngModel]="tsService.translate(rule.description)" (ngModelChange)="update({ description: $event })"></textarea>
+        </div>
+        <div class="span-2">
+          <div class="slider-head">
+            <label class="ve-label">{{ tsService.translate('Öncelik puanı (1 - 100)') }}</label>
+            <strong>{{ rule.priority }}</strong>
+          </div>
+          <input type="range" min="1" max="100" class="slider" [ngModel]="rule.priority" (ngModelChange)="update({ priority: +$event })" />
+          <p class="ve-subtitle">{{ tsService.translate('Yüksek öncelikli kurallar kural motoru tarafından önce değerlendirilir.') }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Öncelik & Kapsam -->
+    <div *ngIf="tab === 'scope'" class="scope-layout">
+      <section class="ve-card">
+        <h3 class="ve-title">{{ tsService.translate('Öncelik ve kapsam ayarları') }}</h3>
+        <p class="ve-subtitle">{{ tsService.translate('Kuralın yürütme sırası, durdurma davranışı ve geçerli olduğu kanallar.') }}</p>
+
+        <label class="check-row">
+          <input type="checkbox" [ngModel]="rule.stopOnFirstFail" (ngModelChange)="update({ stopOnFirstFail: $event })" />
+          <span>
+            <strong>{{ tsService.translate('İlk hatada değerlendirmeyi durdur') }}</strong>
+            <span class="ve-subtitle">{{ tsService.translate('Bu kural kritik hata verdiğinde daha düşük öncelikli kurallar çalıştırılmaz.') }}</span>
+          </span>
+        </label>
+
+        <label class="ve-label channels-label">{{ tsService.translate('Geçerli olduğu uygulama kanalları') }}</label>
+        <div class="channels">
+          <label *ngFor="let ch of channels" class="channel" [class.on]="rule.applicableChannels.includes(ch.key)">
+            <input type="checkbox" [checked]="rule.applicableChannels.includes(ch.key)" (change)="toggleChannel(ch.key)" />
+            {{ tsService.translate(ch.label) }}
+          </label>
+        </div>
+      </section>
+
+      <app-simulation-panel [rule]="rule" [wide]="true" [closable]="false" (ruleRequested)="openRule($event)"></app-simulation-panel>
+    </div>
+
+    <!-- 4. Yönetim & Denetim -->
+    <div *ngIf="tab === 'management'" class="mgmt-layout">
+      <section class="ve-card">
+        <h3 class="ve-title">{{ tsService.translate('Kural yürütme ve test istatistikleri') }}</h3>
+        <p class="ve-subtitle">{{ tsService.translate('Simülasyon motorundaki test sonuçları.') }}</p>
+        <div class="stats">
+          <div class="stat"><span>{{ tsService.translate('Toplam test') }}</span><strong>{{ rule.executionStats.testCount }}</strong></div>
+          <div class="stat good"><span>{{ tsService.translate('Geçerli oranı') }}</span><strong>%{{ passRate }}</strong></div>
+          <div class="stat bad"><span>{{ tsService.translate('Tetiklenme') }}</span><strong>{{ rule.executionStats.failCount }}</strong></div>
+        </div>
+        <dl class="meta-list">
+          <dt>{{ tsService.translate('Versiyon') }}</dt><dd>{{ rule.version }}</dd>
+          <dt>{{ tsService.translate('Oluşturan') }}</dt><dd>{{ tsService.translate(rule.author) }}</dd>
+          <dt>{{ tsService.translate('Son güncelleme') }}</dt><dd>{{ formatDate(rule.lastModified) }}</dd>
+          <dt>{{ tsService.translate('Son test') }}</dt><dd>{{ formatDate(rule.executionStats.lastTestedAt) }}</dd>
+        </dl>
+      </section>
+
+      <section class="ve-card">
+        <div class="ve-card-header">
+          <div>
+            <h3 class="ve-title">{{ tsService.translate('JSON kural şeması (AST)') }}</h3>
+            <p class="ve-subtitle">{{ tsService.translate('Kuralın arka planda çalışan nesne modeli ve iç içe koşul ağacı. Düzenleyip uygulayabilirsiniz.') }}</p>
+          </div>
+          <div class="builder-tools">
+            <button type="button" class="ve-btn" (click)="copyJson()">{{ tsService.translate('Kopyala') }}</button>
+            <button type="button" class="ve-btn" (click)="downloadJson()">{{ tsService.translate('İndir (.json)') }}</button>
+          </div>
+        </div>
+        <textarea class="ve-textarea json-area" rows="18" [(ngModel)]="jsonDraft" spellcheck="false"></textarea>
+        <div *ngIf="jsonError" class="json-error">{{ tsService.translate('Geçersiz JSON') }}: {{ jsonError }}</div>
+        <div class="json-actions">
+          <button type="button" class="ve-btn" (click)="jsonDraft = json; jsonError = ''">{{ tsService.translate('Değişiklikleri geri al') }}</button>
+          <button type="button" class="ve-btn primary" (click)="applyJson()">{{ tsService.translate('JSON değişikliklerini uygula') }}</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- JSON penceresi -->
+    <div class="json-backdrop" *ngIf="showJson" (click)="showJson = false">
+      <div class="json-modal" (click)="$event.stopPropagation()">
+        <div class="json-modal-head">
+          <div>
+            <h3 class="ve-title">{{ tsService.translate('JSON kural şeması (AST)') }}</h3>
+            <p class="ve-subtitle">{{ tsService.translate(rule.name) }}</p>
+          </div>
+          <button type="button" class="ve-icon-btn" (click)="showJson = false" [title]="tsService.translate('Kapat')">
+            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#close"></use></svg>
+          </button>
+        </div>
+        <pre class="json-pre">{{ json }}</pre>
+        <div class="json-modal-foot">
+          <span class="ve-muted">{{ jsonLineCount }} {{ tsService.translate('satır') }} · UTF-8</span>
+          <div class="builder-tools">
+            <button type="button" class="ve-btn" (click)="copyJson()">{{ tsService.translate('Panoya kopyala') }}</button>
+            <button type="button" class="ve-btn primary" (click)="downloadJson()">{{ tsService.translate('JSON olarak indir') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</main>
+
+<app-ve-toasts></app-ve-toasts>

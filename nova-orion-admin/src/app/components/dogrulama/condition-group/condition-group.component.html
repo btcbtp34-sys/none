@@ -1,0 +1,75 @@
+<div
+  class="group"
+  [ngClass]="'depth-' + (depth % 3)"
+  [class.drop-active]="dragOver"
+  (dragover)="onDragOver($event)"
+  (dragleave)="dragOver = false"
+  (drop)="onDrop($event)">
+  <div class="group-header">
+    <div class="group-left">
+      <div class="op-switch" role="group" [attr.aria-label]="tsService.translate('Mantıksal operatör')">
+        <button type="button" [class.on-and]="group.operator === 'AND'" (click)="setOperator('AND')">{{ tsService.translate('VE') }} (AND)</button>
+        <button type="button" [class.on-or]="group.operator === 'OR'" (click)="setOperator('OR')">{{ tsService.translate('VEYA') }} (OR)</button>
+      </div>
+
+      <input
+        *ngIf="editingName; else nameView"
+        class="ve-input name-input"
+        [(ngModel)]="nameDraft"
+        (blur)="saveName()"
+        (keydown.enter)="saveName()"
+        autofocus />
+      <ng-template #nameView>
+        <button type="button" class="name-btn" (click)="startEditName()" [title]="tsService.translate('Grup adını düzenle')">{{ displayName }}</button>
+      </ng-template>
+
+      <span class="meta">{{ group.children.length }} {{ tsService.translate('öğe') }}</span>
+      <span *ngIf="depth > 0" class="meta">{{ tsService.translate('Seviye') }} {{ depth }}</span>
+    </div>
+
+    <div class="group-tools">
+      <button *ngIf="canConvertToIn" type="button" class="ve-btn soft convert" (click)="ruleService.convertOrToIn(ruleId, group.id)" [title]="tsService.translate('Ayrı VEYA koşullarını tek bir IN [...] koşuluna dönüştür')">
+        ⇄ {{ tsService.translate('IN [...] operatörüne dönüştür') }}
+      </button>
+      <button *ngIf="!isRoot" type="button" class="ve-icon-btn" (click)="ruleService.duplicateNode(ruleId, group.id)" [title]="tsService.translate('Grubu kopyala')">
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#copy"></use></svg>
+      </button>
+      <button *ngIf="!isRoot" type="button" class="ve-icon-btn danger" (click)="ruleService.deleteNode(ruleId, group.id)" [title]="tsService.translate('Grubu sil')">
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
+      </button>
+      <button type="button" class="ve-icon-btn" (click)="toggleCollapse()" [title]="tsService.translate(group.isCollapsed ? 'Genişlet' : 'Daralt')">
+        <svg class="chevron" [class.collapsed]="group.isCollapsed" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!group.isCollapsed" class="group-body">
+    <div *ngIf="!group.children.length" class="ve-empty">
+      {{ tsService.translate('Bu grupta henüz koşul yok. Aşağıdaki düğmelerle ya da sol panelden sürükleyerek koşul ekleyin.') }}
+    </div>
+
+    <ng-container *ngFor="let child of group.children; let last = last; trackBy: trackId">
+      <app-condition-group
+        *ngIf="child.type === 'group'; else item"
+        [ruleId]="ruleId"
+        [group]="asGroup(child)"
+        [depth]="depth + 1">
+      </app-condition-group>
+      <ng-template #item>
+        <app-condition-item [ruleId]="ruleId" [condition]="asItem(child)"></app-condition-item>
+      </ng-template>
+      <div *ngIf="!last" class="joiner" [class.or]="group.operator === 'OR'">{{ tsService.translate(group.operator === 'AND' ? 'VE' : 'VEYA') }}</div>
+    </ng-container>
+
+    <div class="group-add">
+      <button type="button" class="ve-btn soft" (click)="ruleService.addCondition(ruleId, group.id)">
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
+        {{ tsService.translate('Koşul ekle') }}
+      </button>
+      <button type="button" class="ve-btn soft" (click)="ruleService.addGroup(ruleId, group.id)">
+        <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#layers-stack"></use></svg>
+        {{ tsService.translate('Alt grup ekle') }}
+      </button>
+    </div>
+  </div>
+</div>

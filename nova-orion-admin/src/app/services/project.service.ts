@@ -10,6 +10,8 @@ export interface ProjectInfo {
   initials: string;
 }
 
+const PROJECT_STORAGE_KEY = 'nova_orion_project';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -35,14 +37,20 @@ export class ProjectService {
     }
   };
 
-  currentProject = signal<ProjectInfo>(this.projects.nova);
+  currentProject = signal<ProjectInfo>(this.projects[this.storedProject()]);
+
+  private storedProject(): 'nova' | 'orion' {
+    try {
+      const saved = localStorage.getItem(PROJECT_STORAGE_KEY);
+      if (saved === 'nova' || saved === 'orion') return saved;
+    } catch {}
+    return 'nova';
+  }
 
   setProject(projectId: 'nova' | 'orion') {
     this.currentProject.set(this.projects[projectId]);
-  }
-
-  toggleProject() {
-    const next = this.currentProject().id === 'nova' ? 'orion' : 'nova';
-    this.setProject(next);
+    try {
+      localStorage.setItem(PROJECT_STORAGE_KEY, projectId);
+    } catch {}
   }
 }

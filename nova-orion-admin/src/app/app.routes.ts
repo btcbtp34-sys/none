@@ -2,6 +2,9 @@ import { Routes } from '@angular/router';
 import { SsoLoginComponent } from './components/sso-login/sso-login.component';
 import { BackofficeLayoutComponent } from './components/backoffice-layout/backoffice-layout.component';
 import { DilYonetimiComponent } from './components/dil-yonetimi/dil-yonetimi.component';
+import { AnaSayfaComponent } from './components/ana-sayfa/ana-sayfa.component';
+import { KuralListesiComponent } from './components/dogrulama/kural-listesi/kural-listesi.component';
+import { KuralEditorComponent } from './components/dogrulama/kural-editor/kural-editor.component';
 import { DilBakimiComponent } from './components/dil-bakimi/dil-bakimi.component';
 import { IndirilenlerComponent } from './components/indirilenler/indirilenler.component';
 import { BolgelerComponent } from './components/bolgeler/bolgeler.component';
@@ -74,7 +77,10 @@ export const routes: Routes = [
     path: '',
     component: BackofficeLayoutComponent,
     children: [
-      { path: '', redirectTo: 'dil-yonetimi', pathMatch: 'full' },
+      { path: '', redirectTo: 'ana-sayfa', pathMatch: 'full' },
+      { path: 'ana-sayfa', component: AnaSayfaComponent },
+      { path: 'dogrulama-motoru', component: KuralListesiComponent },
+      { path: 'dogrulama-motoru/:id', component: KuralEditorComponent },
       { path: 'dil-yonetimi', component: DilYonetimiComponent },
       { path: 'dil-bakimi', component: DilBakimiComponent },
       { path: 'indirilenler', component: IndirilenlerComponent },
@@ -115,5 +121,5 @@ export const routes: Routes = [
       { path: 'yedek-ve-geri-yukle', redirectTo: 'sistem-yedekleme', pathMatch: 'full' }
     ]
   },
-  { path: '**', redirectTo: 'dil-yonetimi' }
+  { path: '**', redirectTo: 'ana-sayfa' }
 ];

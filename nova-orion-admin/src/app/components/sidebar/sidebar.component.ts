@@ -18,8 +18,9 @@ import { AuthService } from '../../services/auth.service';
 import { TranslationService } from '../../services/translation.service';
 import { CatalogService } from '../../services/catalog.service';
 import { BrandService } from '../../services/brand.service';
+import { ValidationRuleService } from '../../services/validation-rule.service';
 
-export type CategoryId = 'reports' | 'system' | 'catalog' | 'support' | 'users' | 'settings';
+export type CategoryId = 'reports' | 'system' | 'catalog' | 'validation' | 'support' | 'users' | 'settings';
 
 @Component({
   selector: 'app-sidebar',
@@ -45,6 +46,7 @@ export class SidebarComponent implements OnInit {
   tsService = inject(TranslationService);
   catalogService = inject(CatalogService);
   brandService = inject(BrandService);
+  validationRuleService = inject(ValidationRuleService);
 
   activeProject = this.projectService.currentProject;
 
@@ -76,6 +78,9 @@ export class SidebarComponent implements OnInit {
       'Ürün Ailesi',
       'Ürün'
     ],
+    validation: [
+      'Doğrulama Kuralları'
+    ],
     support: [
       'Kategoriler',
       'SSS',
@@ -105,7 +110,9 @@ export class SidebarComponent implements OnInit {
   }
 
   private syncCategoryWithRoute(url: string) {
-    if (url.includes('/raporlar')) {
+    if (url.includes('/dogrulama-motoru')) {
+      this.openCategory.set('validation');
+    } else if (url.includes('/raporlar')) {
       this.openCategory.set('reports');
     } else if (url.includes('/katalog')) {
       this.openCategory.set('catalog');
@@ -164,16 +171,12 @@ export class SidebarComponent implements OnInit {
 
   hasAnyMatches(): boolean {
     if (!this.searchQuery().trim()) return true;
-    const cats: CategoryId[] = ['reports', 'system', 'catalog', 'support', 'users', 'settings'];
+    const cats: CategoryId[] = ['reports', 'system', 'catalog', 'validation', 'support', 'users', 'settings'];
     return cats.some(c => this.categoryHasMatches(c));
   }
 
   clearSearch() {
     this.searchQuery.set('');
     this.syncCategoryWithRoute(this.router.url);
-  }
-
-  toggleProject() {
-    this.projectService.toggleProject();
   }
 }

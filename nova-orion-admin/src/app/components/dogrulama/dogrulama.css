@@ -1,0 +1,246 @@
+/* Doğrulama Motoru ortak stilleri (uygulamanın kart, rozet ve buton diliyle uyumlu) */
+
+.ve-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px;
+  min-width: 0;
+}
+
+.ve-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.ve-eyebrow {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.ve-eyebrow.if {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.ve-eyebrow.then {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.ve-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ve-subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* Butonlar */
+.ve-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ve-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.ve-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ve-btn.primary {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.ve-btn.primary:hover {
+  background: #1e293b;
+}
+
+.ve-btn.accent {
+  background: #e11d48;
+  border-color: #e11d48;
+  color: #ffffff;
+}
+
+.ve-btn.accent:hover {
+  background: #be123c;
+}
+
+.ve-btn.soft {
+  background: #f1f5f9;
+}
+
+.ve-btn.active {
+  background: #fff7ed;
+  border-color: #fdba74;
+  color: #9a3412;
+}
+
+.ve-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.ve-icon-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.ve-icon-btn.danger:hover {
+  background: #fff1f2;
+  color: #e11d48;
+}
+
+.ve-icon-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Form */
+.ve-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 5px;
+}
+
+.ve-input,
+.ve-select,
+.ve-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 12.5px;
+  font-family: inherit;
+}
+
+.ve-input:focus,
+.ve-select:focus,
+.ve-textarea:focus {
+  outline: none;
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+}
+
+.ve-input:disabled {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.ve-textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Rozetler */
+.ve-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ve-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.badge-nova { background: #fff1f2; color: #be123c; border-color: #fecdd3; }
+.badge-orion { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
+.badge-both { background: #f5f3ff; color: #5b21b6; border-color: #ddd6fe; }
+.badge-brand { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+
+.type-error { background: #fff1f2; color: #be123c; border-color: #fecdd3; }
+.type-warning { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+.type-info { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+.type-block { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
+.type-set { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.type-message { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+
+.status-Active { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.status-Active .dot { background: #10b981; }
+.status-Draft { background: #f1f5f9; color: #334155; border-color: #e2e8f0; }
+.status-Draft .dot { background: #94a3b8; }
+.status-Inactive { background: #fff1f2; color: #be123c; border-color: #fecdd3; }
+.status-Inactive .dot { background: #fb7185; }
+
+.ve-code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.ve-muted {
+  color: #64748b;
+}
+
+.ve-empty {
+  padding: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Sürükle-bırak hedefi */
+.drop-active {
+  border-color: #e11d48 !important;
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.12);
+}

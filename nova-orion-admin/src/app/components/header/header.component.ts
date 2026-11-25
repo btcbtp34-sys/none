@@ -69,6 +69,9 @@ export class HeaderComponent {
     this.showLangDropdown = false;
   }
 
+  // Hızlı rol geçiş menüsü kapalı; tekrar gerekirse true yapılması yeterli
+  readonly roleSwitcherEnabled = false;
+
   toggleUserRoleDropdown(event: MouseEvent) {
     event.stopPropagation();
     this.showUserRoleDropdown = !this.showUserRoleDropdown;
@@ -85,12 +88,10 @@ export class HeaderComponent {
     }
   }
 
-  navigateToFrontend(project: 'nova' | 'orion', event?: MouseEvent) {
-    if (event) {
-      event.preventDefault();
-    }
+  // Proje değiştirilir ve o projenin ana sayfasına gidilir
+  switchProject(project: 'nova' | 'orion') {
     this.projectService.setProject(project);
-    window.open(`/frontend/home?project=${project}`, '_blank');
+    this.router.navigate(['/ana-sayfa']);
   }
 
   logout() {

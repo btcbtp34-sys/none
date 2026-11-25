@@ -1,0 +1,389 @@
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  color: #475569;
+}
+
+/* Başlık */
+.editor-head {
+  padding-bottom: 0;
+}
+
+.head-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.head-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.back {
+  border-color: #e2e8f0;
+  flex: 0 0 auto;
+}
+
+.head-titles {
+  min-width: 0;
+}
+
+.head-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rule-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.status-select {
+  padding: 3px 8px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rule-desc {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: #64748b;
+  max-width: 900px;
+  line-height: 1.5;
+}
+
+.head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 16px;
+  border-top: 1px solid #f1f5f9;
+  overflow-x: auto;
+}
+
+.tabs button {
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tabs button:hover {
+  color: #0f172a;
+}
+
+.tabs button.on {
+  color: #e11d48;
+  border-bottom-color: #e11d48;
+}
+
+/* Koşullar sekmesi: kütüphane | yapılandırıcı | test paneli */
+.workspace {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.workspace.with-sim {
+  grid-template-columns: 290px minmax(0, 1fr) 340px;
+}
+
+.builder {
+  min-width: 0;
+}
+
+.builder-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Genel bilgiler */
+.form-card {
+  max-width: 980px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.span-2 {
+  grid-column: 1 / -1;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.slider-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.slider-head strong {
+  font-size: 15px;
+  color: #e11d48;
+}
+
+.slider {
+  width: 100%;
+  accent-color: #e11d48;
+}
+
+/* Öncelik & kapsam */
+.scope-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.check-row input {
+  margin-top: 3px;
+  accent-color: #e11d48;
+}
+
+.check-row strong {
+  display: block;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.channels-label {
+  margin-top: 18px;
+}
+
+.channels {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.channel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+}
+
+.channel.on {
+  border-color: #fecdd3;
+  background: #fff1f2;
+  color: #9f1239;
+}
+
+.channel input {
+  accent-color: #e11d48;
+}
+
+/* Yönetim */
+.mgmt-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.stat span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.stat strong {
+  font-size: 22px;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat.good strong {
+  color: #047857;
+}
+
+.stat.bad strong {
+  color: #be123c;
+}
+
+.meta-list {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 12px;
+  margin: 16px 0 0;
+  font-size: 12.5px;
+}
+
+.meta-list dt {
+  color: #64748b;
+}
+
+.meta-list dd {
+  margin: 0;
+  font-weight: 600;
+  color: #0f172a;
+  text-align: right;
+}
+
+.json-area {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11.5px;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-color: #0f172a;
+}
+
+.json-error {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: #9f1239;
+  font-size: 12px;
+}
+
+.json-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* JSON penceresi */
+.json-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.json-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(820px, 100%);
+  max-height: calc(100vh - 32px);
+  border-radius: 16px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.json-modal-head,
+.json-modal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+}
+
+.json-modal-foot {
+  border-top: 1px solid #f1f5f9;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.json-pre {
+  flex: 1;
+  margin: 0;
+  padding: 16px 18px;
+  overflow: auto;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1400px) {
+  .workspace.with-sim {
+    grid-template-columns: 270px minmax(0, 1fr);
+  }
+
+  .workspace.with-sim app-simulation-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1100px) {
+  .workspace,
+  .workspace.with-sim,
+  .scope-layout,
+  .mgmt-layout,
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -147,6 +147,25 @@
           </button>
         </div>
       </form>
+
+      <!-- Örnek kullanıcılar -->
+      <div class="sample-accounts" *ngIf="loginType === 'EMPLOYEE'">
+        <span class="sample-accounts-title">{{ tsService.translate('Örnek kullanıcılarla giriş') }}</span>
+        <button
+          *ngFor="let a of sampleAccounts"
+          type="button"
+          class="sample-account"
+          [ngClass]="'sample-' + a.profile.role.toLowerCase()"
+          (click)="selectSampleAccount(a)">
+          <span class="sample-avatar">{{ a.profile.avatarInitials }}</span>
+          <span class="sample-meta">
+            <span class="sample-role">{{ a.profile.roleTitle.split(' (')[0] }}</span>
+            <span class="sample-name">{{ a.profile.name }} · {{ tsService.translate(a.description) }}</span>
+            <span class="sample-cred">{{ a.profile.email }} · {{ a.password }}</span>
+          </span>
+          <svg viewBox="0 0 192 192" class="sample-arrow" fill="currentColor"><use href="icons/bosch-icons.svg#forward-right-small"></use></svg>
+        </button>
+      </div>
     </div>
 
     <!-- STEP 2: PASSWORD ENTRY -->

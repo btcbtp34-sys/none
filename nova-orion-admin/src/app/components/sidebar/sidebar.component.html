@@ -1,14 +1,13 @@
 <!-- Left Sidebar Navigation Component -->
 <aside class="sidebar">
-  <!-- Brand Header / Project Switcher -->
-  <div class="sidebar-brand-box" (click)="toggleProject()" [title]="tsService.translate('Proje Değiştir')">
+  <!-- Proje adı: ana sayfaya götürür (proje değiştirme Software Admin'de üst bardaki düğmelerle yapılır) -->
+  <a class="sidebar-brand-box" routerLink="/ana-sayfa" [title]="tsService.translate('Ana Sayfa')">
     <div class="brand-title-group">
       <span class="brand-name" [ngClass]="activeProject().id === 'nova' ? 'nova-title' : 'orion-title'">
         {{ activeProject().name }}
       </span>
-      <span class="brand-switch-tag">{{ tsService.translate('Project Selector') }} ⇄</span>
     </div>
-  </div>
+  </a>
 
   <!-- Sidebar Search Box -->
   <div class="sidebar-search-box">
@@ -206,6 +205,30 @@
           <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#box"></use></svg>
           <span class="nav-link-text">{{ tsService.translate('Ürün') }}</span>
           <span class="count-badge">{{ catalogService.items('urun').length }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Category: Doğrulama Motoru -->
+    <div class="nav-category" *ngIf="categoryHasMatches('validation')">
+      <div
+        class="nav-category-header accordion-toggle"
+        (click)="toggleCategory('validation')"
+        [class.active-cat]="isCategoryOpen('validation')">
+        <span class="category-header-title">{{ tsService.translate('Doğrulama Motoru') }}</span>
+        <svg class="accordion-chevron" [class.rotated]="isCategoryOpen('validation')" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+      </div>
+
+      <nav class="nav-menu" *ngIf="isCategoryOpen('validation')">
+        <!-- Doğrulama Kuralları -->
+        <a
+          routerLink="/dogrulama-motoru"
+          routerLinkActive="active"
+          class="nav-link"
+          *ngIf="matchesSearch('Doğrulama Kuralları')">
+          <svg class="nav-link-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#security"></use></svg>
+          <span class="nav-link-text">{{ tsService.translate('Doğrulama Kuralları') }}</span>
+          <span class="count-badge">{{ validationRuleService.visibleRules().length }}</span>
         </a>
       </nav>
     </div>

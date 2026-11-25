@@ -1,0 +1,82 @@
+<section
+  class="ve-card actions-card"
+  [class.drop-active]="sectionDragOver"
+  (dragover)="onSectionDragOver($event)"
+  (dragleave)="sectionDragOver = false"
+  (drop)="onSectionDrop($event)">
+  <div class="ve-card-header">
+    <div>
+      <span class="ve-eyebrow then">THEN · {{ tsService.translate('SONUÇ AKSİYONLARI') }}</span>
+      <h3 class="ve-title">{{ tsService.translate('Koşullar sağlandığında uygulanacak aksiyonlar') }}</h3>
+      <p class="ve-subtitle">{{ tsService.translate('Sol paneldeki aksiyonları ve mesaj şablonlarını buraya sürükleyebilir ya da düğmeleri kullanabilirsiniz.') }}</p>
+    </div>
+    <button type="button" class="ve-btn primary" (click)="ruleService.addAction(rule.id)">
+      <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
+      {{ tsService.translate('Aksiyon ekle') }}
+    </button>
+  </div>
+
+  <div class="action-list">
+    <div *ngFor="let action of rule.actions; let i = index; trackBy: trackId" class="action">
+      <div class="action-top">
+        <span class="index">{{ i + 1 }}</span>
+        <select class="ve-select type-select" [ngModel]="action.type" (ngModelChange)="changeType(action, $event)">
+          <option *ngFor="let t of templates" [value]="t.type">{{ tsService.translate(t.label) }}</option>
+        </select>
+        <input class="ve-input code-input" [ngModel]="action.code" (ngModelChange)="update(action, { code: $event })" [placeholder]="tsService.translate('Aksiyon kodu (ör. ERR_IDU_LIMIT)')" />
+        <button type="button" class="ve-icon-btn danger" (click)="ruleService.deleteAction(rule.id, action.id)" [title]="tsService.translate('Aksiyonu sil')">
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
+        </button>
+      </div>
+
+      <div>
+        <label class="ve-label">{{ tsService.translate('Aksiyon başlığı') }}</label>
+        <input class="ve-input" [ngModel]="tsService.translate(action.title)" (ngModelChange)="update(action, { title: $event })" [placeholder]="tsService.translate('Kullanıcıya gösterilecek başlık')" />
+      </div>
+
+      <div *ngIf="action.type === 'setFieldValue'" class="two-col">
+        <div>
+          <label class="ve-label">{{ tsService.translate('Hedef alan / parametre') }}</label>
+          <input class="ve-input" [ngModel]="action.targetField" (ngModelChange)="update(action, { targetField: $event })" placeholder="oilTrapAccessoryKit" />
+        </div>
+        <div>
+          <label class="ve-label">{{ tsService.translate('Atanacak değer') }}</label>
+          <input class="ve-input" [ngModel]="action.targetValue" (ngModelChange)="update(action, { targetValue: $event })" placeholder="KIT_OIL_TRAP_R32" />
+        </div>
+      </div>
+
+      <div *ngIf="action.type === 'blockSelection'">
+        <label class="ve-label">{{ tsService.translate('Kilitlenecek buton veya seçim alanı') }}</label>
+        <input class="ve-input" [ngModel]="action.blockTarget" (ngModelChange)="update(action, { blockTarget: $event })" placeholder="piping_approval_button" />
+      </div>
+
+      <div
+        class="message-area"
+        [class.drop-active]="messageDragOver === action.id"
+        (dragover)="onMessageDragOver($event, action)"
+        (dragleave)="messageDragOver = null"
+        (drop)="onMessageDrop($event, action)">
+        <div class="message-head">
+          <label class="ve-label">{{ tsService.translate('Mesaj metni') }}</label>
+          <div class="quick-params">
+            <span class="ve-muted">{{ tsService.translate('Hızlı ekle') }}:</span>
+            <button *ngFor="let p of quickParams" type="button" class="param-chip" (click)="insertParam(action, p)">+{{ '{' + p + '}' }}</button>
+          </div>
+        </div>
+        <textarea class="ve-textarea" rows="3" [ngModel]="tsService.translate(action.message)" (ngModelChange)="update(action, { message: $event })" [placeholder]="tsService.translate('Kullanıcıya gösterilecek ayrıntılı mesaj')"></textarea>
+      </div>
+
+      <!-- Canlı önizleme: mesajdaki {parametreler} simülasyon değerleriyle doldurulur -->
+      <div class="preview">
+        <span class="preview-label">{{ tsService.translate('Kullanıcı görünümü (canlı önizleme)') }}</span>
+        <div class="preview-box" [ngClass]="'type-' + template(action.type).tone">
+          <svg viewBox="0 0 192 192" fill="currentColor"><use [attr.href]="'icons/bosch-icons.svg#' + template(action.type).icon"></use></svg>
+          <div>
+            <strong>{{ tsService.translate(action.title) || tsService.translate('Bildirim') }}</strong>
+            <p>{{ preview(action) || tsService.translate('Mesaj girilmedi.') }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

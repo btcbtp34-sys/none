@@ -1,0 +1,88 @@
+<div class="cond-row">
+  <!-- Alan -->
+  <select class="ve-select cond-field" [ngModel]="condition.field" (ngModelChange)="changeField($event)" [attr.aria-label]="tsService.translate('Alan')">
+    <optgroup [label]="tsService.translate('Ürün Bilgileri')">
+      <option *ngFor="let f of productFields" [value]="f.id">{{ tsService.translate(f.name) }}</option>
+    </optgroup>
+    <optgroup [label]="tsService.translate('Sistem ve Borulama Bilgileri')">
+      <option *ngFor="let f of systemFields" [value]="f.id">{{ tsService.translate(f.name) }}</option>
+    </optgroup>
+  </select>
+
+  <!-- Operatör -->
+  <select class="ve-select cond-operator" [ngModel]="condition.operator" (ngModelChange)="changeOperator($event)" [attr.aria-label]="tsService.translate('Operatör')">
+    <option *ngFor="let op of operators" [value]="op.value">{{ op.symbol }}  {{ tsService.translate(op.label) }}</option>
+  </select>
+
+  <!-- İşlemler -->
+  <div class="cond-actions">
+    <button type="button" class="ve-icon-btn" (click)="ruleService.duplicateNode(ruleId, condition.id)" [title]="tsService.translate('Koşulu kopyala')">
+      <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#copy"></use></svg>
+    </button>
+    <button type="button" class="ve-icon-btn danger" (click)="ruleService.deleteNode(ruleId, condition.id)" [title]="tsService.translate('Koşulu sil')">
+      <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
+    </button>
+  </div>
+
+  <!-- Değer -->
+  <div class="cond-value">
+    <!-- Dinamik parametre -->
+    <select *ngIf="condition.valueType === 'parameter'; else literalValue" class="ve-select param-select" [ngModel]="condition.value" (ngModelChange)="setValue($event)">
+      <option *ngFor="let p of parameterOptions" [value]="p.value">⚡ {{ tsService.translate(p.label) }}</option>
+    </select>
+
+    <ng-template #literalValue>
+      <!-- Aralık -->
+      <div *ngIf="condition.operator === 'between'; else notBetween" class="between">
+        <input type="number" class="ve-input" [ngModel]="condition.value" (ngModelChange)="setValue($event)" [placeholder]="tsService.translate('Min')" />
+        <span class="ve-muted">–</span>
+        <input type="number" class="ve-input" [ngModel]="condition.secondaryValue" (ngModelChange)="setSecondary($event)" [placeholder]="tsService.translate('Maks')" />
+        <span *ngIf="condition.unit" class="unit">{{ tsService.translate(condition.unit) }}</span>
+      </div>
+
+      <ng-template #notBetween>
+        <!-- IN / NOT IN: çoklu seçim -->
+        <div *ngIf="isList; else single" class="chips">
+          <button
+            *ngFor="let o of options; trackBy: trackValue"
+            type="button"
+            class="chip"
+            [class.on]="selectedValues.includes(o.value)"
+            (click)="toggleListValue(o.value)">
+            {{ selectedValues.includes(o.value) ? '✓' : '+' }} {{ tsService.translate(o.label) }}
+          </button>
+          <span *ngIf="!options.length" class="ve-muted">{{ tsService.translate('Bu alan için liste seçeneği yok.') }}</span>
+        </div>
+
+        <ng-template #single>
+          <select *ngIf="fieldDef?.dataType === 'select'; else numberOrText" class="ve-select" [ngModel]="condition.value" (ngModelChange)="setValue($event)">
+            <option *ngFor="let o of options; trackBy: trackValue" [value]="o.value">{{ tsService.translate(o.label) }}</option>
+          </select>
+          <ng-template #numberOrText>
+            <div class="with-unit">
+              <input
+                [type]="fieldDef?.dataType === 'number' ? 'number' : 'text'"
+                class="ve-input"
+                [ngModel]="condition.value"
+                (ngModelChange)="setValue($event)"
+                [placeholder]="tsService.translate('Değer giriniz')" />
+              <span *ngIf="condition.unit" class="unit">{{ tsService.translate(condition.unit) }}</span>
+            </div>
+          </ng-template>
+        </ng-template>
+      </ng-template>
+    </ng-template>
+
+    <!-- Sabit / Parametre geçişi -->
+    <button
+      *ngIf="condition.operator !== 'between' && !isList"
+      type="button"
+      class="mode-toggle"
+      [class.param]="condition.valueType === 'parameter'"
+      (click)="toggleValueType()"
+      [title]="tsService.translate(condition.valueType === 'parameter' ? 'Sabit değere geç' : 'Dinamik sistem parametresiyle karşılaştır (ör. limit)')">
+      ⚡ {{ tsService.translate(condition.valueType === 'parameter' ? 'Parametre' : 'Sabit') }}
+    </button>
+  </div>
+
+</div>

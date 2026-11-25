@@ -27,6 +27,8 @@
 
 /* Brand Header */
 .sidebar-brand-box {
+  display: block;
+  text-decoration: none;
   padding: 4px 10px 14px;
   border-bottom: 1px solid #f1f5f9;
   cursor: pointer;
@@ -57,15 +59,6 @@
 
 .brand-name.orion-title {
   color: #0f172a;
-}
-
-.brand-switch-tag {
-  font-size: 9.5px;
-  font-weight: 800;
-  color: #94a3b8;
-  letter-spacing: 0.6px;
-  margin-top: 4px;
-  text-transform: uppercase;
 }
 
 /* Sidebar Search Box */

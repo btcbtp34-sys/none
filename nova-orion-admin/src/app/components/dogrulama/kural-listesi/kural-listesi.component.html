@@ -1,0 +1,174 @@
+<main class="page-content">
+  <div class="card-container">
+    <div class="card-header">
+      <div class="card-header-titles">
+        <h2 class="card-title">
+          {{ tsService.translate('Doğrulama Kuralları') }}
+          <span class="count-pill">{{ filtered.length }}</span>
+        </h2>
+        <p class="card-subtitle">{{ tsService.translate('Nova ve Orion için kodsuz doğrulama kuralları, koşul ağaçları ve aksiyonlar') }}</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="ve-btn" (click)="resetDefaults()" [title]="tsService.translate('Örnek kuralları yeniden yükle')">
+          <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#reset"></use></svg>
+          {{ tsService.translate('Örnekleri yükle') }}
+        </button>
+        <button type="button" class="primary-btn" (click)="openNewRule()">
+          <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
+          <span>{{ tsService.translate('Yeni Doğrulama Kuralı') }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI -->
+    <div class="kpi-row">
+      <div *ngFor="let k of kpis; trackBy: trackLabel" class="kpi" [ngClass]="k.tone">
+        <span class="kpi-label">{{ tsService.translate(k.label) }}</span>
+        <span class="kpi-value">{{ k.value }}</span>
+      </div>
+    </div>
+
+    <!-- Filtreler -->
+    <div class="filter-toolbar">
+      <div class="filter-search-box">
+        <svg class="filter-search-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#search"></use></svg>
+        <input type="text" class="filter-search-input" [(ngModel)]="search" (ngModelChange)="page = 1" [placeholder]="tsService.translate('Kural adı, kod, ID veya açıklama ile ara...')" />
+        <button *ngIf="search" class="filter-clear-icon-btn" (click)="search = ''">✕</button>
+      </div>
+      <div class="filter-right-group">
+        <select class="filter-select" [(ngModel)]="brandFilter" (ngModelChange)="page = 1">
+          <option value="ALL">{{ tsService.translate('Tüm markalar') }}</option>
+          <option *ngFor="let b of brandOptions; trackBy: trackCode" [value]="b.code">{{ b.name }}</option>
+          <option value="BOTH">{{ tsService.translate('Yalnız ortak kurallar') }}</option>
+        </select>
+        <select class="filter-select" [(ngModel)]="statusFilter" (ngModelChange)="page = 1">
+          <option value="ALL">{{ tsService.translate('Tüm Durumlar') }}</option>
+          <option *ngFor="let s of statuses" [value]="s">{{ tsService.translate(statusLabels[s]) }}</option>
+        </select>
+        <button *ngIf="hasFilters" class="filter-reset-btn" (click)="clearFilters()">{{ tsService.translate('Filtreyi Temizle') }}</button>
+      </div>
+    </div>
+
+    <!-- Tablo -->
+    <div class="table-responsive">
+      <table class="custom-table rules-table">
+        <thead>
+          <tr>
+            <th class="sortable" (click)="sortBy('id')">{{ tsService.translate('KURAL ID') }}</th>
+            <th class="sortable" (click)="sortBy('name')">{{ tsService.translate('KURAL ADI & TANIM') }}</th>
+            <th class="sortable" (click)="sortBy('brand')">{{ tsService.translate('MARKA') }}</th>
+            <th class="sortable" (click)="sortBy('validationType')">{{ tsService.translate('DOĞRULAMA TİPİ') }}</th>
+            <th class="sortable" (click)="sortBy('priority')">{{ tsService.translate('ÖNCELİK') }}</th>
+            <th class="sortable" (click)="sortBy('status')">{{ tsService.translate('DURUM') }}</th>
+            <th class="sortable" (click)="sortBy('lastModified')">{{ tsService.translate('SON GÜNCELLEME') }}</th>
+            <th class="text-right">{{ tsService.translate('İŞLEMLER') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of paged; trackBy: trackId" class="rule-row" (click)="open(r)">
+            <td><span class="ve-code">{{ r.id }}</span></td>
+            <td class="name-cell">
+              <div class="name-line">
+                <span class="rule-name">{{ tsService.translate(r.name) }}</span>
+                <span class="ve-code">{{ r.code }}</span>
+              </div>
+              <p class="rule-desc">{{ tsService.translate(r.description) }}</p>
+              <span class="rule-cat">{{ tsService.translate('Kategori') }}: {{ tsService.translate(categoryLabels[r.category]) }}</span>
+            </td>
+            <td><span class="ve-badge" [ngClass]="brandClass(r.brand)">{{ ruleService.brandLabel(r.brand) }}</span></td>
+            <td><span class="ve-badge" [ngClass]="'type-' + r.validationType">{{ tsService.translate(typeLabels[r.validationType]) }}</span></td>
+            <td>
+              <div class="priority">
+                <span class="bar"><span [ngClass]="priorityClass(r.priority)" [style.width.%]="r.priority"></span></span>
+                <strong>{{ r.priority }}</strong>
+              </div>
+            </td>
+            <td><span class="ve-badge" [ngClass]="'status-' + r.status"><span class="dot"></span>{{ tsService.translate(statusLabels[r.status]) }}</span></td>
+            <td class="date-cell">
+              {{ formatDate(r.lastModified) }}
+              <span class="author">{{ tsService.translate(r.author) }}</span>
+            </td>
+            <td class="text-right" (click)="$event.stopPropagation()">
+              <div class="actions-group">
+                <button class="action-btn edit-btn" (click)="open(r)" [title]="tsService.translate('Düzenle ve test et')">
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#edit"></use></svg>
+                </button>
+                <button class="action-btn edit-btn" (click)="duplicate(r)" [title]="tsService.translate('Kopyala')">
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#copy"></use></svg>
+                </button>
+                <button class="action-btn delete-btn" (click)="remove(r)" [title]="tsService.translate('Sil')">
+                  <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!paged.length">
+            <td colspan="8" class="empty-table-cell">
+              <div class="empty-state-box">
+                <p class="empty-state-title">{{ tsService.translate('Aradığınız kriterlere uygun kural bulunamadı.') }}</p>
+                <button class="filter-reset-btn" (click)="hasFilters ? clearFilters() : openNewRule()">
+                  {{ tsService.translate(hasFilters ? 'Filtreyi Temizle' : 'Yeni Doğrulama Kuralı') }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pager-row" *ngIf="pageCount > 1">
+      <button class="ve-btn" [disabled]="currentPage <= 1" (click)="page = currentPage - 1">‹</button>
+      <span>{{ currentPage }} / {{ pageCount }}</span>
+      <button class="ve-btn" [disabled]="currentPage >= pageCount" (click)="page = currentPage + 1">›</button>
+    </div>
+  </div>
+</main>
+
+<!-- Yeni kural penceresi -->
+<div class="modal-backdrop" *ngIf="showNewRule" (click)="showNewRule = false">
+  <div class="modal-card modal-medium" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ tsService.translate('Yeni Doğrulama Kuralı') }}</h3>
+      <button class="modal-close-btn" (click)="showNewRule = false">✕</button>
+    </div>
+    <form class="modal-body" (ngSubmit)="createRule()">
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('KURAL ADI') }} *</label>
+        <input class="form-control-subtle" name="name" [ngModel]="newName" (ngModelChange)="onNameChange($event)" required [placeholder]="tsService.translate('Örn: İç Ünite Yükseklik Farkı Kontrolü')" />
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label-bold">{{ tsService.translate('KURAL KODU') }}</label>
+          <input class="form-control-subtle mono" name="code" [ngModel]="newCode" (ngModelChange)="newCode = $event; codeTouched = true" placeholder="VAL_IDU_HEIGHT_LIMIT" />
+        </div>
+        <div class="form-group">
+          <label class="form-label-bold">{{ tsService.translate('MARKA') }}</label>
+          <select class="form-control-subtle" name="brand" [(ngModel)]="newBrand">
+            <option *ngFor="let b of brandOptions; trackBy: trackCode" [value]="b.code">{{ b.name }}</option>
+            <option *ngIf="!authService.brandScope()" value="BOTH">{{ tsService.translate('Her iki marka') }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label-bold">{{ tsService.translate('GEÇERLİLİK BAŞLANGICI') }}</label>
+          <input type="date" class="form-control-subtle" name="validFrom" [(ngModel)]="newValidFrom" />
+        </div>
+        <div class="form-group">
+          <label class="form-label-bold">{{ tsService.translate('GEÇERLİLİK BİTİŞİ') }}</label>
+          <input type="date" class="form-control-subtle" name="validTo" [(ngModel)]="newValidTo" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label-bold">{{ tsService.translate('AÇIKLAMA') }}</label>
+        <textarea class="form-control-subtle" rows="3" name="description" [(ngModel)]="newDescription" [placeholder]="tsService.translate('Kuralın mühendislik amacı ve kontrol kriterleri...')"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="showNewRule = false">{{ tsService.translate('Cancel') }}</button>
+        <button type="submit" class="btn-save" [disabled]="!newName.trim()">{{ tsService.translate('Oluştur ve düzenle') }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-ve-toasts></app-ve-toasts>

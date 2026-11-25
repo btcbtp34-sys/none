@@ -1,0 +1,98 @@
+/* Üst sıra: alan · operatör · işlemler; alt sıra: değer (tam genişlik) */
+.cond-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.cond-value {
+  grid-column: 1 / -1;
+}
+
+.cond-value {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cond-value > .ve-select,
+.cond-value > .between,
+.cond-value > .chips,
+.cond-value > .with-unit {
+  flex: 1;
+  min-width: 0;
+}
+
+.param-select {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+  font-weight: 600;
+}
+
+.between,
+.with-unit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.unit {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chip {
+  padding: 4px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chip.on {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.mode-toggle {
+  flex: 0 0 auto;
+  padding: 7px 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mode-toggle.param {
+  background: #fef3c7;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.cond-actions {
+  display: flex;
+  gap: 2px;
+}

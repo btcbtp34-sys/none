@@ -790,3 +790,99 @@
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Örnek kullanıcılar */
+.sample-accounts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.sample-accounts-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.sample-account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sample-account:hover {
+  border-color: #0f172a;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+}
+
+.sample-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sample-software_admin .sample-avatar {
+  background: #7c3aed;
+}
+
+.sample-business_admin .sample-avatar {
+  background: #f59e0b;
+}
+
+.sample-country_admin .sample-avatar {
+  background: #10b981;
+}
+
+.sample-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.sample-role {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.sample-name {
+  font-size: 12px;
+  color: #475569;
+}
+
+.sample-cred {
+  font-size: 11px;
+  color: #94a3b8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sample-arrow {
+  width: 16px;
+  height: 16px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}

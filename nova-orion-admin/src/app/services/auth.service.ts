@@ -18,6 +18,60 @@ export interface UserProfile {
   avatarInitials: string;
 }
 
+// Giriş ekranındaki örnek hesaplar (yetkiler ileride tanımlanacak)
+export interface SampleAccount {
+  password: string;
+  description: string;
+  profile: UserProfile;
+}
+
+export const SAMPLE_ACCOUNTS: SampleAccount[] = [
+  {
+    password: 'Software2026!',
+    description: 'Global · tüm markalar',
+    profile: {
+      id: 'sample-software',
+      email: 'software.admin@nova-orion.com',
+      name: 'Deniz Aksoy',
+      role: 'SOFTWARE_ADMIN',
+      roleTitle: 'Software Admin (Global)',
+      avatarInitials: 'DA',
+      token: 'sso-jwt-sample-software-2026'
+    }
+  },
+  {
+    password: 'Business2026!',
+    description: 'Nova · Avrupa',
+    profile: {
+      id: 'sample-business',
+      email: 'business.admin@nova-orion.com',
+      name: 'Selin Aydın',
+      role: 'BUSINESS_ADMIN',
+      roleTitle: 'Business Admin (Nova)',
+      assignedRegion: 'Avrupa',
+      brandIds: [1],
+      avatarInitials: 'SA',
+      token: 'sso-jwt-sample-business-2026'
+    }
+  },
+  {
+    password: 'Country2026!',
+    description: 'Türkiye · Avrupa',
+    profile: {
+      id: 'sample-country',
+      email: 'country.admin@nova-orion.com',
+      name: 'Mehmet Yıldız',
+      role: 'COUNTRY_ADMIN',
+      roleTitle: 'Country Admin (Türkiye)',
+      assignedRegion: 'Avrupa',
+      assignedCountry: 'Türkiye',
+      assignedLang: 'Türkçe',
+      avatarInitials: 'MY',
+      token: 'sso-jwt-sample-country-2026'
+    }
+  }
+];
+
 @Injectable({
   providedIn: 'root'
 })
@@ -215,10 +269,15 @@ export class AuthService {
     return !scope || (brandId != null && scope.includes(brandId));
   }
 
+  sampleAccount(email: string): SampleAccount | undefined {
+    const trimmed = email.trim().toLowerCase();
+    return SAMPLE_ACCOUNTS.find(a => a.profile.email === trimmed);
+  }
+
   // Login via SSO Email
   loginWithEmail(email: string): boolean {
     const trimmed = email.trim().toLowerCase();
-    const matchedUser = this.demoUsers.find(u => u.email.toLowerCase() === trimmed);
+    const matchedUser = this.sampleAccount(trimmed)?.profile ?? this.demoUsers.find(u => u.email.toLowerCase() === trimmed);
     
     if (matchedUser) {
       this.currentUser.set(matchedUser);

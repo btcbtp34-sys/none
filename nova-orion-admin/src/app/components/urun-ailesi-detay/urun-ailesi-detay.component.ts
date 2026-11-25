@@ -6,6 +6,8 @@ import {
   CatalogService,
   CatalogItem,
   CatalogStatus,
+  CapacityRow,
+  CapacityType,
   ProductImageGroups,
   emptyImageGroups
 } from '../../services/catalog.service';
@@ -15,9 +17,10 @@ import { CountryTreeComponent } from '../shared/country-tree/country-tree.compon
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
 import { ImageGroupsComponent } from '../shared/image-groups/image-groups.component';
 
-export type FamilyTab = 'genel' | 'gorseller' | 'iliskiler';
+export type FamilyTab = 'genel' | 'gorseller' | 'iliskiler' | 'kapasite' | 'kombinasyon';
 
-// Ürün Ailesi detay sayfası: Ürün detayı gibi sekmeli; genel bilgiler, görseller ve ilişkiler (uyumlu versiyonlar, ülkeler)
+// Ürün Ailesi detay sayfası: Ürün detayı gibi sekmeli; genel bilgiler, görseller, ilişkiler (uyumlu versiyonlar, ülkeler),
+// kapasite tablosu ve kombinasyon
 @Component({
   selector: 'app-urun-ailesi-detay',
   standalone: true,
@@ -39,7 +42,9 @@ export class UrunAilesiDetayComponent implements OnInit {
   tabs: { id: FamilyTab; label: string }[] = [
     { id: 'genel', label: 'Genel Bilgiler' },
     { id: 'gorseller', label: 'Görseller' },
-    { id: 'iliskiler', label: 'İlişkiler' }
+    { id: 'iliskiler', label: 'İlişkiler' },
+    { id: 'kapasite', label: 'Kapasite' },
+    { id: 'kombinasyon', label: 'Kombinasyon' }
   ];
   activeTab: FamilyTab = 'genel';
 
@@ -55,6 +60,28 @@ export class UrunAilesiDetayComponent implements OnInit {
   formOwnVersionId: number | null = null;
   formStatus: CatalogStatus = 'Aktif';
   formImageGroups: ProductImageGroups = emptyImageGroups();
+
+  // Kapasite tablosu (sütunlar veri kaynağındaki sırayla)
+  formCapacityRows: CapacityRow[] = [];
+  capacityTypeFilter: Record<CapacityType, boolean> = { COOLING: true, HEATING: true };
+  capacityTypes: { value: CapacityType; label: string }[] = [
+    { value: 'COOLING', label: 'Cooling' },
+    { value: 'HEATING', label: 'Heating' }
+  ];
+
+  // Tip sütunu ayrı çizildiği için sadece sayısal sütunlar
+  capacityColumnsBeforeType: { key: keyof CapacityRow; label: string; unit: string }[] = [
+    { key: 'nominalCapacity', label: 'Nominal Kapasite', unit: 'kW' }
+  ];
+  capacityColumnsAfterType: { key: keyof CapacityRow; label: string; unit: string }[] = [
+    { key: 'outdoorWb', label: 'Dış Ortam Yaş Termometre', unit: '°C' },
+    { key: 'outdoorDb', label: 'Dış Ortam Kuru Termometre', unit: '°C' },
+    { key: 'totalCapacity', label: 'Toplam Kapasite', unit: 'kW' },
+    { key: 'powerInput', label: 'Güç Tüketimi', unit: 'kW' },
+    { key: 'combinationRatio', label: 'Kombinasyon Oranı', unit: '%' },
+    { key: 'indoorDb', label: 'İç Ortam Kuru Termometre', unit: '°C' },
+    { key: 'indoorWb', label: 'İç Ortam Yaş Termometre', unit: '°C' }
+  ];
 
   // İlişkiler
   formVersionIds: number[] = [];
@@ -86,6 +113,7 @@ export class UrunAilesiDetayComponent implements OnInit {
     this.formImageGroups = { ...emptyImageGroups(), ...family?.imageGroups };
     this.formVersionIds = [...(family?.versionIds ?? [])];
     this.formCountryIds = [...(family?.countryIds ?? [])];
+    this.formCapacityRows = (family?.capacityRows ?? []).map(r => ({ ...r }));
     this.formError = '';
     this.saveMessage = '';
     this.saveWarning = '';
@@ -127,6 +155,44 @@ export class UrunAilesiDetayComponent implements OnInit {
     return Object.values(this.formImageGroups).reduce((sum, list) => sum + list.length, 0);
   }
 
+  // Kapasite tablosu
+
+  // Tablo doğrudan formCapacityRows üzerinden çizilir, filtre satır bazında *ngIf ile uygulanır.
+  // Şablonda her çağrıda yeni dizi/nesne üreten bir getter kullanılırsa satırlar sürekli yeniden
+  // oluşturulur; yeni ngModel'ler yeni değişiklik algılaması tetikler ve sayfa donar.
+  get visibleCapacityCount(): number {
+    return this.formCapacityRows.filter(r => this.capacityTypeFilter[r.type]).length;
+  }
+
+  capacityTypeCount(type: CapacityType): number {
+    return this.formCapacityRows.filter(r => r.type === type).length;
+  }
+
+  addCapacityRow() {
+    // Sadece tek tip filtrelenmişse yeni satır o tipte açılır
+    const type: CapacityType =
+      this.capacityTypeFilter.HEATING && !this.capacityTypeFilter.COOLING ? 'HEATING' : 'COOLING';
+    this.capacityTypeFilter[type] = true;
+    this.formCapacityRows = [
+      ...this.formCapacityRows,
+      {
+        nominalCapacity: null,
+        type,
+        outdoorWb: null,
+        outdoorDb: null,
+        totalCapacity: null,
+        powerInput: null,
+        combinationRatio: null,
+        indoorDb: null,
+        indoorWb: null
+      }
+    ];
+  }
+
+  removeCapacityRow(index: number) {
+    this.formCapacityRows = this.formCapacityRows.filter((_, i) => i !== index);
+  }
+
   isSystemSelected(id: number): boolean {
     return this.formSystemIds.includes(id);
   }
@@ -165,6 +231,7 @@ export class UrunAilesiDetayComponent implements OnInit {
       versionIds: this.formVersionIds,
       countryIds: this.formCountryIds,
       imageGroups: this.formImageGroups,
+      capacityRows: this.formCapacityRows.map(r => ({ ...r })),
       status: this.formStatus
     };
 

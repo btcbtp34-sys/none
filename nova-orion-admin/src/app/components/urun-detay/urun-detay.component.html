@@ -135,69 +135,6 @@
         </section>
       </div>
 
-      <!-- Tab: Kapasite -->
-      <div *ngIf="activeTab === 'kapasite'">
-        <div class="capacity-toolbar">
-          <label class="capacity-type-check" *ngFor="let t of capacityTypes">
-            <input type="checkbox" [(ngModel)]="capacityTypeFilter[t.value]" />
-            <span>{{ tsService.translate(t.label) }}</span>
-            <span class="tab-count">{{ capacityTypeCount(t.value) }}</span>
-          </label>
-          <button type="button" class="capacity-add-btn" (click)="addCapacityRow()">
-            <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
-            <span>{{ tsService.translate('Satır Ekle') }}</span>
-          </button>
-        </div>
-
-        <div class="table-responsive capacity-table-wrap">
-          <table class="capacity-table">
-            <thead>
-              <tr>
-                <th *ngFor="let col of capacityColumnsBeforeType">
-                  {{ tsService.translate(col.label) }}<span class="col-unit">{{ col.unit }}</span>
-                </th>
-                <th>{{ tsService.translate('Tip') }}</th>
-                <th *ngFor="let col of capacityColumnsAfterType">
-                  {{ tsService.translate(col.label) }}<span class="col-unit">{{ col.unit }}</span>
-                </th>
-                <th class="col-actions"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container *ngFor="let row of formCapacityRows; let i = index">
-              <tr *ngIf="capacityTypeFilter[row.type]">
-                <td *ngFor="let col of capacityColumnsBeforeType">
-                  <input type="number" step="any" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
-                </td>
-                <td>
-                  <select class="cell-input cell-select" [(ngModel)]="row.type" [class.heating]="row.type === 'HEATING'">
-                    <option *ngFor="let t of capacityTypes" [value]="t.value">{{ tsService.translate(t.label) }}</option>
-                  </select>
-                </td>
-                <td *ngFor="let col of capacityColumnsAfterType">
-                  <input type="number" step="any" class="cell-input" [(ngModel)]="row[col.key]" placeholder="—" />
-                </td>
-                <td class="col-actions">
-                  <button class="action-btn delete-btn" (click)="removeCapacityRow(i)" [title]="tsService.translate('Sil')">
-                    <svg viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#delete"></use></svg>
-                  </button>
-                </td>
-              </tr>
-              </ng-container>
-              <tr *ngIf="!visibleCapacityCount">
-                <td [attr.colspan]="capacityColumnsBeforeType.length + capacityColumnsAfterType.length + 2" class="capacity-empty">
-                  {{ tsService.translate(formCapacityRows.length ? 'Seçili tipte kapasite satırı yok.' : 'Henüz kapasite satırı eklenmedi.') }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Tab: Kombinasyon -->
-      <div *ngIf="activeTab === 'kombinasyon'" class="tab-panel">
-        <p class="placeholder-text">{{ tsService.translate('Kombinasyon alanları tanımlandığında burada yer alacak.') }}</p>
-      </div>
     </ng-container>
   </div>
 </main>

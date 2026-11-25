@@ -234,7 +234,7 @@ const INITIAL_CATALOG: Record<CatalogEntity, CatalogItem[]> = {
   ],
   'urun-ailesi': [
     // AF5301 ailesi, ilk ürünü AF5301A 25-3 ile aynı örnek görsellerle gelir
-    { id: 1, name: 'AF5301', description: '', parentIds: [2], systemIds: [1, 3, 4], imageGroups: SAMPLE_AF5301A_IMAGES, status: 'Aktif' },
+    { id: 1, name: 'AF5301', description: '', parentIds: [2], systemIds: [1, 3, 4], imageGroups: SAMPLE_AF5301A_IMAGES, capacityRows: SAMPLE_AF5301A_CAPACITY_ROWS, status: 'Aktif' },
     { id: 2, name: 'AF4300', description: '', parentIds: [2], systemIds: [1, 3, 4], status: 'Aktif' },
     { id: 3, name: 'AF2', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' },
     { id: 4, name: 'AF', description: '', parentIds: [4], systemIds: [1, 3, 4], status: 'Aktif' }
@@ -250,7 +250,6 @@ const INITIAL_CATALOG: Record<CatalogEntity, CatalogItem[]> = {
     version: '',
     // İlk ürün, görsel sekmesinin dolu halini göstermek için örnek görsellerle gelir
     imageGroups: i === 0 ? SAMPLE_AF5301A_IMAGES : emptyImageGroups(),
-    capacityRows: i === 0 ? SAMPLE_AF5301A_CAPACITY_ROWS : [],
     status: 'Aktif' as CatalogStatus
   }))
 };
@@ -312,6 +311,16 @@ export class CatalogService {
           data['urun-ailesi'] = data['urun-ailesi'].map((f: CatalogItem) => {
             const seed = INITIAL_CATALOG['urun-ailesi'].find(s => s.id === f.id && s.name === f.name);
             return f.imageGroups === undefined && seed?.imageGroups ? { ...f, imageGroups: seed.imageGroups } : f;
+          });
+          // Kapasite tablosu ürün ailesine taşındı: hiç kapasitesi olmayan aile, ürünlerindeki satırları
+          // (yoksa örnek verideki satırları) alır
+          data['urun-ailesi'] = data['urun-ailesi'].map((f: CatalogItem) => {
+            if (f.capacityRows !== undefined) return f;
+            const fromProducts = data['urun']
+              .filter((u: CatalogItem) => u.productFamilyId === f.id)
+              .flatMap((u: CatalogItem) => u.capacityRows ?? []);
+            const seed = INITIAL_CATALOG['urun-ailesi'].find(s => s.id === f.id && s.name === f.name);
+            return { ...f, capacityRows: fromProducts.length ? fromProducts : seed?.capacityRows ?? [] };
           });
           // Marka alanı eklenmeden önce kaydedilmiş versiyonlar örnek verideki markayı alır
           data['versiyon'] = data['versiyon'].map((v: CatalogItem) => {
