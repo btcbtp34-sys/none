@@ -1,0 +1,86 @@
+/* Buton ve açılır menü */
+:host {
+  display: inline-block;
+}
+
+.xi-wrap {
+  position: relative;
+}
+
+.excel-btn {
+  background: #ffffff;
+  color: #15803d;
+  border: 1px solid #86efac;
+  border-radius: 24px;
+  padding: 9px 16px 9px 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.excel-btn:hover,
+.excel-btn.open {
+  background: #f0fdf4;
+  border-color: #15803d;
+}
+
+.excel-btn .xi-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.xi-caret {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s ease;
+}
+
+.excel-btn.open .xi-caret {
+  transform: rotate(180deg);
+}
+
+.xi-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 50;
+  min-width: 100%;
+  width: max-content;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+}
+
+.xi-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.xi-menu-item:hover {
+  background: #f0fdf4;
+}
+
+.xi-menu-item .xi-icon {
+  flex: 0 0 16px;
+  height: 16px;
+  color: #15803d;
+}
+
+.xi-menu-item strong {
+  font-size: 13px;
+}

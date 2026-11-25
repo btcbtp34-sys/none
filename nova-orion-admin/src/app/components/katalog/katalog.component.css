@@ -740,3 +740,11 @@
   opacity: 1;
   cursor: default;
 }
+
+/* Başlık butonları: Excel ile Yükle + Yeni ... Ekle */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}

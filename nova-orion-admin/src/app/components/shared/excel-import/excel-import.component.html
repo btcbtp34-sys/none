@@ -1,0 +1,19 @@
+<!-- Buton ve altında açılan menü: Şablon indir / Excel yükle -->
+<div class="xi-wrap">
+  <button type="button" class="excel-btn" [class.open]="menuOpen" (click)="menuOpen = !menuOpen">
+    <svg class="xi-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
+    <span>{{ tsService.translate('Excel ile Yükle') }}</span>
+    <svg class="xi-caret" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#down-small"></use></svg>
+  </button>
+
+  <div *ngIf="menuOpen" class="xi-menu">
+    <button type="button" class="xi-menu-item" (click)="menuOpen = false">
+      <svg class="xi-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#download"></use></svg>
+      <strong>{{ tsService.translate('Şablon indir') }}</strong>
+    </button>
+    <button type="button" class="xi-menu-item" (click)="menuOpen = false">
+      <svg class="xi-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#upload"></use></svg>
+      <strong>{{ tsService.translate('Excel yükle') }}</strong>
+    </button>
+  </div>
+</div>

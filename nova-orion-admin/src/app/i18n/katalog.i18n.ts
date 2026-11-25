@@ -223,5 +223,9 @@ export const KATALOG_TRANSLATIONS: TranslationEntries = {
   'Şablon': { tr: 'Şablon', en: 'Template' },
   'Rol ve Kullanıcı Değiştir': { tr: 'Rol ve Kullanıcı Değiştir', en: 'Switch Role and User' },
   'KULLANICI ROLLERİ (HIZLI GEÇİŞ)': { tr: 'KULLANICI ROLLERİ (HIZLI GEÇİŞ)', en: 'USER ROLES (QUICK SWITCH)' },
-  'Kurumsal Sistem Yöneticisi': { tr: 'Kurumsal Sistem Yöneticisi', en: 'Corporate System Administrator' }
+  'Kurumsal Sistem Yöneticisi': { tr: 'Kurumsal Sistem Yöneticisi', en: 'Corporate System Administrator' },
+  // Excel ile yükleme (Ürün Ailesi / Ürün)
+  'Excel ile Yükle': { tr: 'Excel ile Yükle', en: 'Import from Excel' },
+  'Şablon indir': { tr: 'Şablon indir', en: 'Download template' },
+  'Excel yükle': { tr: 'Excel yükle', en: 'Upload Excel' }
 };

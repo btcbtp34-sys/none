@@ -6,11 +6,12 @@ import { CatalogService, CatalogItem } from '../../services/catalog.service';
 import { PageTitleService } from '../../services/page-title.service';
 import { TranslationService } from '../../services/translation.service';
 import { AuthService } from '../../services/auth.service';
+import { ExcelImportComponent } from '../shared/excel-import/excel-import.component';
 
 @Component({
   selector: 'app-urun-listesi',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ExcelImportComponent],
   templateUrl: './urun-listesi.component.html',
   styleUrls: ['../katalog/katalog.component.css', './urun-listesi.component.css']
 })

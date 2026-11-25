@@ -6,10 +6,13 @@
         <p class="card-subtitle">{{ tsService.translate(config.subtitle) }}</p>
       </div>
       <span *ngIf="readOnly" class="readonly-pill">{{ tsService.translate('Yalnızca görüntüleme') }}</span>
-      <button *ngIf="!readOnly" class="primary-btn" (click)="openModal()">
-        <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
-        <span>{{ tsService.translate('Yeni ' + config.singular + ' Ekle') }}</span>
-      </button>
+      <div class="header-actions">
+        <app-excel-import *ngIf="!readOnly && entity === 'urun-ailesi'"></app-excel-import>
+        <button *ngIf="!readOnly" class="primary-btn" (click)="openModal()">
+          <svg class="btn-icon" viewBox="0 0 192 192" fill="currentColor"><use href="icons/bosch-icons.svg#add"></use></svg>
+          <span>{{ tsService.translate('Yeni ' + config.singular + ' Ekle') }}</span>
+        </button>
+      </div>
     </div>
 
     <!-- Filter Bar -->

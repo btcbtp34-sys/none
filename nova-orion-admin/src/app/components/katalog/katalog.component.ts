@@ -15,11 +15,12 @@ import { BrandService } from '../../services/brand.service';
 import { AuthService } from '../../services/auth.service';
 import { CountryTreeComponent } from '../shared/country-tree/country-tree.component';
 import { VersionChecklistComponent } from '../shared/version-checklist/version-checklist.component';
+import { ExcelImportComponent } from '../shared/excel-import/excel-import.component';
 
 @Component({
   selector: 'app-katalog',
   standalone: true,
-  imports: [CommonModule, FormsModule, CountryTreeComponent, VersionChecklistComponent],
+  imports: [CommonModule, FormsModule, CountryTreeComponent, VersionChecklistComponent, ExcelImportComponent],
   templateUrl: './katalog.component.html',
   styleUrl: './katalog.component.css'
 })
