@@ -79,8 +79,8 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'ana-sayfa', pathMatch: 'full' },
       { path: 'ana-sayfa', component: AnaSayfaComponent },
-      { path: 'dogrulama-motoru', component: KuralListesiComponent },
-      { path: 'dogrulama-motoru/:id', component: KuralEditorComponent },
+      { path: 'dogrulama-motoru', component: KuralListesiComponent, canActivate: [notCountryAdminGuard] },
+      { path: 'dogrulama-motoru/:id', component: KuralEditorComponent, canActivate: [notCountryAdminGuard] },
       { path: 'dil-yonetimi', component: DilYonetimiComponent },
       { path: 'dil-bakimi', component: DilBakimiComponent },
       { path: 'indirilenler', component: IndirilenlerComponent },

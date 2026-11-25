@@ -153,7 +153,10 @@ export class SidebarComponent implements OnInit {
 
   // Markalar ve Ayarlar menüsü yalnızca Software Admin'e görünür
   isCategoryVisible(cat: CategoryId): boolean {
-    return cat !== 'settings' || this.authService.isSoftwareAdmin();
+    if (cat === 'settings') return this.authService.isSoftwareAdmin();
+    // Doğrulama Motoru Country Admin'de görünmez
+    if (cat === 'validation') return !this.authService.isCountryAdmin();
+    return true;
   }
 
   isItemVisible(titleKey: string): boolean {

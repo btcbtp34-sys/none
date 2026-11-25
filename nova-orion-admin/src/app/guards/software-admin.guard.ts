@@ -10,7 +10,7 @@ export const softwareAdminGuard: CanActivateFn = () => {
 // Bu adresler softwareAdminGuard ile korunur (rol değişince açık sayfadan çıkmak için)
 export const SOFTWARE_ADMIN_PATHS = ['/markalar', '/parametreler', '/sistem-yedekleme'];
 
-// Bölgeler sayfası Country Admin'e kapalıdır
+// Bölgeler ve Doğrulama Motoru sayfaları Country Admin'e kapalıdır
 export const notCountryAdminGuard: CanActivateFn = () => {
   return !inject(AuthService).isCountryAdmin() || inject(Router).createUrlTree(['/']);
 };
